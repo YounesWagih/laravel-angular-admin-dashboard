@@ -1,0 +1,23 @@
+.error-page {
+  display: grid;
+  min-height: calc(100vh - 7.5rem);
+  place-content: center;
+  justify-items: center;
+  text-align: center;
+}
+
+.error-page strong {
+  color: var(--color-primary);
+  font-size: clamp(3rem, 10vw, 6rem);
+  line-height: 1;
+}
+
+.error-page h1 {
+  margin: 1rem 0 0.5rem;
+}
+
+.error-page p {
+  max-width: 28rem;
+  margin: 0 0 1.5rem;
+  color: var(--color-muted);
+}

@@ -1,1 +1,170 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --color-primary: #2563eb;
+  --color-primary-dark: #1d4ed8;
+  --color-sidebar: #172033;
+  --color-text: #172033;
+  --color-muted: #64748b;
+  --color-border: #dbe2ea;
+  --color-background: #f5f7fa;
+  --color-danger: #b91c1c;
+  --radius-small: 0.5rem;
+  --radius-medium: 0.75rem;
+  --shadow-card: 0 8px 24px rgb(15 23 42 / 8%);
+  color-scheme: light;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+app-root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--color-text);
+  background: var(--color-background);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+a {
+  color: var(--color-primary-dark);
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+}
+
+:focus-visible {
+  outline: 3px solid rgb(37 99 235 / 28%);
+  outline-offset: 2px;
+}
+
+.auth-form,
+.form-field {
+  display: grid;
+}
+
+.auth-form {
+  gap: 1rem;
+}
+
+.form-field {
+  gap: 0.35rem;
+}
+
+.form-field label {
+  font-weight: 600;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  width: 100%;
+  padding: 0.7rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  color: var(--color-text);
+  background: #ffffff;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: var(--color-primary);
+  outline: 3px solid rgb(37 99 235 / 12%);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.65rem;
+  padding: 0.65rem 1rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button-primary {
+  color: #ffffff;
+  background: var(--color-primary);
+}
+
+.button-primary:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.button-block {
+  width: 100%;
+}
+
+.alert {
+  padding: 0.75rem;
+  border-radius: var(--radius-small);
+}
+
+.alert-danger {
+  color: var(--color-danger);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+}
+
+.auth-switch {
+  margin: 0.25rem 0 0;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.auth-switch a {
+  font-weight: 650;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.page-header p {
+  margin: 0.35rem 0 0;
+  color: var(--color-muted);
+}
+
+.page-panel {
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-medium);
+  background: #ffffff;
+}
