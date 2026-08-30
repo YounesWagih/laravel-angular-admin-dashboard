@@ -13,6 +13,8 @@ class Role extends SpatieRole
     /** @use HasFactory<RoleFactory> */
     use HasFactory;
 
+    protected string $guard_name = 'web';
+
     /** @return array<string, string> */
     protected function casts(): array
     {
