@@ -65,7 +65,7 @@ final class AuthController extends Controller
         return AuthenticatedUserResource::make($user->load('roles'));
     }
 
-    public function user(Request $request): AuthenticatedUserResource
+    public function me(Request $request): AuthenticatedUserResource
     {
         /** @var User $user */
         $user = $request->user();

@@ -8,7 +8,7 @@ Route::prefix('auth')->controller(AuthController::class)->group(function (): voi
     Route::post('/login', 'login')->middleware('stateful.request');
 
     Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
-        Route::get('/user', 'user');
+        Route::get('/me', 'me');
         Route::post('/logout', 'logout')->middleware('stateful.request');
     });
 });
