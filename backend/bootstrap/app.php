@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureStatefulRequest;
 use App\Http\Middleware\EnsureUserIsActive;
+use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -22,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'active' => EnsureUserIsActive::class,
+            'admin' => EnsureUserIsAdmin::class,
             'stateful.request' => EnsureStatefulRequest::class,
         ]);
     })
