@@ -32,6 +32,12 @@ export class FormFieldErrorComponent {
 
     const minimumLength = control.getError('minlength') as { requiredLength: number } | null;
 
-    return minimumLength ? `Use at least ${minimumLength.requiredLength} characters.` : null;
+    if (minimumLength) {
+      return `Use at least ${minimumLength.requiredLength} characters.`;
+    }
+
+    const maximumLength = control.getError('maxlength') as { requiredLength: number } | null;
+
+    return maximumLength ? `Use no more than ${maximumLength.requiredLength} characters.` : null;
   }
 }

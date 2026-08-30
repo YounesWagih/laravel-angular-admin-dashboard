@@ -20,6 +20,7 @@ Route::middleware(['auth:sanctum', 'active', 'admin'])->group(function (): void 
     Route::post('/roles', [RoleController::class, 'store']);
     Route::get('/roles/{role}/available-entities', [RoleController::class, 'availableEntities']);
     Route::patch('/roles/{role}', [RoleController::class, 'update']);
+    Route::patch('/roles/{role}/default', [RoleController::class, 'setDefault']);
     Route::delete('/roles/{role}', [RoleController::class, 'destroy']);
     Route::put('/roles/{role}/permissions', [RoleController::class, 'syncPermissions']);
 

@@ -12,6 +12,7 @@ use App\Models\Role;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 final class RoleController extends Controller
 {
@@ -54,6 +55,20 @@ final class RoleController extends Controller
         $role->update($request->validated());
 
         return RoleResource::make($role->load('permissions')->loadCount('users'));
+    }
+
+    public function setDefault(Role $role): RoleResource
+    {
+        DB::transaction(function () use ($role): void {
+            Role::query()
+                ->where('guard_name', 'web')
+                ->whereKeyNot($role->getKey())
+                ->update(['is_default' => false]);
+
+            $role->update(['is_default' => true]);
+        });
+
+        return RoleResource::make($role->refresh()->load('permissions')->loadCount('users'));
     }
 
     public function destroy(Role $role): Response|JsonResponse

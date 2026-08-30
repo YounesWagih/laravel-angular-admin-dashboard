@@ -168,3 +168,68 @@ h3 {
   border-radius: var(--radius-medium);
   background: #ffffff;
 }
+
+.action-menu {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.action-menu summary {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  border-radius: var(--radius-small);
+  color: var(--color-muted);
+  font-size: 1.5rem;
+  line-height: 1;
+  list-style: none;
+  cursor: pointer;
+}
+
+.action-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.action-menu summary:hover,
+.action-menu[open] summary {
+  color: var(--color-text);
+  background: #f1f5f9;
+}
+
+.action-menu-popover {
+  position: absolute;
+  inset-block-start: calc(100% + 0.35rem);
+  inset-inline-end: 0;
+  z-index: 5;
+  display: grid;
+  width: 11rem;
+  padding: 0.35rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  background: #ffffff;
+  box-shadow: var(--shadow-card);
+}
+
+.action-menu-item {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  border: 0;
+  border-radius: 0.35rem;
+  color: var(--color-text);
+  background: transparent;
+  text-align: start;
+  cursor: pointer;
+}
+
+.action-menu-item:hover:not(:disabled) {
+  background: #f1f5f9;
+}
+
+.action-menu-item:disabled {
+  color: var(--color-muted);
+}
+
+.action-menu-item-danger {
+  color: var(--color-danger);
+}
