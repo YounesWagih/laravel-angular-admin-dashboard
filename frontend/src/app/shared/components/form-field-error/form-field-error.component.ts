@@ -38,6 +38,26 @@ export class FormFieldErrorComponent {
 
     const maximumLength = control.getError('maxlength') as { requiredLength: number } | null;
 
-    return maximumLength ? `Use no more than ${maximumLength.requiredLength} characters.` : null;
+    if (maximumLength) {
+      return `Use no more than ${maximumLength.requiredLength} characters.`;
+    }
+
+    const minimum = control.getError('min') as { min: number } | null;
+
+    if (minimum) {
+      return `Use a value of ${minimum.min} or greater.`;
+    }
+
+    const maximum = control.getError('max') as { max: number } | null;
+
+    if (maximum) {
+      return `Use a value of ${maximum.max} or less.`;
+    }
+
+    if (control.hasError('pattern')) {
+      return 'Enter a valid number.';
+    }
+
+    return null;
   }
 }

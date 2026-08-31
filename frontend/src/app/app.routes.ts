@@ -63,6 +63,38 @@ export const routes: Routes = [
           ).then((component) => component.CategoriesPageComponent)
       },
       {
+        path: 'products',
+        canActivate: [permissionGuard('products.read')],
+        loadComponent: () =>
+          import('./features/products/components/products-page/products-page.component').then(
+            (component) => component.ProductsPageComponent
+          )
+      },
+      {
+        path: 'products/new',
+        canActivate: [permissionGuard('products.create')],
+        loadComponent: () =>
+          import(
+            './features/products/components/product-form-page/product-form-page.component'
+          ).then((component) => component.ProductFormPageComponent)
+      },
+      {
+        path: 'products/:id/edit',
+        canActivate: [permissionGuard('products.update')],
+        loadComponent: () =>
+          import(
+            './features/products/components/product-form-page/product-form-page.component'
+          ).then((component) => component.ProductFormPageComponent)
+      },
+      {
+        path: 'products/:id',
+        canActivate: [permissionGuard('products.read')],
+        loadComponent: () =>
+          import(
+            './features/products/components/product-details-page/product-details-page.component'
+          ).then((component) => component.ProductDetailsPageComponent)
+      },
+      {
         path: 'users',
         canActivate: [adminGuard],
         loadComponent: () =>

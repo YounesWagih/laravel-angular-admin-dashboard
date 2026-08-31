@@ -1,0 +1,107 @@
+<header class="page-header">
+  <div>
+    <h1>{{ editing ? 'Edit product' : 'Add product' }}</h1>
+    <p>{{ editing ? 'Update product information and inventory.' : 'Create a product with both language values.' }}</p>
+  </div>
+  <a class="button secondary-button" routerLink="/products">Back to products</a>
+</header>
+
+@if (pageError(); as error) {
+  <section class="page-panel state-panel">
+    <p class="state-error" role="alert">{{ error }}</p>
+    <a class="button secondary-button" routerLink="/products">Back to products</a>
+  </section>
+} @else if (loading()) {
+  <section class="page-panel state-panel" aria-live="polite">Loading product form…</section>
+} @else {
+  <section class="page-panel form-panel">
+    <form [formGroup]="productForm" (ngSubmit)="saveProduct()" novalidate>
+      @if (formError(); as error) {
+        <div class="alert alert-danger form-alert" role="alert">{{ error }}</div>
+      }
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="product-name-en">English name</label>
+          <input id="product-name-en" type="text" formControlName="name_en" />
+          <app-form-field-error [control]="productForm.controls.name_en" />
+        </div>
+
+        <div class="form-field">
+          <label for="product-name-ar">Arabic name</label>
+          <input id="product-name-ar" type="text" dir="rtl" lang="ar" formControlName="name_ar" />
+          <app-form-field-error [control]="productForm.controls.name_ar" />
+        </div>
+
+        <div class="form-field">
+          <label for="product-description-en">English description <span>(optional)</span></label>
+          <textarea id="product-description-en" rows="5" formControlName="description_en"></textarea>
+          <app-form-field-error [control]="productForm.controls.description_en" />
+        </div>
+
+        <div class="form-field">
+          <label for="product-description-ar">Arabic description <span>(optional)</span></label>
+          <textarea id="product-description-ar" rows="5" dir="rtl" lang="ar" formControlName="description_ar"></textarea>
+          <app-form-field-error [control]="productForm.controls.description_ar" />
+        </div>
+
+        <div class="form-field">
+          <label for="product-category">Category</label>
+          <select id="product-category" formControlName="category_id">
+            <option [ngValue]="0" disabled>Select a category</option>
+            @for (category of categories(); track category.id) {
+              <option [ngValue]="category.id">{{ category.name }}</option>
+            }
+          </select>
+          <app-form-field-error [control]="productForm.controls.category_id" />
+        </div>
+
+        <div class="form-field">
+          <label for="product-status">Status</label>
+          <select id="product-status" formControlName="status">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+          <app-form-field-error [control]="productForm.controls.status" />
+        </div>
+
+        <div class="form-field">
+          <label for="product-price">Price (EGP)</label>
+          <input id="product-price" type="number" min="0" max="9999999999.99" step="0.01" formControlName="price" />
+          <app-form-field-error [control]="productForm.controls.price" />
+        </div>
+
+        <div class="form-field">
+          <label for="product-stock">Stock quantity</label>
+          <input id="product-stock" type="number" min="0" max="4294967295" step="1" formControlName="stock" />
+          <app-form-field-error [control]="productForm.controls.stock" />
+        </div>
+
+        <div class="form-field image-field">
+          <label for="product-image">Product image <span>(optional)</span></label>
+          <input id="product-image" type="file" accept="image/jpeg,image/png,image/webp" (change)="selectImage($event)" />
+          <small>JPG, PNG, or WebP. Maximum 2 MB.</small>
+          @if (imageError(); as error) {
+            <small class="field-error" role="alert">{{ error }}</small>
+          } @else {
+            <app-form-field-error [control]="productForm.controls.image" />
+          }
+        </div>
+
+        @if (imagePreview(); as preview) {
+          <div class="image-preview">
+            <span>{{ editing ? 'Current image or selected replacement' : 'Selected image' }}</span>
+            <img [src]="preview" alt="Product image preview" />
+          </div>
+        }
+      </div>
+
+      <div class="form-actions">
+        <a class="button secondary-button" routerLink="/products">Cancel</a>
+        <button class="button button-primary" type="submit" [disabled]="saving()">
+          {{ saving() ? 'Saving…' : editing ? 'Save changes' : 'Save product' }}
+        </button>
+      </div>
+    </form>
+  </section>
+}

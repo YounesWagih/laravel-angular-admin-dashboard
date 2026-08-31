@@ -1,0 +1,85 @@
+@if (product(); as product) {
+  <header class="page-header">
+    <div>
+      <h1>{{ product.name }}</h1>
+      <p>Product information and inventory details.</p>
+    </div>
+    <div class="header-actions">
+      <a class="button secondary-button" routerLink="/products">Back</a>
+      @if (canUpdate()) {
+        <a class="button button-primary" [routerLink]="['/products', product.id, 'edit']">Edit product</a>
+      }
+      @if (canDelete()) {
+        <button class="button danger-button" type="button" (click)="requestDelete()">Delete</button>
+      }
+    </div>
+  </header>
+
+  @if (actionError(); as error) {
+    <div class="alert alert-danger action-alert" role="alert">{{ error }}</div>
+  }
+
+  <section class="page-panel product-overview">
+    <div class="image-panel">
+      @if (product.image_url) {
+        <img [src]="product.image_url" [alt]="product.name" />
+      } @else {
+        <div class="image-placeholder">No image</div>
+      }
+    </div>
+
+    <dl>
+      <div class="wide-detail">
+        <dt>Description</dt>
+        <dd>{{ product.description || 'No description.' }}</dd>
+      </div>
+      <div>
+        <dt>Category</dt>
+        <dd>{{ product.category.name }}</dd>
+      </div>
+      <div>
+        <dt>Price</dt>
+        <dd>{{ formatPrice(product.price) }}</dd>
+      </div>
+      <div>
+        <dt>Stock quantity</dt>
+        <dd>{{ product.stock }}</dd>
+      </div>
+      <div>
+        <dt>Status</dt>
+        <dd>
+          <span class="status-badge" [class.inactive]="product.status === 'inactive'">
+            {{ formatStatus(product.status) }}
+          </span>
+        </dd>
+      </div>
+      <div>
+        <dt>Created</dt>
+        <dd>{{ formatDate(product.created_at) }}</dd>
+      </div>
+      <div>
+        <dt>Last updated</dt>
+        <dd>{{ formatDate(product.updated_at) }}</dd>
+      </div>
+    </dl>
+  </section>
+
+  @if (confirmingDelete()) {
+    <app-confirmation-dialog
+      title="Delete product?"
+      [message]="'Delete ' + product.name + '? Its stored image will also be removed.'"
+      confirmLabel="Delete"
+      [busy]="deleting()"
+      [danger]="true"
+      (confirmed)="deleteProduct(product)"
+      (cancelled)="cancelDelete()"
+    />
+  }
+} @else if (loading()) {
+  <section class="page-panel state-panel" aria-live="polite">Loading product…</section>
+} @else {
+  <section class="page-panel state-panel">
+    <p class="state-error" role="alert">{{ pageError() }}</p>
+    <a class="button secondary-button" routerLink="/products">Back to products</a>
+  </section>
+}

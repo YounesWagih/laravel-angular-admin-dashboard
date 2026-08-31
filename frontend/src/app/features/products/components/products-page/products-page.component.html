@@ -1,0 +1,144 @@
+<header class="page-header">
+  <div>
+    <h1>Products</h1>
+    <p>Manage product information, pricing, inventory, and availability.</p>
+  </div>
+
+  @if (canCreate()) {
+    <a class="button button-primary" routerLink="/products/new">Add product</a>
+  }
+</header>
+
+<section class="page-panel filters-panel">
+  <form class="filters" [formGroup]="filtersForm" (ngSubmit)="applyFilters()">
+    <div class="form-field search-field">
+      <label for="product-search">Search</label>
+      <input id="product-search" type="search" placeholder="Product name" formControlName="search" />
+    </div>
+
+    <div class="form-field">
+      <label for="product-category">Category</label>
+      <select id="product-category" formControlName="category_id" (change)="applyFilters()">
+        <option [ngValue]="0">All categories</option>
+        @for (category of categories(); track category.id) {
+          <option [ngValue]="category.id">{{ category.name }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label for="product-status">Status</label>
+      <select id="product-status" formControlName="status" (change)="applyFilters()">
+        <option value="">All statuses</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
+
+    <div class="filter-actions">
+      <button class="button button-primary" type="submit">Search</button>
+      <button class="button secondary-button" type="button" (click)="clearFilters()">Clear</button>
+    </div>
+  </form>
+</section>
+
+@if (actionError(); as error) {
+  <div class="alert alert-danger action-alert" role="alert">{{ error }}</div>
+}
+
+@if (pageError(); as error) {
+  <section class="page-panel state-panel">
+    <p class="state-error" role="alert">{{ error }}</p>
+    <button class="button secondary-button" type="button" (click)="loadProducts()">Retry</button>
+  </section>
+} @else if (loading()) {
+  <section class="page-panel state-panel" aria-live="polite">Loading products…</section>
+} @else if (products().length === 0) {
+  <section class="page-panel state-panel">
+    <p>{{ hasFilters() ? 'No products match the current filters.' : 'No products have been added yet.' }}</p>
+    @if (hasFilters()) {
+      <button class="button secondary-button" type="button" (click)="clearFilters()">Clear filters</button>
+    }
+  </section>
+} @else {
+  <section class="page-panel table-panel">
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Image</th>
+            <th scope="col">Product</th>
+            <th scope="col">Category</th>
+            <th scope="col">Price</th>
+            <th scope="col">Stock</th>
+            <th scope="col">Status</th>
+            <th scope="col"><span class="visually-hidden">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (product of products(); track product.id) {
+            <tr>
+              <td>
+                @if (product.image_url) {
+                  <img class="product-thumbnail" [src]="product.image_url" [alt]="product.name" />
+                } @else {
+                  <span class="product-placeholder" aria-hidden="true">{{ product.name.charAt(0) }}</span>
+                }
+              </td>
+              <td data-label="Product"><strong>{{ product.name }}</strong></td>
+              <td data-label="Category">{{ product.category.name }}</td>
+              <td data-label="Price">{{ formatPrice(product.price) }}</td>
+              <td data-label="Stock">{{ product.stock }}</td>
+              <td data-label="Status">
+                <span class="status-badge" [class.inactive]="product.status === 'inactive'">
+                  {{ formatStatus(product.status) }}
+                </span>
+              </td>
+              <td class="actions-cell">
+                <details #productMenu class="action-menu" name="product-actions">
+                  <summary [attr.aria-label]="'Actions for ' + product.name">⋮</summary>
+                  <div class="action-menu-popover">
+                    <a class="action-menu-item" [routerLink]="['/products', product.id]">View</a>
+                    @if (canUpdate()) {
+                      <a class="action-menu-item" [routerLink]="['/products', product.id, 'edit']">Edit</a>
+                    }
+                    @if (canDelete()) {
+                      <button
+                        class="action-menu-item action-menu-item-danger"
+                        type="button"
+                        (click)="productMenu.open = false; requestDelete(product)"
+                      >
+                        Delete
+                      </button>
+                    }
+                  </div>
+                </details>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <footer class="pagination">
+      <p>Showing {{ fromProduct() }}–{{ toProduct() }} of {{ totalProducts() }} products</p>
+      <div class="pagination-actions">
+        <button class="button secondary-button small-button" type="button" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">Previous</button>
+        <span>Page {{ currentPage() }} of {{ lastPage() }}</span>
+        <button class="button secondary-button small-button" type="button" [disabled]="currentPage() === lastPage()" (click)="goToPage(currentPage() + 1)">Next</button>
+      </div>
+    </footer>
+  </section>
+}
+
+@if (deleteProductById(); as product) {
+  <app-confirmation-dialog
+    title="Delete product?"
+    [message]="'Delete ' + product.name + '? Its stored image will also be removed.'"
+    confirmLabel="Delete"
+    [busy]="deletingProductId() === product.id"
+    [danger]="true"
+    (confirmed)="deleteProduct(product)"
+    (cancelled)="cancelDelete()"
+  />
+}
