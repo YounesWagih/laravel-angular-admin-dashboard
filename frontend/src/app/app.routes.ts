@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 import { guestGuard } from './core/guards/guest.guard';
+import { permissionGuard } from './core/guards/permission.guard';
 
 export const routes: Routes = [
   {
@@ -52,6 +53,14 @@ export const routes: Routes = [
           import('./features/roles/components/roles-page/roles-page.component').then(
             (component) => component.RolesPageComponent
           )
+      },
+      {
+        path: 'categories',
+        canActivate: [permissionGuard('categories.read')],
+        loadComponent: () =>
+          import(
+            './features/categories/components/categories-page/categories-page.component'
+          ).then((component) => component.CategoriesPageComponent)
       },
       {
         path: 'users',
