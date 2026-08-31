@@ -45,7 +45,9 @@ export class CategoriesPageComponent implements OnInit {
   protected readonly confirmingDeleteId = signal<number | null>(null);
   protected readonly deletingCategoryId = signal<number | null>(null);
 
-  protected search = '';
+  protected readonly searchForm = this.formBuilder.nonNullable.group({
+    search: ['', Validators.maxLength(255)]
+  });
   protected readonly categoryForm = this.formBuilder.nonNullable.group({
     name_en: ['', [Validators.required, Validators.maxLength(255)]],
     name_ar: ['', [Validators.required, Validators.maxLength(255)]],
@@ -78,12 +80,21 @@ export class CategoriesPageComponent implements OnInit {
   }
 
   protected applySearch(): void {
+    if (this.searchForm.invalid) {
+      this.searchForm.markAllAsTouched();
+      return;
+    }
+
     void this.loadCategories(1);
   }
 
   protected clearSearch(): void {
-    this.search = '';
+    this.searchForm.reset({ search: '' });
     void this.loadCategories(1);
+  }
+
+  protected hasSearch(): boolean {
+    return this.searchForm.controls.search.value.trim() !== '';
   }
 
   protected goToPage(page: number): void {
@@ -222,7 +233,7 @@ export class CategoriesPageComponent implements OnInit {
 
     try {
       const response = await this.categoryService.index({
-        search: this.search.trim() || undefined,
+        search: this.searchForm.controls.search.value.trim() || undefined,
         page
       });
       this.applyResponse(response);
@@ -276,4 +287,3 @@ export class CategoriesPageComponent implements OnInit {
     this.modalError.set(null);
   }
 }
-

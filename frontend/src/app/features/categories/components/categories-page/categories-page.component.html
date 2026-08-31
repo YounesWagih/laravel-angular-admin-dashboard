@@ -12,17 +12,16 @@
 </header>
 
 <section class="page-panel search-panel">
-  <form class="search-form" (ngSubmit)="applySearch()">
+  <form class="search-form" [formGroup]="searchForm" (ngSubmit)="applySearch()" novalidate>
     <div class="form-field">
       <label for="category-search">Search</label>
       <input
-        #searchInput
         id="category-search"
         type="search"
         placeholder="Category name"
-        [value]="search"
-        (input)="search = searchInput.value"
+        formControlName="search"
       />
+      <app-form-field-error [control]="searchForm.controls.search" />
     </div>
     <button class="button button-primary" type="submit">Search</button>
     <button class="button secondary-button" type="button" (click)="clearSearch()">Clear</button>
@@ -44,8 +43,8 @@
   <section class="page-panel state-panel" aria-live="polite">Loading categories…</section>
 } @else if (categories().length === 0) {
   <section class="page-panel state-panel">
-    <p>{{ search ? 'No categories match your search.' : 'No categories have been created yet.' }}</p>
-    @if (search) {
+    <p>{{ hasSearch() ? 'No categories match your search.' : 'No categories have been created yet.' }}</p>
+    @if (hasSearch()) {
       <button class="button secondary-button" type="button" (click)="clearSearch()">
         Clear search
       </button>
@@ -219,4 +218,3 @@
     (cancelled)="cancelDelete()"
   />
 }
-
