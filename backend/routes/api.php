@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Category\CategoryController;
 use App\Http\Controllers\Api\Role\RoleController;
 use App\Http\Controllers\Api\User\UserController;
 use Illuminate\Support\Facades\Route;
@@ -29,4 +30,17 @@ Route::middleware(['auth:sanctum', 'active', 'admin'])->group(function (): void 
     Route::get('/users/{user}', [UserController::class, 'show']);
     Route::patch('/users/{user}', [UserController::class, 'update']);
     Route::patch('/users/{user}/status', [UserController::class, 'updateStatus']);
+});
+
+Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
+    Route::get('/categories', [CategoryController::class, 'index'])
+        ->middleware('can:categories.read');
+    Route::post('/categories', [CategoryController::class, 'store'])
+        ->middleware('can:categories.create');
+    Route::get('/categories/{category}', [CategoryController::class, 'show'])
+        ->middleware('can:categories.read');
+    Route::patch('/categories/{category}', [CategoryController::class, 'update'])
+        ->middleware('can:categories.update');
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])
+        ->middleware('can:categories.delete');
 });
