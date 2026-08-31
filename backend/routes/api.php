@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Category\CategoryController;
+use App\Http\Controllers\Api\Product\ProductController;
 use App\Http\Controllers\Api\Role\RoleController;
 use App\Http\Controllers\Api\User\UserController;
 use Illuminate\Support\Facades\Route;
@@ -43,4 +44,17 @@ Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
         ->middleware('can:categories.update');
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])
         ->middleware('can:categories.delete');
+
+    Route::get('/products', [ProductController::class, 'index'])
+        ->middleware('can:products.read');
+    Route::get('/products/options', [ProductController::class, 'options'])
+        ->middleware('can:products.read');
+    Route::post('/products', [ProductController::class, 'store'])
+        ->middleware('can:products.create');
+    Route::get('/products/{product}', [ProductController::class, 'show'])
+        ->middleware('can:products.read');
+    Route::patch('/products/{product}', [ProductController::class, 'update'])
+        ->middleware('can:products.update');
+    Route::delete('/products/{product}', [ProductController::class, 'destroy'])
+        ->middleware('can:products.delete');
 });
