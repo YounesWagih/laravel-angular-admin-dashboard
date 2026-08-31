@@ -1,0 +1,57 @@
+@if (user(); as user) {
+  <header class="page-header">
+    <div>
+      <h1>{{ user.name }}</h1>
+      <p>User account and access details.</p>
+    </div>
+    <div class="header-actions">
+      <a class="button secondary-button" routerLink="/users">Back</a>
+      <a class="button button-primary" [routerLink]="['/users', user.id, 'edit']">Edit user</a>
+    </div>
+  </header>
+
+  <section class="page-panel details-panel">
+    <dl>
+      <div>
+        <dt>Name</dt>
+        <dd>{{ user.name }}</dd>
+      </div>
+      <div>
+        <dt>Email</dt>
+        <dd>{{ user.email }}</dd>
+      </div>
+      <div>
+        <dt>User type</dt>
+        <dd>{{ formatLabel(user.type) }}</dd>
+      </div>
+      <div>
+        <dt>Role</dt>
+        <dd>{{ user.role?.name ?? 'No role' }}</dd>
+      </div>
+      <div>
+        <dt>Status</dt>
+        <dd>
+          <span class="status-badge" [class.inactive]="user.status === 'inactive'">
+            {{ formatLabel(user.status) }}
+          </span>
+        </dd>
+      </div>
+      <div>
+        <dt>Created</dt>
+        <dd>{{ formatDate(user.created_at) }}</dd>
+      </div>
+      <div>
+        <dt>Last updated</dt>
+        <dd>{{ formatDate(user.updated_at) }}</dd>
+      </div>
+    </dl>
+  </section>
+} @else if (loading()) {
+  <section class="page-panel state-panel" aria-live="polite">Loading user…</section>
+} @else {
+  <section class="page-panel state-panel">
+    <p class="state-error" role="alert">{{ pageError() }}</p>
+    <a class="button secondary-button" routerLink="/users">Back to users</a>
+  </section>
+}
+

@@ -1,0 +1,99 @@
+<header class="page-header">
+  <div>
+    <h1>{{ editing ? 'Edit user' : 'Add user' }}</h1>
+    <p>
+      {{ editing ? 'Update account information and access.' : 'Create an account with one role.' }}
+    </p>
+  </div>
+  <a class="button secondary-button" routerLink="/users">Back to users</a>
+</header>
+
+@if (pageError(); as error) {
+  <section class="page-panel state-panel">
+    <p class="state-error" role="alert">{{ error }}</p>
+    <a class="button secondary-button" routerLink="/users">Back to users</a>
+  </section>
+} @else if (loading()) {
+  <section class="page-panel state-panel" aria-live="polite">Loading user form…</section>
+} @else {
+  <section class="page-panel form-panel">
+    <form [formGroup]="userForm" (ngSubmit)="saveUser()" novalidate>
+      @if (formError(); as error) {
+        <div class="alert alert-danger form-alert" role="alert">{{ error }}</div>
+      }
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="user-name">Name</label>
+          <input id="user-name" type="text" formControlName="name" autocomplete="name" />
+          <app-form-field-error [control]="userForm.controls.name" />
+        </div>
+
+        <div class="form-field">
+          <label for="user-email">Email</label>
+          <input id="user-email" type="email" formControlName="email" autocomplete="email" />
+          <app-form-field-error [control]="userForm.controls.email" />
+        </div>
+
+        @if (!editing) {
+          <div class="form-field">
+            <label for="user-password">Password</label>
+            <input
+              id="user-password"
+              type="password"
+              formControlName="password"
+              autocomplete="new-password"
+            />
+            <app-form-field-error [control]="userForm.controls.password" />
+          </div>
+        }
+
+        <div class="form-field">
+          <label for="user-type">User type</label>
+          <select id="user-type" formControlName="type">
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+          </select>
+          <app-form-field-error [control]="userForm.controls.type" />
+          <small>Admins have full access but still require a role.</small>
+        </div>
+
+        <div class="form-field">
+          <label for="user-role">Role</label>
+          <select id="user-role" formControlName="role_id">
+            <option [ngValue]="0" disabled>Select a role</option>
+            @for (role of roles(); track role.id) {
+              <option [ngValue]="role.id">{{ role.name }}</option>
+            }
+          </select>
+          <app-form-field-error [control]="userForm.controls.role_id" />
+        </div>
+
+        <div class="form-field">
+          <label for="user-status">Status</label>
+          <select id="user-status" formControlName="status">
+            <option value="active">Active</option>
+            <option value="inactive" [disabled]="editingCurrentUser()">Inactive</option>
+          </select>
+          <app-form-field-error [control]="userForm.controls.status" />
+          @if (editing) {
+            <small>
+              {{
+                editingCurrentUser()
+                  ? 'You cannot deactivate your own account.'
+                  : 'Deactivating an account ends its active sessions.'
+              }}
+            </small>
+          }
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <a class="button secondary-button" routerLink="/users">Cancel</a>
+        <button class="button button-primary" type="submit" [disabled]="saving()">
+          {{ saving() ? 'Saving…' : editing ? 'Save changes' : 'Create user' }}
+        </button>
+      </div>
+    </form>
+  </section>
+}

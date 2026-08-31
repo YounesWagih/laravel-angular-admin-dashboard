@@ -54,6 +54,38 @@ export const routes: Routes = [
           )
       },
       {
+        path: 'users',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/users/components/users-page/users-page.component').then(
+            (component) => component.UsersPageComponent
+          )
+      },
+      {
+        path: 'users/new',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/users/components/user-form-page/user-form-page.component').then(
+            (component) => component.UserFormPageComponent
+          )
+      },
+      {
+        path: 'users/:id/edit',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/users/components/user-form-page/user-form-page.component').then(
+            (component) => component.UserFormPageComponent
+          )
+      },
+      {
+        path: 'users/:id',
+        canActivate: [adminGuard],
+        loadComponent: () =>
+          import('./features/users/components/user-details-page/user-details-page.component').then(
+            (component) => component.UserDetailsPageComponent
+          )
+      },
+      {
         path: '**',
         data: { code: 404 },
         loadComponent: () =>

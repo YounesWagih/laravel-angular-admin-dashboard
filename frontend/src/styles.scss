@@ -119,6 +119,16 @@ h3 {
   background: var(--color-primary-dark);
 }
 
+.secondary-button {
+  border-color: var(--color-border);
+  color: var(--color-text);
+  background: #ffffff;
+}
+
+.secondary-button:hover:not(:disabled) {
+  background: #f8fafc;
+}
+
 .button-block {
   width: 100%;
 }

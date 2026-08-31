@@ -1,0 +1,56 @@
+:host {
+  display: block;
+}
+
+.form-panel {
+  max-width: 58rem;
+}
+
+.form-alert {
+  margin-bottom: 1rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.form-field small {
+  color: var(--color-muted);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+}
+
+.state-panel {
+  display: grid;
+  min-height: 12rem;
+  place-items: center;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.state-error {
+  color: var(--color-danger);
+}
+
+@media (max-width: 43rem) {
+  .page-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+}

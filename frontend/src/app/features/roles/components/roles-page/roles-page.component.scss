@@ -56,16 +56,6 @@
   margin-top: 1rem;
 }
 
-.secondary-button {
-  border-color: var(--color-border);
-  color: var(--color-text);
-  background: #ffffff;
-}
-
-.secondary-button:hover:not(:disabled) {
-  background: #f8fafc;
-}
-
 .small-button {
   min-height: 2.25rem;
   padding: 0.4rem 0.7rem;
