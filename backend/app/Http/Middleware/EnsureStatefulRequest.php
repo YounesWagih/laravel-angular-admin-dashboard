@@ -9,11 +9,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class EnsureStatefulRequest
 {
-    /**
-     * @param  Closure(Request): (Response)  $next
-     *
-     * @throws TokenMismatchException
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if (! $request->hasSession()) {

@@ -75,7 +75,6 @@ final class CategoryController extends Controller
         return response()->noContent();
     }
 
-    /** @return array{name: array{en: string, ar: string}, description: array<string, string>|null} */
     private function attributes(SaveCategoryRequest $request): array
     {
         $validated = $request->validated();

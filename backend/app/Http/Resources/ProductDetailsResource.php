@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 final class ProductDetailsResource extends ProductResource
 {
-    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         $names = $this->getTranslations('name');

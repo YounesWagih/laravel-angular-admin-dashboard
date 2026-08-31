@@ -4,14 +4,11 @@ namespace App\Http\Resources;
 
 use App\Enums\PermissionName;
 use App\Enums\UserType;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/** @mixin User */
 final class AuthenticatedUserResource extends JsonResource
 {
-    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         $isAdmin = $this->type === UserType::Admin;

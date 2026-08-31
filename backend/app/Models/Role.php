@@ -15,7 +15,6 @@ class Role extends SpatieRole
 
     protected string $guard_name = 'web';
 
-    /** @return array<string, string> */
     protected function casts(): array
     {
         return [

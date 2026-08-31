@@ -23,7 +23,6 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
-    /** @return array<string, string> */
     protected function casts(): array
     {
         return [

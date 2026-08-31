@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 final class CategoryDetailsResource extends CategoryResource
 {
-    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         $names = $this->getTranslations('name');

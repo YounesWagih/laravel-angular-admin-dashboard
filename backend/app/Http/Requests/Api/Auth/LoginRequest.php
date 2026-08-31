@@ -10,12 +10,6 @@ use Illuminate\Validation\ValidationException;
 
 final class LoginRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
-    /** @return array<string, list<string>> */
     public function rules(): array
     {
         return [
@@ -25,12 +19,11 @@ final class LoginRequest extends FormRequest
         ];
     }
 
-    /** @throws ValidationException */
     public function authenticate(): void
     {
         $authenticated = Auth::attempt([
-            'email' => $this->string('email')->toString(),
-            'password' => $this->string('password')->toString(),
+            'email' => $this->input('email'),
+            'password' => $this->input('password'),
             'status' => Status::Active->value,
         ], $this->boolean('remember'));
 

@@ -33,7 +33,6 @@ final class AuthController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
-        /** @var User $user */
         $user = $request->user();
 
         return AuthenticatedUserResource::make($user->load('roles'));
@@ -41,7 +40,6 @@ final class AuthController extends Controller
 
     public function me(Request $request): AuthenticatedUserResource
     {
-        /** @var User $user */
         $user = $request->user();
 
         return AuthenticatedUserResource::make($user->load('roles'));

@@ -10,11 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 final class EnsureUserIsAdmin
 {
-    /**
-     * @param  Closure(Request): Response  $next
-     *
-     * @throws AuthorizationException
-     */
     public function handle(Request $request, Closure $next): Response
     {
         if ($request->user()?->type !== UserType::Admin) {

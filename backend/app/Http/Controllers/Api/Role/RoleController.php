@@ -115,10 +115,6 @@ final class RoleController extends Controller
         ]);
     }
 
-    /**
-     * @param  iterable<Permission>  $permissions
-     * @return list<array{name: string, permissions: list<array{name: string, action: string}>}>
-     */
     private function permissionEntities(iterable $permissions): array
     {
         $entities = [];
