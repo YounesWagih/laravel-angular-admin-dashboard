@@ -9,13 +9,15 @@ use App\Http\Requests\Api\Role\UpdateRoleRequest;
 use App\Http\Resources\RoleResource;
 use App\Models\Permission;
 use App\Models\Role;
+use App\Services\RoleService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 
 final class RoleController extends Controller
 {
+    public function __construct(private readonly RoleService $roleService) {}
+
     public function index(): AnonymousResourceCollection
     {
         $roles = Role::query()
@@ -40,35 +42,25 @@ final class RoleController extends Controller
 
     public function store(StoreRoleRequest $request): JsonResponse
     {
-        $role = Role::query()->create([
-            ...$request->validated(),
-            'guard_name' => 'web',
-        ]);
+        $role = $this->roleService->create($request->validated());
 
-        return RoleResource::make($role->load('permissions')->loadCount('users'))
+        return RoleResource::make($role)
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function update(UpdateRoleRequest $request, Role $role): RoleResource
     {
-        $role->update($request->validated());
+        $role = $this->roleService->update($role, $request->validated());
 
-        return RoleResource::make($role->load('permissions')->loadCount('users'));
+        return RoleResource::make($role);
     }
 
     public function setDefault(Role $role): RoleResource
     {
-        DB::transaction(function () use ($role): void {
-            Role::query()
-                ->where('guard_name', 'web')
-                ->whereKeyNot($role->getKey())
-                ->update(['is_default' => false]);
+        $role = $this->roleService->setDefault($role);
 
-            $role->update(['is_default' => true]);
-        });
-
-        return RoleResource::make($role->refresh()->load('permissions')->loadCount('users'));
+        return RoleResource::make($role);
     }
 
     public function destroy(Role $role): Response|JsonResponse
@@ -92,9 +84,12 @@ final class RoleController extends Controller
 
     public function syncPermissions(SyncRolePermissionsRequest $request, Role $role): RoleResource
     {
-        $role->syncPermissions($request->validated('permissions'));
+        $role = $this->roleService->syncPermissions(
+            $role,
+            $request->validated('permissions'),
+        );
 
-        return RoleResource::make($role->load('permissions')->loadCount('users'));
+        return RoleResource::make($role);
     }
 
     public function availableEntities(Role $role): JsonResponse
