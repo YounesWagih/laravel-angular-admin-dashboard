@@ -9,7 +9,7 @@ final class ProductDetailsResource extends ProductResource
     public function toArray(Request $request): array
     {
         $names = $this->getTranslations('name');
-        $descriptions = $this->descriptionTranslations();
+        $descriptions = $this->getTranslations('description');
 
         return [
             ...parent::toArray($request),

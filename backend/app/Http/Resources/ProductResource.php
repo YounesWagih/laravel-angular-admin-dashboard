@@ -10,7 +10,7 @@ class ProductResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $descriptions = $this->descriptionTranslations();
+        $descriptions = $this->getTranslations('description');
         $imageUrl = $this->getFirstMediaUrl(Product::IMAGE_COLLECTION);
 
         return [
@@ -30,13 +30,5 @@ class ProductResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
-    }
-
-    protected function descriptionTranslations(): array
-    {
-        return array_filter(
-            $this->getTranslations('description'),
-            static fn (?string $description): bool => $description !== null && $description !== '',
-        );
     }
 }

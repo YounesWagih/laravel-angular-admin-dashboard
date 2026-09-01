@@ -8,11 +8,6 @@ use Illuminate\Validation\Rule;
 
 final class SyncRolePermissionsRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     public function rules(): array
     {
         return [

@@ -12,11 +12,6 @@ use Illuminate\Validation\Rules\Password;
 
 final class StoreUserRequest extends FormRequest
 {
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     public function rules(): array
     {
         return [
