@@ -6,10 +6,43 @@ use App\Enums\Status;
 use App\Enums\UserType;
 use App\Models\Role;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 final class UserService
 {
+    public function paginate(array $filters): LengthAwarePaginator
+    {
+        return User::query()
+            ->with('roles')
+            ->when($filters['search'] ?? null, function (Builder $query, string $search): void {
+                $query->where(function (Builder $query) use ($search): void {
+                    $query
+                        ->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
+            })
+            ->when(
+                $filters['type'] ?? null,
+                fn (Builder $query, string $type): Builder => $query->where('type', $type),
+            )
+            ->when(
+                $filters['role_id'] ?? null,
+                fn (Builder $query, int $roleId): Builder => $query->whereHas(
+                    'roles',
+                    fn (Builder $query): Builder => $query->whereKey($roleId),
+                ),
+            )
+            ->when(
+                $filters['status'] ?? null,
+                fn (Builder $query, string $status): Builder => $query->where('status', $status),
+            )
+            ->orderBy('name')
+            ->orderBy('id')
+            ->paginate($filters['per_page'] ?? 10);
+    }
+
     public function create(array $data): User
     {
         $role = $this->role($data['role_id']);

@@ -11,7 +11,6 @@ use App\Http\Resources\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
 use App\Services\ProductService;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -22,24 +21,8 @@ final class ProductController extends Controller
 
     public function index(IndexProductsRequest $request): AnonymousResourceCollection
     {
-        $validated = $request->validated();
-        $locale = app()->getLocale();
-
-        $products = Product::query()
-            ->with(['category', 'media'])
-            ->when($validated['search'] ?? null, function (Builder $query, string $search) use ($locale): void {
-                $query->where("name->{$locale}", 'like', "%{$search}%");
-            })
-            ->when(
-                $validated['category_id'] ?? null,
-                fn (Builder $query, int $categoryId): Builder => $query->where('category_id', $categoryId),
-            )
-            ->when(
-                $validated['status'] ?? null,
-                fn (Builder $query, string $status): Builder => $query->where('status', $status),
-            )
-            ->orderBy("name->{$locale}")
-            ->paginate($validated['per_page'] ?? 10)
+        $products = $this->productService
+            ->paginate($request->validated(), app()->getLocale())
             ->withQueryString();
 
         return ProductResource::collection($products);

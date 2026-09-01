@@ -3,49 +3,79 @@
 namespace App\Services;
 
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Throwable;
 
 final class ProductService
 {
+    public function paginate(array $filters, string $locale): LengthAwarePaginator
+    {
+        return Product::query()
+            ->with(['category', 'media'])
+            ->when($filters['search'] ?? null, function (Builder $query, string $search) use ($locale): void {
+                $query->where("name->{$locale}", 'like', "%{$search}%");
+            })
+            ->when(
+                $filters['category_id'] ?? null,
+                fn (Builder $query, int $categoryId): Builder => $query->where('category_id', $categoryId),
+            )
+            ->when(
+                $filters['status'] ?? null,
+                fn (Builder $query, string $status): Builder => $query->where('status', $status),
+            )
+            ->orderBy("name->{$locale}")
+            ->orderBy('id')
+            ->paginate($filters['per_page'] ?? 10);
+    }
+
     public function create(array $data, ?UploadedFile $image): Product
     {
-        return DB::transaction(function () use ($data, $image): Product {
-            $product = Product::query()->create($this->attributes($data));
+        $product = Product::query()->create($this->attributes($data));
 
-            if ($image !== null) {
-                $product
-                    ->addMedia($image)
-                    ->toMediaCollection(Product::IMAGE_COLLECTION);
-            }
+        try {
+            $this->addImage($product, $image);
+        } catch (Throwable $exception) {
+            $this->deleteAfterFailedCreation($product);
 
-            return $product->load(['category', 'media']);
-        });
+            throw $exception;
+        }
+
+        return $product->load(['category', 'media']);
     }
 
     public function update(Product $product, array $data, ?UploadedFile $image): Product
     {
-        return DB::transaction(function () use ($product, $data, $image): Product {
-            $product = Product::query()->lockForUpdate()->findOrFail($product->id);
+        $product->update($this->attributes($data));
+        $this->addImage($product, $image);
 
-            $product->update($this->attributes($data));
-
-            if ($image !== null) {
-                $product
-                    ->addMedia($image)
-                    ->toMediaCollection(Product::IMAGE_COLLECTION);
-            }
-
-            return $product->load(['category', 'media']);
-        });
+        return $product->load(['category', 'media']);
     }
 
     public function delete(Product $product): void
     {
-        DB::transaction(function () use ($product): void {
-            $product = Product::query()->lockForUpdate()->findOrFail($product->id);
+        $product->delete();
+    }
+
+    private function addImage(Product $product, ?UploadedFile $image): void
+    {
+        if ($image === null) {
+            return;
+        }
+
+        $product
+            ->addMedia($image)
+            ->toMediaCollection(Product::IMAGE_COLLECTION);
+    }
+
+    private function deleteAfterFailedCreation(Product $product): void
+    {
+        try {
             $product->delete();
-        });
+        } catch (Throwable $cleanupException) {
+            report($cleanupException);
+        }
     }
 
     private function attributes(array $data): array

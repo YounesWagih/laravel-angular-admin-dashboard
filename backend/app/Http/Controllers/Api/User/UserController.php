@@ -11,7 +11,6 @@ use App\Http\Requests\Api\User\UpdateUserStatusRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\UserService;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
@@ -22,34 +21,8 @@ final class UserController extends Controller
 
     public function index(IndexUsersRequest $request): AnonymousResourceCollection
     {
-        $validated = $request->validated();
-
-        $users = User::query()
-            ->with('roles')
-            ->when($validated['search'] ?? null, function (Builder $query, string $search): void {
-                $query->where(function (Builder $query) use ($search): void {
-                    $query
-                        ->where('name', 'like', "%{$search}%")
-                        ->orWhere('email', 'like', "%{$search}%");
-                });
-            })
-            ->when(
-                $validated['type'] ?? null,
-                fn (Builder $query, string $type): Builder => $query->where('type', $type),
-            )
-            ->when(
-                $validated['role_id'] ?? null,
-                fn (Builder $query, int $roleId): Builder => $query->whereHas(
-                    'roles',
-                    fn (Builder $query): Builder => $query->whereKey($roleId),
-                ),
-            )
-            ->when(
-                $validated['status'] ?? null,
-                fn (Builder $query, string $status): Builder => $query->where('status', $status),
-            )
-            ->orderBy('name')
-            ->paginate($validated['per_page'] ?? 10)
+        $users = $this->userService
+            ->paginate($request->validated())
             ->withQueryString();
 
         return UserResource::collection($users);
