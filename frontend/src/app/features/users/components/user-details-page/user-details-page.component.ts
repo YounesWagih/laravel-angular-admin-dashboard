@@ -1,13 +1,15 @@
+import { TitleCasePipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
+import { formatDateTime } from '../../../../shared/utils/date.util';
 import type { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-user-details-page',
-  imports: [RouterLink],
+  imports: [RouterLink, TitleCasePipe],
   templateUrl: './user-details-page.component.html',
   styleUrl: './user-details-page.component.scss'
 })
@@ -18,21 +20,11 @@ export class UserDetailsPageComponent implements OnInit {
   protected readonly user = signal<User | null>(null);
   protected readonly loading = signal(true);
   protected readonly pageError = signal<string | null>(null);
+  protected readonly formatDate = formatDateTime;
   private readonly userId = Number(this.route.snapshot.paramMap.get('id'));
 
   ngOnInit(): void {
     void this.loadUser();
-  }
-
-  protected formatLabel(value: string): string {
-    return value.charAt(0).toUpperCase() + value.slice(1);
-  }
-
-  protected formatDate(value: string): string {
-    return new Intl.DateTimeFormat('en-EG', {
-      dateStyle: 'medium',
-      timeStyle: 'short'
-    }).format(new Date(value));
   }
 
   private async loadUser(): Promise<void> {
@@ -51,4 +43,3 @@ export class UserDetailsPageComponent implements OnInit {
     }
   }
 }
-

@@ -91,7 +91,7 @@
               <td data-label="Stock">{{ product.stock }}</td>
               <td data-label="Status">
                 <span class="status-badge" [class.inactive]="product.status === 'inactive'">
-                  {{ formatStatus(product.status) }}
+                  {{ product.status | titlecase }}
                 </span>
               </td>
               <td class="actions-cell">
@@ -120,14 +120,11 @@
       </table>
     </div>
 
-    <footer class="pagination">
-      <p>Showing {{ fromProduct() }}–{{ toProduct() }} of {{ totalProducts() }} products</p>
-      <div class="pagination-actions">
-        <button class="button secondary-button small-button" type="button" [disabled]="currentPage() === 1" (click)="goToPage(currentPage() - 1)">Previous</button>
-        <span>Page {{ currentPage() }} of {{ lastPage() }}</span>
-        <button class="button secondary-button small-button" type="button" [disabled]="currentPage() === lastPage()" (click)="goToPage(currentPage() + 1)">Next</button>
-      </div>
-    </footer>
+    <app-pagination
+      [meta]="pagination()"
+      itemLabel="products"
+      (pageChange)="loadProducts($event)"
+    />
   </section>
 }
 

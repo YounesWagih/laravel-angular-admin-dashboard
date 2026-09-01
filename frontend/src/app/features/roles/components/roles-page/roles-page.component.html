@@ -162,7 +162,7 @@
                         type="button"
                         (click)="addEntity(role.id, entity.name)"
                       >
-                        {{ formatLabel(entity.name) }}
+                        {{ entity.name | titlecase }}
                       </button>
                     }
                   </div>
@@ -176,7 +176,7 @@
               <div class="entity-list">
                 @for (entity of displayedEntities(role); track entity.name) {
                   <fieldset class="permission-entity" [disabled]="isRoleSyncing(role.id)">
-                    <legend>{{ formatLabel(entity.name) }}</legend>
+                    <legend>{{ entity.name | titlecase }}</legend>
                     <div class="permission-options">
                       @for (permission of entity.permissions; track permission.name) {
                         <label>
@@ -185,7 +185,7 @@
                             [checked]="role.permissions.includes(permission.name)"
                             (change)="togglePermission(role, permission.name, $event)"
                           />
-                          <span>{{ formatLabel(permission.action) }}</span>
+                          <span>{{ permission.action | titlecase }}</span>
                         </label>
                       }
                     </div>

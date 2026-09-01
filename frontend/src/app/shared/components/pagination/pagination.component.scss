@@ -1,0 +1,37 @@
+:host,
+.pagination-actions {
+  display: flex;
+  align-items: center;
+}
+
+:host {
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-muted);
+}
+
+p {
+  margin: 0;
+}
+
+.pagination-actions {
+  gap: 0.5rem;
+}
+
+.small-button {
+  min-height: 2.25rem;
+  padding: 0.4rem 0.7rem;
+}
+
+@media (max-width: 43rem) {
+  :host {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .pagination-actions {
+    justify-content: space-between;
+  }
+}

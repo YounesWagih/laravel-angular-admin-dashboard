@@ -1,12 +1,17 @@
+import { TitleCasePipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../../core/services/auth.service';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+import {
+  EMPTY_PAGINATION_META,
+  type PaginationMeta
+} from '../../../../shared/models/pagination.model';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
 import type {
-  PaginatedProductsResponse,
   Product,
   ProductCategory,
   ProductStatus
@@ -15,7 +20,13 @@ import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-products-page',
-  imports: [ConfirmationDialogComponent, ReactiveFormsModule, RouterLink],
+  imports: [
+    ConfirmationDialogComponent,
+    PaginationComponent,
+    ReactiveFormsModule,
+    RouterLink,
+    TitleCasePipe
+  ],
   templateUrl: './products-page.component.html',
   styleUrl: './products-page.component.scss'
 })
@@ -29,11 +40,7 @@ export class ProductsPageComponent implements OnInit {
   protected readonly loading = signal(true);
   protected readonly pageError = signal<string | null>(null);
   protected readonly actionError = signal<string | null>(null);
-  protected readonly currentPage = signal(1);
-  protected readonly lastPage = signal(1);
-  protected readonly totalProducts = signal(0);
-  protected readonly fromProduct = signal<number | null>(null);
-  protected readonly toProduct = signal<number | null>(null);
+  protected readonly pagination = signal<PaginationMeta>(EMPTY_PAGINATION_META);
   protected readonly confirmingDeleteId = signal<number | null>(null);
   protected readonly deletingProductId = signal<number | null>(null);
 
@@ -79,14 +86,6 @@ export class ProductsPageComponent implements OnInit {
     return filters.search.trim() !== '' || filters.category_id > 0 || filters.status !== '';
   }
 
-  protected goToPage(page: number): void {
-    if (page < 1 || page > this.lastPage() || page === this.currentPage()) {
-      return;
-    }
-
-    void this.loadProducts(page);
-  }
-
   protected requestDelete(product: Product): void {
     this.actionError.set(null);
     this.confirmingDeleteId.set(product.id);
@@ -104,8 +103,8 @@ export class ProductsPageComponent implements OnInit {
       await this.productService.delete(product.id);
       this.confirmingDeleteId.set(null);
       const nextPage = this.products().length === 1
-        ? Math.max(1, this.currentPage() - 1)
-        : this.currentPage();
+        ? Math.max(1, this.pagination().current_page - 1)
+        : this.pagination().current_page;
       await this.loadProducts(nextPage);
     } catch (error) {
       this.confirmingDeleteId.set(null);
@@ -129,10 +128,6 @@ export class ProductsPageComponent implements OnInit {
     }).format(Number(value));
   }
 
-  protected formatStatus(status: ProductStatus): string {
-    return status.charAt(0).toUpperCase() + status.slice(1);
-  }
-
   private async loadPage(): Promise<void> {
     this.loading.set(true);
     this.pageError.set(null);
@@ -143,7 +138,8 @@ export class ProductsPageComponent implements OnInit {
         this.productService.options()
       ]);
       this.categories.set(options.categories);
-      this.applyResponse(products);
+      this.products.set(products.data);
+      this.pagination.set(products.meta);
     } catch (error) {
       this.pageError.set(getApiErrorMessage(error, 'Products could not be loaded. Please try again.'));
     } finally {
@@ -151,7 +147,7 @@ export class ProductsPageComponent implements OnInit {
     }
   }
 
-  protected async loadProducts(page = this.currentPage()): Promise<void> {
+  protected async loadProducts(page = this.pagination().current_page): Promise<void> {
     this.loading.set(true);
     this.pageError.set(null);
     this.actionError.set(null);
@@ -164,7 +160,8 @@ export class ProductsPageComponent implements OnInit {
         status: filters.status || undefined,
         page
       });
-      this.applyResponse(response);
+      this.products.set(response.data);
+      this.pagination.set(response.meta);
     } catch (error) {
       this.pageError.set(getApiErrorMessage(error, 'Products could not be loaded. Please try again.'));
     } finally {
@@ -172,12 +169,4 @@ export class ProductsPageComponent implements OnInit {
     }
   }
 
-  private applyResponse(response: PaginatedProductsResponse): void {
-    this.products.set(response.data);
-    this.currentPage.set(response.meta.current_page);
-    this.lastPage.set(response.meta.last_page);
-    this.totalProducts.set(response.meta.total);
-    this.fromProduct.set(response.meta.from);
-    this.toProduct.set(response.meta.to);
-  }
 }

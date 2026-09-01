@@ -1,3 +1,4 @@
+import { TitleCasePipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -10,34 +11,39 @@ import { RoleService } from '../../services/role.service';
 
 @Component({
   selector: 'app-roles-page',
-  imports: [ConfirmationDialogComponent, FormFieldErrorComponent, ReactiveFormsModule],
+  imports: [
+    ConfirmationDialogComponent,
+    FormFieldErrorComponent,
+    ReactiveFormsModule,
+    TitleCasePipe
+  ],
   templateUrl: './roles-page.component.html',
   styleUrl: './roles-page.component.scss'
 })
 export class RolesPageComponent implements OnInit {
-  formBuilder = inject(FormBuilder);
-  roleService = inject(RoleService);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly roleService = inject(RoleService);
 
-  roles = signal<Role[]>([]);
-  permissionEntities = signal<PermissionEntity[]>([]);
-  loading = signal(true);
-  pageError = signal<string | null>(null);
-  expandedRoleId = signal<number | null>(null);
-  formOpen = signal(false);
-  editingRoleId = signal<number | null>(null);
-  savingRole = signal(false);
-  formError = signal<string | null>(null);
-  deletingRoleId = signal<number | null>(null);
-  confirmingDeleteRoleId = signal<number | null>(null);
-  settingDefaultRoleId = signal<number | null>(null);
-  confirmingDefaultRoleId = signal<number | null>(null);
-  syncingRoleIds = signal<ReadonlySet<number>>(new Set());
-  roleErrors = signal<Record<number, string>>({});
-  entityPickerRoleId = signal<number | null>(null);
-  availableEntities = signal<PermissionEntity[]>([]);
-  loadingAvailableEntities = signal(false);
-  addedEntityNames = signal<Record<number, string[]>>({});
-  roleForm = this.formBuilder.nonNullable.group({
+  protected readonly roles = signal<Role[]>([]);
+  protected readonly permissionEntities = signal<PermissionEntity[]>([]);
+  protected readonly loading = signal(true);
+  protected readonly pageError = signal<string | null>(null);
+  protected readonly expandedRoleId = signal<number | null>(null);
+  protected readonly formOpen = signal(false);
+  protected readonly editingRoleId = signal<number | null>(null);
+  protected readonly savingRole = signal(false);
+  protected readonly formError = signal<string | null>(null);
+  protected readonly deletingRoleId = signal<number | null>(null);
+  protected readonly confirmingDeleteRoleId = signal<number | null>(null);
+  protected readonly settingDefaultRoleId = signal<number | null>(null);
+  protected readonly confirmingDefaultRoleId = signal<number | null>(null);
+  protected readonly syncingRoleIds = signal<ReadonlySet<number>>(new Set());
+  protected readonly roleErrors = signal<Record<number, string>>({});
+  protected readonly entityPickerRoleId = signal<number | null>(null);
+  protected readonly availableEntities = signal<PermissionEntity[]>([]);
+  protected readonly loadingAvailableEntities = signal(false);
+  protected readonly addedEntityNames = signal<Record<number, string[]>>({});
+  protected readonly roleForm = this.formBuilder.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(255)]],
     description: ['', Validators.maxLength(1000)]
   });
@@ -294,10 +300,6 @@ export class RolesPageComponent implements OnInit {
     this.entityPickerRoleId.set(null);
     this.availableEntities.set([]);
     this.loadingAvailableEntities.set(false);
-  }
-
-  protected formatLabel(value: string): string {
-    return value.charAt(0).toUpperCase() + value.slice(1);
   }
 
   protected deleteDisabledReason(role: Role): string {

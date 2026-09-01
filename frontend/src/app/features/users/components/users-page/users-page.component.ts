@@ -1,16 +1,23 @@
+import { TitleCasePipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../../core/services/auth.service';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+import {
+  EMPTY_PAGINATION_META,
+  type PaginationMeta
+} from '../../../../shared/models/pagination.model';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
+import { formatDate } from '../../../../shared/utils/date.util';
 import type { User, UserFilters, UserRole } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-users-page',
-  imports: [ConfirmationDialogComponent, FormsModule, RouterLink],
+  imports: [ConfirmationDialogComponent, FormsModule, PaginationComponent, RouterLink, TitleCasePipe],
   templateUrl: './users-page.component.html',
   styleUrl: './users-page.component.scss'
 })
@@ -23,11 +30,7 @@ export class UsersPageComponent implements OnInit {
   protected readonly loading = signal(true);
   protected readonly pageError = signal<string | null>(null);
   protected readonly actionError = signal<string | null>(null);
-  protected readonly currentPage = signal(1);
-  protected readonly lastPage = signal(1);
-  protected readonly totalUsers = signal(0);
-  protected readonly fromUser = signal<number | null>(null);
-  protected readonly toUser = signal<number | null>(null);
+  protected readonly pagination = signal<PaginationMeta>(EMPTY_PAGINATION_META);
   protected readonly confirmingStatusUserId = signal<number | null>(null);
   protected readonly changingStatusUserId = signal<number | null>(null);
 
@@ -35,6 +38,7 @@ export class UsersPageComponent implements OnInit {
   protected type = '';
   protected roleId = '';
   protected status = '';
+  protected readonly formatDate = formatDate;
 
   ngOnInit(): void {
     void this.loadInitialData();
@@ -50,14 +54,6 @@ export class UsersPageComponent implements OnInit {
     this.roleId = '';
     this.status = '';
     void this.loadUsers(1);
-  }
-
-  protected goToPage(page: number): void {
-    if (page < 1 || page > this.lastPage() || page === this.currentPage()) {
-      return;
-    }
-
-    void this.loadUsers(page);
   }
 
   protected requestStatusChange(user: User): void {
@@ -103,14 +99,6 @@ export class UsersPageComponent implements OnInit {
     return this.auth.user()?.id === user.id;
   }
 
-  protected formatLabel(value: string): string {
-    return value.charAt(0).toUpperCase() + value.slice(1);
-  }
-
-  protected formatDate(value: string): string {
-    return new Intl.DateTimeFormat('en-EG', { dateStyle: 'medium' }).format(new Date(value));
-  }
-
   private async loadInitialData(): Promise<void> {
     this.loading.set(true);
     this.pageError.set(null);
@@ -121,7 +109,8 @@ export class UsersPageComponent implements OnInit {
         this.userService.roleOptions()
       ]);
       this.roles.set(roles);
-      this.applyResponse(usersResponse);
+      this.users.set(usersResponse.data);
+      this.pagination.set(usersResponse.meta);
     } catch (error) {
       this.pageError.set(getApiErrorMessage(error, 'Users could not be loaded. Please try again.'));
     } finally {
@@ -129,7 +118,7 @@ export class UsersPageComponent implements OnInit {
     }
   }
 
-  protected async loadUsers(page = this.currentPage()): Promise<void> {
+  protected async loadUsers(page = this.pagination().current_page): Promise<void> {
     this.loading.set(true);
     this.pageError.set(null);
     this.actionError.set(null);
@@ -144,7 +133,9 @@ export class UsersPageComponent implements OnInit {
     };
 
     try {
-      this.applyResponse(await this.userService.index(filters));
+      const response = await this.userService.index(filters);
+      this.users.set(response.data);
+      this.pagination.set(response.meta);
     } catch (error) {
       this.pageError.set(getApiErrorMessage(error, 'Users could not be loaded. Please try again.'));
     } finally {
@@ -152,13 +143,4 @@ export class UsersPageComponent implements OnInit {
     }
   }
 
-  private applyResponse(response: Awaited<ReturnType<UserService['index']>>): void {
-    this.users.set(response.data);
-    this.currentPage.set(response.meta.current_page);
-    this.lastPage.set(response.meta.last_page);
-    this.totalUsers.set(response.meta.total);
-    this.fromUser.set(response.meta.from);
-    this.toUser.set(response.meta.to);
-  }
 }
-

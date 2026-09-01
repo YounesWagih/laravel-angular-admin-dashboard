@@ -1,0 +1,20 @@
+<p>Showing {{ meta().from }}–{{ meta().to }} of {{ meta().total }} {{ itemLabel() }}</p>
+<div class="pagination-actions">
+  <button
+    class="button secondary-button small-button"
+    type="button"
+    [disabled]="meta().current_page === 1"
+    (click)="changePage(meta().current_page - 1)"
+  >
+    Previous
+  </button>
+  <span>Page {{ meta().current_page }} of {{ meta().last_page }}</span>
+  <button
+    class="button secondary-button small-button"
+    type="button"
+    [disabled]="meta().current_page === meta().last_page"
+    (click)="changePage(meta().current_page + 1)"
+  >
+    Next
+  </button>
+</div>

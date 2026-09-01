@@ -97,18 +97,6 @@ dd {
   background: #e2e8f0;
 }
 
-.state-panel {
-  display: grid;
-  min-height: 12rem;
-  place-items: center;
-  color: var(--color-muted);
-  text-align: center;
-}
-
-.state-error {
-  color: var(--color-danger);
-}
-
 @media (max-width: 48rem) {
   .product-overview {
     grid-template-columns: 1fr;

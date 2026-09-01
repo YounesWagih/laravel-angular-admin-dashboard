@@ -1,9 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 import type { ApiResponse } from '../../../core/models/api-response.model';
+import { toHttpParams } from '../../../shared/utils/http-params.util';
 import type {
   CreateUserPayload,
   PaginatedUsersResponse,
@@ -19,15 +20,9 @@ export class UserService {
   private readonly endpoint = `${environment.apiUrl}/users`;
 
   index(filters: UserFilters = {}): Promise<PaginatedUsersResponse> {
-    let params = new HttpParams();
-
-    for (const [key, value] of Object.entries(filters)) {
-      if (value !== undefined && value !== '') {
-        params = params.set(key, String(value));
-      }
-    }
-
-    return firstValueFrom(this.http.get<PaginatedUsersResponse>(this.endpoint, { params }));
+    return firstValueFrom(
+      this.http.get<PaginatedUsersResponse>(this.endpoint, { params: toHttpParams(filters) })
+    );
   }
 
   async show(userId: number): Promise<User> {

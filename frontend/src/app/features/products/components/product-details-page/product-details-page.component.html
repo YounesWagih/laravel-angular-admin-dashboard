@@ -49,7 +49,7 @@
         <dt>Status</dt>
         <dd>
           <span class="status-badge" [class.inactive]="product.status === 'inactive'">
-            {{ formatStatus(product.status) }}
+            {{ product.status | titlecase }}
           </span>
         </dd>
       </div>

@@ -1,35 +1,34 @@
+import { TitleCasePipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../../core/services/auth.service';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
-import type { Product, ProductStatus } from '../../models/product.model';
+import { formatDateTime } from '../../../../shared/utils/date.util';
+import type { Product } from '../../models/product.model';
 import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-product-details-page',
-  imports: [ConfirmationDialogComponent, RouterLink],
+  imports: [ConfirmationDialogComponent, RouterLink, TitleCasePipe],
   templateUrl: './product-details-page.component.html',
-  styleUrl: './product-details-page.component.scss',
+  styleUrl: './product-details-page.component.scss'
 })
 export class ProductDetailsPageComponent implements OnInit {
-  auth = inject(AuthService);
+  private readonly auth = inject(AuthService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly productService = inject(ProductService);
 
-  route = inject(ActivatedRoute);
-
-  router = inject(Router);
-
-  productService = inject(ProductService);
-
-  product = signal<Product | null>(null);
-  loading = signal(true);
-  pageError = signal<string | null>(null);
-  actionError = signal<string | null>(null);
-  confirmingDelete = signal(false);
-  deleting = signal(false);
-
-  productId = Number(this.route.snapshot.paramMap.get('id'));
+  protected readonly product = signal<Product | null>(null);
+  protected readonly loading = signal(true);
+  protected readonly pageError = signal<string | null>(null);
+  protected readonly actionError = signal<string | null>(null);
+  protected readonly confirmingDelete = signal(false);
+  protected readonly deleting = signal(false);
+  protected readonly formatDate = formatDateTime;
+  private readonly productId = Number(this.route.snapshot.paramMap.get('id'));
 
   ngOnInit(): void {
     void this.loadProduct();
@@ -46,19 +45,8 @@ export class ProductDetailsPageComponent implements OnInit {
   protected formatPrice(value: string): string {
     return new Intl.NumberFormat('en-EG', {
       style: 'currency',
-      currency: 'EGP',
+      currency: 'EGP'
     }).format(Number(value));
-  }
-
-  protected formatStatus(status: ProductStatus): string {
-    return status.charAt(0).toUpperCase() + status.slice(1);
-  }
-
-  protected formatDate(value: string): string {
-    return new Intl.DateTimeFormat('en-EG', {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    }).format(new Date(value));
   }
 
   protected requestDelete(): void {
@@ -81,8 +69,8 @@ export class ProductDetailsPageComponent implements OnInit {
       this.actionError.set(
         getApiErrorMessage(
           error,
-          'The product could not be deleted. Please try again.',
-        ),
+          'The product could not be deleted. Please try again.'
+        )
       );
     } finally {
       this.deleting.set(false);
@@ -99,9 +87,7 @@ export class ProductDetailsPageComponent implements OnInit {
     try {
       this.product.set(await this.productService.show(this.productId));
     } catch (error) {
-      this.pageError.set(
-        getApiErrorMessage(error, 'The product could not be loaded.'),
-      );
+      this.pageError.set(getApiErrorMessage(error, 'The product could not be loaded.'));
     } finally {
       this.loading.set(false);
     }

@@ -1,9 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 import type { ApiResponse } from '../../../core/models/api-response.model';
+import { toHttpParams } from '../../../shared/utils/http-params.util';
 import type {
   PaginatedProductsResponse,
   Product,
@@ -19,16 +20,8 @@ export class ProductService {
   private readonly endpoint = `${environment.apiUrl}/products`;
 
   index(filters: ProductFilters = {}): Promise<PaginatedProductsResponse> {
-    let params = new HttpParams();
-
-    for (const [key, value] of Object.entries(filters)) {
-      if (value !== undefined && value !== '') {
-        params = params.set(key, String(value));
-      }
-    }
-
     return firstValueFrom(
-      this.http.get<PaginatedProductsResponse>(this.endpoint, { params })
+      this.http.get<PaginatedProductsResponse>(this.endpoint, { params: toHttpParams(filters) })
     );
   }
 

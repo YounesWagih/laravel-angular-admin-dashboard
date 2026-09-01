@@ -100,11 +100,11 @@
                 }
               </td>
               <td data-label="Email">{{ user.email }}</td>
-              <td data-label="Type">{{ formatLabel(user.type) }}</td>
+              <td data-label="Type">{{ user.type | titlecase }}</td>
               <td data-label="Role">{{ user.role?.name ?? 'No role' }}</td>
               <td data-label="Status">
                 <span class="status-badge" [class.inactive]="user.status === 'inactive'">
-                  {{ formatLabel(user.status) }}
+                  {{ user.status | titlecase }}
                 </span>
               </td>
               <td data-label="Created">{{ formatDate(user.created_at) }}</td>
@@ -133,30 +133,7 @@
       </table>
     </div>
 
-    <footer class="pagination">
-      <p>
-        Showing {{ fromUser() }}–{{ toUser() }} of {{ totalUsers() }} users
-      </p>
-      <div class="pagination-actions">
-        <button
-          class="button secondary-button small-button"
-          type="button"
-          [disabled]="currentPage() === 1"
-          (click)="goToPage(currentPage() - 1)"
-        >
-          Previous
-        </button>
-        <span>Page {{ currentPage() }} of {{ lastPage() }}</span>
-        <button
-          class="button secondary-button small-button"
-          type="button"
-          [disabled]="currentPage() === lastPage()"
-          (click)="goToPage(currentPage() + 1)"
-        >
-          Next
-        </button>
-      </div>
-    </footer>
+    <app-pagination [meta]="pagination()" itemLabel="users" (pageChange)="loadUsers($event)" />
   </section>
 }
 
@@ -175,4 +152,3 @@
     (cancelled)="cancelStatusChange()"
   />
 }
-

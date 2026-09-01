@@ -22,7 +22,7 @@
       </div>
       <div>
         <dt>User type</dt>
-        <dd>{{ formatLabel(user.type) }}</dd>
+        <dd>{{ user.type | titlecase }}</dd>
       </div>
       <div>
         <dt>Role</dt>
@@ -32,7 +32,7 @@
         <dt>Status</dt>
         <dd>
           <span class="status-badge" [class.inactive]="user.status === 'inactive'">
-            {{ formatLabel(user.status) }}
+            {{ user.status | titlecase }}
           </span>
         </dd>
       </div>
@@ -54,4 +54,3 @@
     <a class="button secondary-button" routerLink="/users">Back to users</a>
   </section>
 }
-

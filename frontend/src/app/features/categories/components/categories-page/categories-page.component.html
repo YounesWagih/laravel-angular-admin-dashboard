@@ -108,28 +108,11 @@
       </table>
     </div>
 
-    <footer class="pagination">
-      <p>Showing {{ fromCategory() }}–{{ toCategory() }} of {{ totalCategories() }} categories</p>
-      <div class="pagination-actions">
-        <button
-          class="button secondary-button small-button"
-          type="button"
-          [disabled]="currentPage() === 1"
-          (click)="goToPage(currentPage() - 1)"
-        >
-          Previous
-        </button>
-        <span>Page {{ currentPage() }} of {{ lastPage() }}</span>
-        <button
-          class="button secondary-button small-button"
-          type="button"
-          [disabled]="currentPage() === lastPage()"
-          (click)="goToPage(currentPage() + 1)"
-        >
-          Next
-        </button>
-      </div>
-    </footer>
+    <app-pagination
+      [meta]="pagination()"
+      itemLabel="categories"
+      (pageChange)="loadCategories($event)"
+    />
   </section>
 }
 

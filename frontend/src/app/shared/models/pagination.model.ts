@@ -15,6 +15,17 @@ export interface PaginationMeta {
   total: number;
 }
 
+export const EMPTY_PAGINATION_META: PaginationMeta = {
+  current_page: 1,
+  from: null,
+  last_page: 1,
+  links: [],
+  path: '',
+  per_page: 0,
+  to: null,
+  total: 0
+};
+
 export interface PaginatedResponse<T> {
   data: T[];
   links: {
@@ -25,4 +36,3 @@ export interface PaginatedResponse<T> {
   };
   meta: PaginationMeta;
 }
-

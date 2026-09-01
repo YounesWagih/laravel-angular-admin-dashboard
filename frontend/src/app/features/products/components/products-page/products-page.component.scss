@@ -1,17 +1,11 @@
 :host {
   display: block;
   min-width: 0;
-}
-
-.filters-panel,
-.action-alert {
-  margin-bottom: 1rem;
+  --table-cell-padding: 0.75rem 1rem;
 }
 
 .filters,
-.filter-actions,
-.pagination,
-.pagination-actions {
+.filter-actions {
   display: flex;
   align-items: end;
   gap: 0.65rem;
@@ -26,55 +20,8 @@
   max-width: 28rem;
 }
 
-.state-panel {
-  display: grid;
-  min-height: 12rem;
-  place-items: center;
-  color: var(--color-muted);
-  text-align: center;
-}
-
-.state-panel p {
-  margin: 0 0 0.75rem;
-}
-
-.state-error {
-  color: var(--color-danger);
-}
-
-.table-panel {
-  padding: 0;
-  overflow: visible;
-}
-
-.table-scroll {
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  white-space: nowrap;
-}
-
-th,
-td {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--color-border);
-  text-align: start;
+.table-panel td {
   vertical-align: middle;
-}
-
-th {
-  color: var(--color-muted);
-  background: #f8fafc;
-  font-size: 0.78rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-tbody tr:last-child td {
-  border-bottom: 0;
 }
 
 .product-thumbnail,
@@ -97,10 +44,6 @@ tbody tr:last-child td {
   font-weight: 700;
 }
 
-.actions-cell {
-  width: 1%;
-}
-
 .status-badge {
   display: inline-flex;
   padding: 0.25rem 0.55rem;
@@ -114,38 +57,6 @@ tbody tr:last-child td {
 .status-badge.inactive {
   color: #475569;
   background: #e2e8f0;
-}
-
-.pagination {
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.9rem 1rem;
-  border-top: 1px solid var(--color-border);
-  color: var(--color-muted);
-}
-
-.pagination p {
-  margin: 0;
-}
-
-.pagination-actions {
-  align-items: center;
-}
-
-.small-button {
-  min-height: 2.25rem;
-  padding: 0.4rem 0.7rem;
-}
-
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
 
 @media (max-width: 52rem) {
@@ -162,13 +73,6 @@ tbody tr:last-child td {
 }
 
 @media (max-width: 43rem) {
-  .page-header,
-  .pagination {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .page-header .button,
   .filters {
     width: 100%;
   }
@@ -184,9 +88,5 @@ tbody tr:last-child td {
 
   .filter-actions .button {
     flex: 1;
-  }
-
-  .pagination-actions {
-    justify-content: space-between;
   }
 }

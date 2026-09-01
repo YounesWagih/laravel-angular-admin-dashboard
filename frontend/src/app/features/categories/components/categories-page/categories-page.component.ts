@@ -4,21 +4,27 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { FormFieldErrorComponent } from '../../../../shared/components/form-field-error/form-field-error.component';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+import {
+  EMPTY_PAGINATION_META,
+  type PaginationMeta
+} from '../../../../shared/models/pagination.model';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
+import { formatDate } from '../../../../shared/utils/date.util';
 import { applyServerValidationErrors } from '../../../../shared/utils/form-error.util';
-import type {
-  Category,
-  CategoryDetails,
-  CategoryPayload,
-  PaginatedCategoriesResponse
-} from '../../models/category.model';
+import type { Category, CategoryDetails, CategoryPayload } from '../../models/category.model';
 import { CategoryService } from '../../services/category.service';
 
 type CategoryModalMode = 'view' | 'create' | 'edit';
 
 @Component({
   selector: 'app-categories-page',
-  imports: [ConfirmationDialogComponent, FormFieldErrorComponent, ReactiveFormsModule],
+  imports: [
+    ConfirmationDialogComponent,
+    FormFieldErrorComponent,
+    PaginationComponent,
+    ReactiveFormsModule
+  ],
   templateUrl: './categories-page.component.html',
   styleUrl: './categories-page.component.scss'
 })
@@ -32,11 +38,7 @@ export class CategoriesPageComponent implements OnInit {
   protected readonly loading = signal(true);
   protected readonly pageError = signal<string | null>(null);
   protected readonly actionError = signal<string | null>(null);
-  protected readonly currentPage = signal(1);
-  protected readonly lastPage = signal(1);
-  protected readonly totalCategories = signal(0);
-  protected readonly fromCategory = signal<number | null>(null);
-  protected readonly toCategory = signal<number | null>(null);
+  protected readonly pagination = signal<PaginationMeta>(EMPTY_PAGINATION_META);
   protected readonly modalMode = signal<CategoryModalMode | null>(null);
   protected readonly selectedCategory = signal<CategoryDetails | null>(null);
   protected readonly loadingCategory = signal(false);
@@ -54,6 +56,7 @@ export class CategoriesPageComponent implements OnInit {
     description_en: ['', Validators.maxLength(1000)],
     description_ar: ['', Validators.maxLength(1000)]
   });
+  protected readonly formatDate = formatDate;
 
   private readonly showDialog = effect(() => {
     const dialog = this.categoryDialog()?.nativeElement;
@@ -97,14 +100,6 @@ export class CategoriesPageComponent implements OnInit {
     return this.searchForm.controls.search.value.trim() !== '';
   }
 
-  protected goToPage(page: number): void {
-    if (page < 1 || page > this.lastPage() || page === this.currentPage()) {
-      return;
-    }
-
-    void this.loadCategories(page);
-  }
-
   protected openCreateModal(): void {
     this.selectedCategory.set(null);
     this.modalError.set(null);
@@ -130,10 +125,7 @@ export class CategoriesPageComponent implements OnInit {
       return;
     }
 
-    this.categoryDialog()?.nativeElement.close();
-    this.modalMode.set(null);
-    this.selectedCategory.set(null);
-    this.modalError.set(null);
+    this.resetModal();
   }
 
   protected cancelDialog(event: Event): void {
@@ -167,14 +159,14 @@ export class CategoriesPageComponent implements OnInit {
     try {
       if (mode === 'create') {
         await this.categoryService.create(payload);
-        this.closeModalAfterSave();
+        this.resetModal();
         await this.loadCategories(1);
       } else if (category) {
         const updatedCategory = await this.categoryService.update(category.id, payload);
         this.categories.update((categories) =>
           categories.map((item) => (item.id === updatedCategory.id ? updatedCategory : item))
         );
-        this.closeModalAfterSave();
+        this.resetModal();
       }
     } catch (error) {
       this.modalError.set(
@@ -202,7 +194,9 @@ export class CategoriesPageComponent implements OnInit {
     try {
       await this.categoryService.delete(category.id);
       this.confirmingDeleteId.set(null);
-      const nextPage = this.categories().length === 1 ? Math.max(1, this.currentPage() - 1) : this.currentPage();
+      const currentPage = this.pagination().current_page;
+      const nextPage =
+        this.categories().length === 1 ? Math.max(1, currentPage - 1) : currentPage;
       await this.loadCategories(nextPage);
     } catch (error) {
       this.confirmingDeleteId.set(null);
@@ -222,11 +216,7 @@ export class CategoriesPageComponent implements OnInit {
     return this.categories().find((category) => category.id === categoryId);
   }
 
-  protected formatDate(value: string): string {
-    return new Intl.DateTimeFormat('en-EG', { dateStyle: 'medium' }).format(new Date(value));
-  }
-
-  protected async loadCategories(page = this.currentPage()): Promise<void> {
+  protected async loadCategories(page = this.pagination().current_page): Promise<void> {
     this.loading.set(true);
     this.pageError.set(null);
     this.actionError.set(null);
@@ -236,7 +226,8 @@ export class CategoriesPageComponent implements OnInit {
         search: this.searchForm.controls.search.value.trim() || undefined,
         page
       });
-      this.applyResponse(response);
+      this.categories.set(response.data);
+      this.pagination.set(response.meta);
     } catch (error) {
       this.pageError.set(
         getApiErrorMessage(error, 'Categories could not be loaded. Please try again.')
@@ -271,16 +262,7 @@ export class CategoriesPageComponent implements OnInit {
     }
   }
 
-  private applyResponse(response: PaginatedCategoriesResponse): void {
-    this.categories.set(response.data);
-    this.currentPage.set(response.meta.current_page);
-    this.lastPage.set(response.meta.last_page);
-    this.totalCategories.set(response.meta.total);
-    this.fromCategory.set(response.meta.from);
-    this.toCategory.set(response.meta.to);
-  }
-
-  private closeModalAfterSave(): void {
+  private resetModal(): void {
     this.categoryDialog()?.nativeElement.close();
     this.modalMode.set(null);
     this.selectedCategory.set(null);

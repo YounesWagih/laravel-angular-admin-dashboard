@@ -1,9 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 import type { ApiResponse } from '../../../core/models/api-response.model';
+import { toHttpParams } from '../../../shared/utils/http-params.util';
 import type {
   Category,
   CategoryDetails,
@@ -18,16 +19,8 @@ export class CategoryService {
   private readonly endpoint = `${environment.apiUrl}/categories`;
 
   index(filters: CategoryFilters = {}): Promise<PaginatedCategoriesResponse> {
-    let params = new HttpParams();
-
-    for (const [key, value] of Object.entries(filters)) {
-      if (value !== undefined && value !== '') {
-        params = params.set(key, String(value));
-      }
-    }
-
     return firstValueFrom(
-      this.http.get<PaginatedCategoriesResponse>(this.endpoint, { params })
+      this.http.get<PaginatedCategoriesResponse>(this.endpoint, { params: toHttpParams(filters) })
     );
   }
 
@@ -59,4 +52,3 @@ export class CategoryService {
     await firstValueFrom(this.http.delete<void>(`${this.endpoint}/${categoryId}`));
   }
 }
-
