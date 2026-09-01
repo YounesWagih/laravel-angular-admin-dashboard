@@ -5,69 +5,47 @@ namespace App\Services;
 use App\Models\Product;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
-use Throwable;
 
 final class ProductService
 {
     public function create(array $data, ?UploadedFile $image): Product
     {
-        $imagePath = $image?->store('products', 'public');
+        return DB::transaction(function () use ($data, $image): Product {
+            $product = Product::query()->create($this->attributes($data));
 
-        try {
-            $product = Product::query()->create([
-                ...$this->attributes($data),
-                'image' => $imagePath,
-            ]);
-        } catch (Throwable $exception) {
-            if ($imagePath) {
-                Storage::disk('public')->delete($imagePath);
+            if ($image !== null) {
+                $product
+                    ->addMedia($image)
+                    ->toMediaCollection(Product::IMAGE_COLLECTION);
             }
 
-            throw $exception;
-        }
-
-        return $product->load('category');
+            return $product->load(['category', 'media']);
+        });
     }
 
     public function update(Product $product, array $data, ?UploadedFile $image): Product
     {
-        $newImagePath = $image?->store('products', 'public');
-        $oldImagePath = $product->image;
+        return DB::transaction(function () use ($product, $data, $image): Product {
+            $product = Product::query()->lockForUpdate()->findOrFail($product->id);
 
-        try {
-            $product->update([
-                ...$this->attributes($data),
-                'image' => $newImagePath ?: $oldImagePath,
-            ]);
-        } catch (Throwable $exception) {
-            if ($newImagePath) {
-                Storage::disk('public')->delete($newImagePath);
+            $product->update($this->attributes($data));
+
+            if ($image !== null) {
+                $product
+                    ->addMedia($image)
+                    ->toMediaCollection(Product::IMAGE_COLLECTION);
             }
 
-            throw $exception;
-        }
-
-        if ($newImagePath && $oldImagePath) {
-            Storage::disk('public')->delete($oldImagePath);
-        }
-
-        return $product->load('category');
+            return $product->load(['category', 'media']);
+        });
     }
 
     public function delete(Product $product): void
     {
-        $imagePath = DB::transaction(function () use ($product): ?string {
+        DB::transaction(function () use ($product): void {
             $product = Product::query()->lockForUpdate()->findOrFail($product->id);
-            $imagePath = $product->image;
             $product->delete();
-
-            return $imagePath;
         });
-
-        if ($imagePath) {
-            Storage::disk('public')->delete($imagePath);
-        }
     }
 
     private function attributes(array $data): array

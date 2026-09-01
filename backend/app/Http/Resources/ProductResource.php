@@ -2,15 +2,16 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
 
 class ProductResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
         $descriptions = $this->descriptionTranslations();
+        $imageUrl = $this->getFirstMediaUrl(Product::IMAGE_COLLECTION);
 
         return [
             'id' => $this->id,
@@ -18,9 +19,7 @@ class ProductResource extends JsonResource
             'description' => $descriptions === []
                 ? null
                 : $this->getTranslation('description', app()->getLocale()),
-            'image_url' => $this->image === null
-                ? null
-                : Storage::disk('public')->url($this->image),
+            'image_url' => $imageUrl === '' ? null : $imageUrl,
             'price' => $this->price,
             'stock' => $this->stock,
             'status' => $this->status->value,

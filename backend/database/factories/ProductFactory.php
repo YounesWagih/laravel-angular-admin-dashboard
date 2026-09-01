@@ -23,7 +23,6 @@ class ProductFactory extends Factory
                 'en' => fake()->paragraph(),
                 'ar' => fake('ar_SA')->paragraph(),
             ],
-            'image' => null,
             'price' => fake()->randomFloat(2, 10, 100000),
             'stock' => fake()->numberBetween(0, 500),
             'status' => fake()->randomElement(Status::cases()),

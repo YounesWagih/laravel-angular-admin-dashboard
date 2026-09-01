@@ -95,7 +95,6 @@ class ProductSeeder extends Seeder
             $product->fill([
                 ...$productData,
                 'category_id' => $categories[$categoryName]->id,
-                'image' => null,
             ])->save();
         }
     }

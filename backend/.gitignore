@@ -23,4 +23,11 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 
+#personal notes
 /notes
+
+# Laravel Boost generated files
+/AGENTS.md
+/.codex/config.toml
+/.agents/skills/
+/boost.json

@@ -26,7 +26,7 @@ final class ProductController extends Controller
         $locale = app()->getLocale();
 
         $products = Product::query()
-            ->with('category')
+            ->with(['category', 'media'])
             ->when($validated['search'] ?? null, function (Builder $query, string $search) use ($locale): void {
                 $query->where("name->{$locale}", 'like', "%{$search}%");
             })
@@ -69,7 +69,7 @@ final class ProductController extends Controller
 
     public function show(Product $product): ProductDetailsResource
     {
-        return ProductDetailsResource::make($product->load('category'));
+        return ProductDetailsResource::make($product->load(['category', 'media']));
     }
 
     public function store(SaveProductRequest $request): JsonResponse
