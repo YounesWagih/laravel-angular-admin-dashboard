@@ -2,62 +2,62 @@
   <div>
     <div class="title">
       @if (editing) {
-        <a class="back" routerLink="/products" aria-label="Back to products" title="Back to products">
+        <a class="back" routerLink="/products" [attr.aria-label]="'Back to products' | translate" [title]="'Back to products' | translate">
           <span aria-hidden="true">&larr;</span>
         </a>
       }
-      <h1>{{ editing ? 'Edit product' : 'Add product' }}</h1>
+      <h1>{{ (editing ? 'Edit product' : 'Add product') | translate }}</h1>
     </div>
-    <p>{{ editing ? 'Update product information and inventory.' : 'Create a product with both language values.' }}</p>
+    <p>{{ (editing ? 'Update product information and inventory.' : 'Create a product with both language values.') | translate }}</p>
   </div>
   @if (!editing) {
-    <a class="btn secondary" routerLink="/products">Back to products</a>
+    <a class="btn secondary" routerLink="/products">{{ 'Back to products' | translate }}</a>
   }
 </header>
 
 @if (pageError(); as error) {
   <section class="panel state">
-    <p class="error-text" role="alert">{{ error }}</p>
-    <a class="btn secondary" routerLink="/products">Back to products</a>
+    <p class="error-text" role="alert">{{ error | translate }}</p>
+    <a class="btn secondary" routerLink="/products">{{ 'Back to products' | translate }}</a>
   </section>
 } @else if (loading()) {
-  <section class="panel state" aria-live="polite">Loading product form…</section>
+  <section class="panel state" aria-live="polite">{{ 'Loading product form…' | translate }}</section>
 } @else {
   <section class="panel form-box">
     <form [formGroup]="productForm" (ngSubmit)="saveProduct()" novalidate>
       @if (formError(); as error) {
-        <div class="alert error error-box" role="alert">{{ error }}</div>
+        <div class="alert error error-box" role="alert">{{ error | translate }}</div>
       }
 
       <div class="grid">
         <div class="field">
-          <label for="product-name-en">English name</label>
+          <label for="product-name-en">{{ 'English name' | translate }}</label>
           <input id="product-name-en" type="text" formControlName="name_en" />
           <app-form-field-error [control]="productForm.controls.name_en" />
         </div>
 
         <div class="field">
-          <label for="product-name-ar">Arabic name</label>
+          <label for="product-name-ar">{{ 'Arabic name' | translate }}</label>
           <input id="product-name-ar" type="text" dir="rtl" lang="ar" formControlName="name_ar" />
           <app-form-field-error [control]="productForm.controls.name_ar" />
         </div>
 
         <div class="field">
-          <label for="product-description-en">English description <span>(optional)</span></label>
+          <label for="product-description-en">{{ 'English description' | translate }} <span>({{ 'optional' | translate }})</span></label>
           <textarea id="product-description-en" rows="5" formControlName="description_en"></textarea>
           <app-form-field-error [control]="productForm.controls.description_en" />
         </div>
 
         <div class="field">
-          <label for="product-description-ar">Arabic description <span>(optional)</span></label>
+          <label for="product-description-ar">{{ 'Arabic description' | translate }} <span>({{ 'optional' | translate }})</span></label>
           <textarea id="product-description-ar" rows="5" dir="rtl" lang="ar" formControlName="description_ar"></textarea>
           <app-form-field-error [control]="productForm.controls.description_ar" />
         </div>
 
         <div class="field">
-          <label for="product-category">Category</label>
+          <label for="product-category">{{ 'Category' | translate }}</label>
           <select id="product-category" formControlName="category_id">
-            <option [ngValue]="0" disabled>Select a category</option>
+            <option [ngValue]="0" disabled>{{ 'Select a category' | translate }}</option>
             @for (category of categories(); track category.id) {
               <option [ngValue]="category.id">{{ category.name }}</option>
             }
@@ -66,22 +66,22 @@
         </div>
 
         <div class="field">
-          <label for="product-status">Status</label>
+          <label for="product-status">{{ 'Status' | translate }}</label>
           <select id="product-status" formControlName="status">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
+            <option value="active">{{ 'Active' | translate }}</option>
+            <option value="inactive">{{ 'Inactive' | translate }}</option>
           </select>
           <app-form-field-error [control]="productForm.controls.status" />
         </div>
 
         <div class="field">
-          <label for="product-price">Price (EGP)</label>
+          <label for="product-price">{{ 'Price (EGP)' | translate }}</label>
           <input id="product-price" type="number" min="0" max="9999999999.99" step="0.01" formControlName="price" />
           <app-form-field-error [control]="productForm.controls.price" />
         </div>
 
         <div class="field">
-          <label for="product-stock">Stock quantity</label>
+          <label for="product-stock">{{ 'Stock quantity' | translate }}</label>
           <input id="product-stock" type="number" min="0" max="4294967295" step="1" formControlName="stock" />
           <app-form-field-error [control]="productForm.controls.stock" />
         </div>
@@ -89,10 +89,10 @@
         <div class="field images-field">
           <div class="images-header">
             <div>
-              <label for="product-images">Product gallery <span>(optional)</span></label>
-              <small>Up to 5 JPG, PNG, or WebP images. Maximum 2 MB each.</small>
+              <label for="product-images">{{ 'Product gallery' | translate }} <span>({{ 'optional' | translate }})</span></label>
+              <small>{{ 'Up to 5 JPG, PNG, or WebP images. Maximum 2 MB each.' | translate }}</small>
             </div>
-            <strong>{{ images().length }}/5 images</strong>
+            <strong>{{ ':count/5 images' | translate: { count: images().length } }}</strong>
           </div>
           <input
             id="product-images"
@@ -103,25 +103,25 @@
             (change)="selectImages($event)"
           />
           @if (imageError(); as error) {
-            <small class="field-error" role="alert">{{ error }}</small>
+            <small class="field-error" role="alert">{{ error | translate }}</small>
           }
         </div>
 
         @if (images().length > 0) {
-          <div class="images" aria-label="Product images">
+          <div class="images" [attr.aria-label]="'Product images' | translate">
             @for (image of images(); track image.key; let index = $index) {
               <article class="image-card">
                 <div class="image-preview">
                   <img [src]="image.url" [alt]="image.name" />
                   @if (primaryKey() === image.key) {
-                    <span class="primary-label">Primary</span>
+                    <span class="primary-label">{{ 'Primary' | translate }}</span>
                   }
                 </div>
                 <div class="image-buttons">
                   @if (primaryKey() !== image.key) {
-                    <button class="small-button primary-button" type="button" (click)="setPrimary(image.key)">Set primary</button>
+                    <button class="small-button primary-button" type="button" (click)="setPrimary(image.key)">{{ 'Set primary' | translate }}</button>
                   }
-                  <button class="small-button remove-button" type="button" (click)="removeImage(index)">Remove</button>
+                  <button class="small-button remove-button" type="button" (click)="removeImage(index)">{{ 'Remove' | translate }}</button>
                 </div>
               </article>
             }
@@ -131,9 +131,9 @@
       </div>
 
       <div class="actions">
-        <a class="btn secondary" routerLink="/products">Cancel</a>
+        <a class="btn secondary" routerLink="/products">{{ 'Cancel' | translate }}</a>
         <button class="btn primary" type="submit" [disabled]="saving()">
-          {{ saving() ? 'Saving…' : editing ? 'Save changes' : 'Save product' }}
+          {{ (saving() ? 'Saving…' : editing ? 'Save changes' : 'Save product') | translate }}
         </button>
       </div>
     </form>

@@ -1,51 +1,51 @@
 <header class="page-head">
   <div>
-    <h1>Categories</h1>
-    <p>Organize products with English and Arabic category information.</p>
+    <h1>{{ 'Categories' | translate }}</h1>
+    <p>{{ 'Organize products with English and Arabic category information.' | translate }}</p>
   </div>
 
   @if (canCreate()) {
-    <a class="btn primary" routerLink="/categories/new">Add category</a>
+    <a class="btn primary" routerLink="/categories/new">{{ 'Add category' | translate }}</a>
   }
 </header>
 
 <section class="panel search-box">
   <form class="search-form" [formGroup]="searchForm" (ngSubmit)="applySearch()" novalidate>
     <div class="field">
-      <label for="category-search">Search</label>
+      <label for="category-search">{{ 'Search' | translate }}</label>
       <input
         id="category-search"
         type="search"
-        placeholder="Arabic or English category name"
+        [placeholder]="'Arabic or English category name' | translate"
         dir="auto"
         formControlName="search"
       />
       <app-form-field-error [control]="searchForm.controls.search" />
     </div>
-    <button class="btn primary" type="submit">Search</button>
-    <button class="btn secondary" type="button" (click)="clearSearch()">Clear</button>
+    <button class="btn primary" type="submit">{{ 'Search' | translate }}</button>
+    <button class="btn secondary" type="button" (click)="clearSearch()">{{ 'Clear' | translate }}</button>
   </form>
 </section>
 
 @if (actionError(); as error) {
-  <div class="alert error error-box" role="alert">{{ error }}</div>
+  <div class="alert error error-box" role="alert">{{ error | translate }}</div>
 }
 
 @if (pageError(); as error) {
   <section class="panel state">
-    <p class="error-text" role="alert">{{ error }}</p>
+    <p class="error-text" role="alert">{{ error | translate }}</p>
     <button class="btn secondary" type="button" (click)="loadCategories()">
-      Retry
+      {{ 'Retry' | translate }}
     </button>
   </section>
 } @else if (loading()) {
-  <section class="panel state" aria-live="polite">Loading categories…</section>
+  <section class="panel state" aria-live="polite">{{ 'Loading categories…' | translate }}</section>
 } @else if (categories().length === 0) {
   <section class="panel state">
-    <p>{{ hasSearch() ? 'No categories match your search.' : 'No categories have been created yet.' }}</p>
+    <p>{{ (hasSearch() ? 'No categories match your search.' : 'No categories have been created yet.') | translate }}</p>
     @if (hasSearch()) {
       <button class="btn secondary" type="button" (click)="clearSearch()">
-        Clear search
+        {{ 'Clear search' | translate }}
       </button>
     }
   </section>
@@ -55,27 +55,27 @@
       <table>
         <thead>
           <tr>
-            <th scope="col">Category</th>
-            <th scope="col">Description</th>
-            <th scope="col">Products</th>
-            <th scope="col">Created</th>
-            <th scope="col"><span class="sr-only">Actions</span></th>
+            <th scope="col">{{ 'Category' | translate }}</th>
+            <th scope="col">{{ 'Description' | translate }}</th>
+            <th scope="col">{{ 'Products' | translate }}</th>
+            <th scope="col">{{ 'Created' | translate }}</th>
+            <th scope="col"><span class="sr-only">{{ 'Actions' | translate }}</span></th>
           </tr>
         </thead>
         <tbody>
           @for (category of categories(); track category.id) {
             <tr>
               <td><strong>{{ category.name }}</strong></td>
-              <td class="description">{{ category.description || 'No description.' }}</td>
+              <td class="description">{{ category.description || ('No description.' | translate) }}</td>
               <td>{{ category.products_count }}</td>
               <td>{{ formatDate(category.created_at) }}</td>
               <td class="cell-actions">
                 <details #categoryMenu class="menu" name="category-actions">
-                  <summary [attr.aria-label]="'Actions for ' + category.name">⋮</summary>
+                  <summary [attr.aria-label]="'Actions for :name' | translate: { name: category.name }">⋮</summary>
                   <div class="menu-box">
-                    <a class="item" [routerLink]="['/categories', category.id]">View</a>
+                    <a class="item" [routerLink]="['/categories', category.id]">{{ 'View' | translate }}</a>
                     @if (canUpdate()) {
-                      <a class="item" [routerLink]="['/categories', category.id, 'edit']">Edit</a>
+                      <a class="item" [routerLink]="['/categories', category.id, 'edit']">{{ 'Edit' | translate }}</a>
                     }
                     @if (canDelete()) {
                       <button
@@ -83,7 +83,7 @@
                         type="button"
                         (click)="categoryMenu.open = false; requestDelete(category)"
                       >
-                        Delete
+                        {{ 'Delete' | translate }}
                       </button>
                     }
                   </div>
@@ -106,7 +106,7 @@
 @if (deleteCategoryById(); as category) {
   <app-confirmation-dialog
     title="Delete category?"
-    [message]="'Delete ' + category.name + '? Categories containing products cannot be deleted.'"
+    [message]="'Delete :name? Categories containing products cannot be deleted.' | translate: { name: category.name }"
     confirmLabel="Delete"
     [busy]="deletingCategoryId() === category.id"
     [danger]="true"

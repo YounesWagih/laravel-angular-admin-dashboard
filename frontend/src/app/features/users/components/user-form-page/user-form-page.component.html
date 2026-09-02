@@ -2,51 +2,51 @@
   <div>
     <div class="title">
       @if (editing) {
-        <a class="back" routerLink="/users" aria-label="Back to users" title="Back to users">
+        <a class="back" routerLink="/users" [attr.aria-label]="'Back to users' | translate" [title]="'Back to users' | translate">
           <span aria-hidden="true">&larr;</span>
         </a>
       }
-      <h1>{{ editing ? 'Edit user' : 'Add user' }}</h1>
+      <h1>{{ (editing ? 'Edit user' : 'Add user') | translate }}</h1>
     </div>
     <p>
-      {{ editing ? 'Update account information and access.' : 'Create an account with one role.' }}
+      {{ (editing ? 'Update account information and access.' : 'Create an account with one role.') | translate }}
     </p>
   </div>
   @if (!editing) {
-    <a class="btn secondary" routerLink="/users">Back to users</a>
+    <a class="btn secondary" routerLink="/users">{{ 'Back to users' | translate }}</a>
   }
 </header>
 
 @if (pageError(); as error) {
   <section class="panel state">
-    <p class="error-text" role="alert">{{ error }}</p>
-    <a class="btn secondary" routerLink="/users">Back to users</a>
+    <p class="error-text" role="alert">{{ error | translate }}</p>
+    <a class="btn secondary" routerLink="/users">{{ 'Back to users' | translate }}</a>
   </section>
 } @else if (loading()) {
-  <section class="panel state" aria-live="polite">Loading user form…</section>
+  <section class="panel state" aria-live="polite">{{ 'Loading user form…' | translate }}</section>
 } @else {
   <section class="panel form-box">
     <form [formGroup]="userForm" (ngSubmit)="saveUser()" novalidate>
       @if (formError(); as error) {
-        <div class="alert error error-box" role="alert">{{ error }}</div>
+        <div class="alert error error-box" role="alert">{{ error | translate }}</div>
       }
 
       <div class="grid">
         <div class="field">
-          <label for="user-name">Name</label>
+          <label for="user-name">{{ 'Name' | translate }}</label>
           <input id="user-name" type="text" formControlName="name" autocomplete="name" />
           <app-form-field-error [control]="userForm.controls.name" />
         </div>
 
         <div class="field">
-          <label for="user-email">Email</label>
+          <label for="user-email">{{ 'Email' | translate }}</label>
           <input id="user-email" type="email" formControlName="email" autocomplete="email" />
           <app-form-field-error [control]="userForm.controls.email" />
         </div>
 
         @if (!editing) {
           <div class="field">
-            <label for="user-password">Password</label>
+            <label for="user-password">{{ 'Password' | translate }}</label>
             <input
               id="user-password"
               type="password"
@@ -58,19 +58,19 @@
         }
 
         <div class="field">
-          <label for="user-type">User type</label>
+          <label for="user-type">{{ 'User type' | translate }}</label>
           <select id="user-type" formControlName="type">
-            <option value="admin">Admin</option>
-            <option value="user">User</option>
+            <option value="admin">{{ 'Admin' | translate }}</option>
+            <option value="user">{{ 'User' | translate }}</option>
           </select>
           <app-form-field-error [control]="userForm.controls.type" />
-          <small>Admins have full access but still require a role.</small>
+          <small>{{ 'Admins have full access but still require a role.' | translate }}</small>
         </div>
 
         <div class="field">
-          <label for="user-role">Role</label>
+          <label for="user-role">{{ 'Role' | translate }}</label>
           <select id="user-role" formControlName="role_id">
-            <option [ngValue]="0" disabled>Select a role</option>
+            <option [ngValue]="0" disabled>{{ 'Select a role' | translate }}</option>
             @for (role of roles(); track role.id) {
               <option [ngValue]="role.id">{{ role.name }}</option>
             }
@@ -79,18 +79,18 @@
         </div>
 
         <div class="field">
-          <label for="user-status">Status</label>
+          <label for="user-status">{{ 'Status' | translate }}</label>
           <select id="user-status" formControlName="status">
-            <option value="active">Active</option>
-            <option value="inactive" [disabled]="editingCurrentUser()">Inactive</option>
+            <option value="active">{{ 'Active' | translate }}</option>
+            <option value="inactive" [disabled]="editingCurrentUser()">{{ 'Inactive' | translate }}</option>
           </select>
           <app-form-field-error [control]="userForm.controls.status" />
           @if (editing) {
             <small>
               {{
                 editingCurrentUser()
-                  ? 'You cannot deactivate your own account.'
-                  : 'Deactivating an account ends its active sessions.'
+                  ? ('You cannot deactivate your own account.' | translate)
+                  : ('Deactivating an account ends its active sessions.' | translate)
               }}
             </small>
           }
@@ -98,9 +98,9 @@
       </div>
 
       <div class="actions">
-        <a class="btn secondary" routerLink="/users">Cancel</a>
+        <a class="btn secondary" routerLink="/users">{{ 'Cancel' | translate }}</a>
         <button class="btn primary" type="submit" [disabled]="saving()">
-          {{ saving() ? 'Saving…' : editing ? 'Save changes' : 'Create user' }}
+          {{ (saving() ? 'Saving…' : editing ? 'Save changes' : 'Create user') | translate }}
         </button>
       </div>
     </form>

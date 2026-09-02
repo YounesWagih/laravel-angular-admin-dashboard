@@ -2,10 +2,15 @@ import { TitleCasePipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { reloadOnLanguageChange } from '../../../../core/i18n/reload-on-language-change';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { FormFieldErrorComponent } from '../../../../shared/components/form-field-error/form-field-error.component';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
-import { applyServerValidationErrors } from '../../../../shared/utils/form-error.util';
+import {
+  applyServerValidationErrors,
+  clearServerValidationErrors,
+} from '../../../../shared/utils/form-error.util';
 import type {
   PermissionEntity,
   Role,
@@ -20,6 +25,7 @@ import { RoleService } from '../../services/role.service';
     FormFieldErrorComponent,
     ReactiveFormsModule,
     TitleCasePipe,
+    TranslatePipe,
   ],
   templateUrl: './roles-page.component.html',
   styleUrl: './roles-page.component.scss',
@@ -51,6 +57,15 @@ export class RolesPageComponent implements OnInit {
     name: ['', [Validators.required, Validators.maxLength(255)]],
     description: ['', Validators.maxLength(1000)],
   });
+
+  constructor() {
+    reloadOnLanguageChange(() => {
+      this.formError.set(null);
+      this.roleErrors.set({});
+      clearServerValidationErrors(this.roleForm);
+      void this.loadRoles();
+    });
+  }
 
   ngOnInit(): void {
     void this.loadRoles();

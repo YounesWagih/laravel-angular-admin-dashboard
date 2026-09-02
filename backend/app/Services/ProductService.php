@@ -118,13 +118,13 @@ final class ProductService
         $primaryImage = $data['primary_image'] ?? null;
 
         if (array_diff($removedImageIds, $currentImageIds) !== []) {
-            $this->invalidImages('removed_image_ids', 'A removed image does not belong to this product.');
+            $this->invalidImages('removed_image_ids', __('A removed image does not belong to this product.'));
         }
 
         if (count($remainingImageIds) + count($newImages) > Product::MAX_IMAGES) {
             $this->invalidImages(
                 'new_images',
-                'A product may have at most '.Product::MAX_IMAGES.' images.',
+                __('A product may have at most :count images.', ['count' => Product::MAX_IMAGES]),
             );
         }
 
@@ -135,7 +135,7 @@ final class ProductService
                 && isset($newImages[(int) substr($primaryImage, 4)]);
 
             if (! $existingImageIsValid && ! $newImageIsValid) {
-                $this->invalidImages('primary_image', 'The primary image does not belong to this product.');
+                $this->invalidImages('primary_image', __('The primary image does not belong to this product.'));
             }
         }
 

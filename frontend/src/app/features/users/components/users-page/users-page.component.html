@@ -1,39 +1,39 @@
 <header class="page-head">
   <div>
-    <h1>Users</h1>
-    <p>Manage accounts, roles, access type, and account status.</p>
+    <h1>{{ 'Users' | translate }}</h1>
+    <p>{{ 'Manage accounts, roles, access type, and account status.' | translate }}</p>
   </div>
 
-  <a class="btn primary" routerLink="/users/new">Add user</a>
+  <a class="btn primary" routerLink="/users/new">{{ 'Add user' | translate }}</a>
 </header>
 
 <section class="panel filter-box">
   <form class="filters" (ngSubmit)="applyFilters()">
     <div class="field search">
-      <label for="user-search">Search</label>
+      <label for="user-search">{{ 'Search' | translate }}</label>
       <input
         id="user-search"
         name="search"
         type="search"
-        placeholder="Name or email"
+        [placeholder]="'Name or email' | translate"
         [(ngModel)]="search"
         (ngModelChange)="searchChanges.next($event)"
       />
     </div>
 
     <div class="field">
-      <label for="user-type">Type</label>
+      <label for="user-type">{{ 'Type' | translate }}</label>
       <select id="user-type" name="type" [(ngModel)]="type" (change)="applyFilters()">
-        <option value="">All types</option>
-        <option value="admin">Admin</option>
-        <option value="user">User</option>
+        <option value="">{{ 'All types' | translate }}</option>
+        <option value="admin">{{ 'Admin' | translate }}</option>
+        <option value="user">{{ 'User' | translate }}</option>
       </select>
     </div>
 
     <div class="field">
-      <label for="user-role">Role</label>
+      <label for="user-role">{{ 'Role' | translate }}</label>
       <select id="user-role" name="role" [(ngModel)]="roleId" (change)="applyFilters()">
-        <option value="">All roles</option>
+        <option value="">{{ 'All roles' | translate }}</option>
         @for (role of roles(); track role.id) {
           <option [value]="role.id">{{ role.name }}</option>
         }
@@ -41,39 +41,39 @@
     </div>
 
     <div class="field">
-      <label for="user-status">Status</label>
+      <label for="user-status">{{ 'Status' | translate }}</label>
       <select id="user-status" name="status" [(ngModel)]="status" (change)="applyFilters()">
-        <option value="">All statuses</option>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
+        <option value="">{{ 'All statuses' | translate }}</option>
+        <option value="active">{{ 'Active' | translate }}</option>
+        <option value="inactive">{{ 'Inactive' | translate }}</option>
       </select>
     </div>
 
     <div class="actions">
-      <button class="btn primary" type="submit">Search</button>
+      <button class="btn primary" type="submit">{{ 'Search' | translate }}</button>
       <button class="btn secondary" type="button" (click)="clearFilters()">
-        Clear
+        {{ 'Clear' | translate }}
       </button>
     </div>
   </form>
 </section>
 
 @if (actionError(); as error) {
-  <div class="alert error error-box" role="alert">{{ error }}</div>
+  <div class="alert error error-box" role="alert">{{ error | translate }}</div>
 }
 
 @if (pageError(); as error) {
   <section class="panel state">
-    <p class="error-text" role="alert">{{ error }}</p>
-    <button class="btn secondary" type="button" (click)="loadUsers()">Retry</button>
+    <p class="error-text" role="alert">{{ error | translate }}</p>
+    <button class="btn secondary" type="button" (click)="loadUsers()">{{ 'Retry' | translate }}</button>
   </section>
 } @else if (loading()) {
-  <section class="panel state" aria-live="polite">Loading users…</section>
+  <section class="panel state" aria-live="polite">{{ 'Loading users…' | translate }}</section>
 } @else if (users().length === 0) {
   <section class="panel state">
-    <p>No users match the current filters.</p>
+    <p>{{ 'No users match the current filters.' | translate }}</p>
     <button class="btn secondary" type="button" (click)="clearFilters()">
-      Clear filters
+      {{ 'Clear filters' | translate }}
     </button>
   </section>
 } @else {
@@ -82,48 +82,48 @@
       <table>
         <thead>
           <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">Type</th>
-            <th scope="col">Role</th>
-            <th scope="col">Status</th>
-            <th scope="col">Created</th>
-            <th scope="col"><span class="sr-only">Actions</span></th>
+            <th scope="col">{{ 'Name' | translate }}</th>
+            <th scope="col">{{ 'Email' | translate }}</th>
+            <th scope="col">{{ 'Type' | translate }}</th>
+            <th scope="col">{{ 'Role' | translate }}</th>
+            <th scope="col">{{ 'Status' | translate }}</th>
+            <th scope="col">{{ 'Created' | translate }}</th>
+            <th scope="col"><span class="sr-only">{{ 'Actions' | translate }}</span></th>
           </tr>
         </thead>
         <tbody>
           @for (user of users(); track user.id) {
             <tr>
-              <td data-label="Name">
+              <td [attr.data-label]="'Name' | translate">
                 <strong>{{ user.name }}</strong>
                 @if (isCurrentUser(user)) {
-                  <span class="you">You</span>
+                  <span class="you">{{ 'You' | translate }}</span>
                 }
               </td>
-              <td data-label="Email">{{ user.email }}</td>
-              <td data-label="Type">{{ user.type | titlecase }}</td>
-              <td data-label="Role">{{ user.role?.name ?? 'No role' }}</td>
-              <td data-label="Status">
+              <td [attr.data-label]="'Email' | translate">{{ user.email }}</td>
+              <td [attr.data-label]="'Type' | translate">{{ user.type | titlecase | translate }}</td>
+              <td [attr.data-label]="'Role' | translate">{{ user.role?.name ?? ('No role' | translate) }}</td>
+              <td [attr.data-label]="'Status' | translate">
                 <span class="status" [class.inactive]="user.status === 'inactive'">
-                  {{ user.status | titlecase }}
+                  {{ user.status | titlecase | translate }}
                 </span>
               </td>
-              <td data-label="Created">{{ formatDate(user.created_at) }}</td>
+              <td [attr.data-label]="'Created' | translate">{{ formatDate(user.created_at) }}</td>
               <td class="cell-actions">
                 <details #userMenu class="menu" name="user-actions">
-                  <summary [attr.aria-label]="'Actions for ' + user.name">⋮</summary>
+                  <summary [attr.aria-label]="'Actions for :name' | translate: { name: user.name }">⋮</summary>
                   <div class="menu-box">
-                    <a class="item" [routerLink]="['/users', user.id]">View</a>
-                    <a class="item" [routerLink]="['/users', user.id, 'edit']">Edit</a>
+                    <a class="item" [routerLink]="['/users', user.id]">{{ 'View' | translate }}</a>
+                    <a class="item" [routerLink]="['/users', user.id, 'edit']">{{ 'Edit' | translate }}</a>
                     <button
                       class="item"
                       [class.danger]="user.status === 'active'"
                       type="button"
                       [disabled]="isCurrentUser(user)"
-                      [title]="isCurrentUser(user) ? 'You cannot deactivate your own account.' : ''"
+                      [title]="isCurrentUser(user) ? ('You cannot deactivate your own account.' | translate) : ''"
                       (click)="userMenu.open = false; requestStatusChange(user)"
                     >
-                      {{ user.status === 'active' ? 'Deactivate' : 'Activate' }}
+                      {{ (user.status === 'active' ? 'Deactivate' : 'Activate') | translate }}
                     </button>
                   </div>
                 </details>
@@ -140,11 +140,11 @@
 
 @if (statusUser(); as user) {
   <app-confirmation-dialog
-    [title]="user.status === 'active' ? 'Deactivate user?' : 'Activate user?'"
+    [title]="(user.status === 'active' ? 'Deactivate user?' : 'Activate user?') | translate"
     [message]="
       user.status === 'active'
-        ? 'Deactivate ' + user.name + '? Their active sessions will be ended.'
-        : 'Activate ' + user.name + '? They will be able to sign in again.'
+        ? ('Deactivate :name? Their active sessions will be ended.' | translate: { name: user.name })
+        : ('Activate :name? They will be able to sign in again.' | translate: { name: user.name })
     "
     [confirmLabel]="user.status === 'active' ? 'Deactivate' : 'Activate'"
     [busy]="changingStatusUserId() === user.id"

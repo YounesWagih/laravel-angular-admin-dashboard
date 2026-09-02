@@ -1,4 +1,14 @@
-<p>Showing {{ meta().from }}–{{ meta().to }} of {{ meta().total }} {{ itemLabel() }}</p>
+<p>
+  {{
+    'Showing :from–:to of :total :items'
+      | translate: {
+          from: meta().from ?? 0,
+          to: meta().to ?? 0,
+          total: meta().total,
+          items: (itemLabel() | translate),
+        }
+  }}
+</p>
 <div class="pages">
   <button
     class="btn secondary small"
@@ -6,15 +16,20 @@
     [disabled]="meta().current_page === 1"
     (click)="changePage(meta().current_page - 1)"
   >
-    Previous
+    {{ 'Previous' | translate }}
   </button>
-  <span>Page {{ meta().current_page }} of {{ meta().last_page }}</span>
+  <span>
+    {{
+      'Page :current of :last'
+        | translate: { current: meta().current_page, last: meta().last_page }
+    }}
+  </span>
   <button
     class="btn secondary small"
     type="button"
     [disabled]="meta().current_page === meta().last_page"
     (click)="changePage(meta().current_page + 1)"
   >
-    Next
+    {{ 'Next' | translate }}
   </button>
 </div>

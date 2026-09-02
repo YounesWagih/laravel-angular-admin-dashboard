@@ -5,6 +5,8 @@ import { RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { reloadOnLanguageChange } from '../../../../core/i18n/reload-on-language-change';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { FormFieldErrorComponent } from '../../../../shared/components/form-field-error/form-field-error.component';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
@@ -25,6 +27,7 @@ import { CategoryService } from '../../services/category.service';
     PaginationComponent,
     ReactiveFormsModule,
     RouterLink,
+    TranslatePipe,
   ],
   templateUrl: './categories-page.component.html',
   styleUrl: './categories-page.component.scss',
@@ -47,6 +50,10 @@ export class CategoriesPageComponent implements OnInit {
     search: ['', Validators.maxLength(255)],
   });
   formatDate = formatDate;
+
+  constructor() {
+    reloadOnLanguageChange(() => void this.loadCategories());
+  }
 
   ngOnInit(): void {
     this.searchForm.controls.search.valueChanges

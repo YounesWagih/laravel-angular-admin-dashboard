@@ -12,7 +12,7 @@ final class EnsureStatefulRequest
     public function handle(Request $request, Closure $next): Response
     {
         if (! $request->hasSession()) {
-            throw new TokenMismatchException('Stateful authentication is required.');
+            throw new TokenMismatchException(__('Stateful authentication is required.'));
         }
 
         return $next($request);

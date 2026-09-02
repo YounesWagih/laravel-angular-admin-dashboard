@@ -1,12 +1,13 @@
 <main class="auth">
   <section class="card">
     <div class="toolbar">
-      <a class="brand" href="/">Product Management</a>
+      <a class="brand" href="/">{{ 'Product Management' | translate }}</a>
+      <app-language-switcher />
     </div>
 
     <header class="intro">
-      <h1>{{ title() }}</h1>
-      <p>{{ subtitle() }}</p>
+      <h1>{{ title() | translate }}</h1>
+      <p>{{ subtitle() | translate }}</p>
     </header>
 
     <ng-content />

@@ -2,25 +2,25 @@
   <header class="page-head">
     <div>
       <div class="title">
-        <a class="back" routerLink="/products" aria-label="Back to products" title="Back to products">
+        <a class="back" routerLink="/products" [attr.aria-label]="'Back to products' | translate" [title]="'Back to products' | translate">
           <span aria-hidden="true">&larr;</span>
         </a>
         <h1>{{ product.name }}</h1>
       </div>
-      <p>Product information and inventory details.</p>
+      <p>{{ 'Product information and inventory details.' | translate }}</p>
     </div>
     <div class="actions">
       @if (canUpdate()) {
-        <a class="btn primary" [routerLink]="['/products', product.id, 'edit']">Edit product</a>
+        <a class="btn primary" [routerLink]="['/products', product.id, 'edit']">{{ 'Edit product' | translate }}</a>
       }
       @if (canDelete()) {
-        <button class="btn danger-btn" type="button" (click)="requestDelete()">Delete</button>
+        <button class="btn danger-btn" type="button" (click)="requestDelete()">{{ 'Delete' | translate }}</button>
       }
     </div>
   </header>
 
   @if (actionError(); as error) {
-    <div class="alert error error-box" role="alert">{{ error }}</div>
+    <div class="alert error error-box" role="alert">{{ error | translate }}</div>
   }
 
   <section class="panel overview">
@@ -29,17 +29,17 @@
         @if (selectedImage(); as image) {
           <img [src]="image.url" [alt]="product.name" />
         } @else {
-          <div class="placeholder">No images</div>
+          <div class="placeholder">{{ 'No images' | translate }}</div>
         }
       </div>
 
       @if (product.images.length > 1) {
-        <div class="thumbnails" aria-label="Product gallery">
+        <div class="thumbnails" [attr.aria-label]="'Product gallery' | translate">
           @for (image of product.images; track image.id) {
             <button
               type="button"
               [class.selected]="selectedImage()?.id === image.id"
-              [attr.aria-label]="'Show ' + image.file_name"
+              [attr.aria-label]="'Show :name' | translate: { name: image.file_name }"
               [attr.aria-pressed]="selectedImage()?.id === image.id"
               (click)="selectImage(image)"
             >
@@ -52,35 +52,35 @@
 
     <dl>
       <div class="wide">
-        <dt>Description</dt>
-        <dd>{{ product.description || 'No description.' }}</dd>
+        <dt>{{ 'Description' | translate }}</dt>
+        <dd>{{ product.description || ('No description.' | translate) }}</dd>
       </div>
       <div>
-        <dt>Category</dt>
+        <dt>{{ 'Category' | translate }}</dt>
         <dd>{{ product.category.name }}</dd>
       </div>
       <div>
-        <dt>Price</dt>
+        <dt>{{ 'Price' | translate }}</dt>
         <dd>{{ formatPrice(product.price) }}</dd>
       </div>
       <div>
-        <dt>Stock quantity</dt>
+        <dt>{{ 'Stock quantity' | translate }}</dt>
         <dd>{{ product.stock }}</dd>
       </div>
       <div>
-        <dt>Status</dt>
+        <dt>{{ 'Status' | translate }}</dt>
         <dd>
           <span class="status" [class.inactive]="product.status === 'inactive'">
-            {{ product.status | titlecase }}
+            {{ product.status | titlecase | translate }}
           </span>
         </dd>
       </div>
       <div>
-        <dt>Created</dt>
+        <dt>{{ 'Created' | translate }}</dt>
         <dd>{{ formatDate(product.created_at) }}</dd>
       </div>
       <div>
-        <dt>Last updated</dt>
+        <dt>{{ 'Last updated' | translate }}</dt>
         <dd>{{ formatDate(product.updated_at) }}</dd>
       </div>
     </dl>
@@ -89,7 +89,7 @@
   @if (confirmingDelete()) {
     <app-confirmation-dialog
       title="Delete product?"
-      [message]="'Delete ' + product.name + '? All of its stored images will also be removed.'"
+      [message]="'Delete :name? All of its stored images will also be removed.' | translate: { name: product.name }"
       confirmLabel="Delete"
       [busy]="deleting()"
       [danger]="true"
@@ -98,10 +98,10 @@
     />
   }
 } @else if (loading()) {
-  <section class="panel state" aria-live="polite">Loading product…</section>
+  <section class="panel state" aria-live="polite">{{ 'Loading product…' | translate }}</section>
 } @else {
   <section class="panel state">
-    <p class="error-text" role="alert">{{ pageError() }}</p>
-    <a class="btn secondary" routerLink="/products">Back to products</a>
+    <p class="error-text" role="alert">{{ pageError() | translate }}</p>
+    <a class="btn secondary" routerLink="/products">{{ 'Back to products' | translate }}</a>
   </section>
 }

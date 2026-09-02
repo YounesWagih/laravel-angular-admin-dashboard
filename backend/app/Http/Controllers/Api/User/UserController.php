@@ -48,7 +48,7 @@ final class UserController extends Controller
 
         if (! $updatedUser) {
             return response()->json([
-                'message' => 'The final active administrator cannot be changed to a normal user.',
+                'message' => __('The final active administrator cannot be changed to a normal user.'),
             ], Response::HTTP_CONFLICT);
         }
 
@@ -61,7 +61,7 @@ final class UserController extends Controller
 
         if ($request->user()->is($user) && $status === Status::Inactive) {
             return response()->json([
-                'message' => 'You cannot deactivate your own account.',
+                'message' => __('You cannot deactivate your own account.'),
             ], Response::HTTP_CONFLICT);
         }
 
@@ -69,7 +69,7 @@ final class UserController extends Controller
 
         if (! $updatedUser) {
             return response()->json([
-                'message' => 'The final active administrator cannot be deactivated.',
+                'message' => __('The final active administrator cannot be deactivated.'),
             ], Response::HTTP_CONFLICT);
         }
 

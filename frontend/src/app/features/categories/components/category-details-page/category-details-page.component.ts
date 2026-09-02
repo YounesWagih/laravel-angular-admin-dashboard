@@ -2,6 +2,8 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { reloadOnLanguageChange } from '../../../../core/i18n/reload-on-language-change';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
 import { formatDateTime } from '../../../../shared/utils/date.util';
@@ -10,7 +12,7 @@ import { CategoryService } from '../../services/category.service';
 
 @Component({
   selector: 'app-category-details-page',
-  imports: [ConfirmationDialogComponent, RouterLink],
+  imports: [ConfirmationDialogComponent, RouterLink, TranslatePipe],
   templateUrl: './category-details-page.component.html',
   styleUrl: './category-details-page.component.scss',
 })
@@ -28,6 +30,10 @@ export class CategoryDetailsPageComponent implements OnInit {
   deleting = signal(false);
   categoryId = Number(this.route.snapshot.paramMap.get('id'));
   formatDate = formatDateTime;
+
+  constructor() {
+    reloadOnLanguageChange(() => void this.loadCategory());
+  }
 
   ngOnInit(): void {
     void this.loadCategory();
@@ -71,6 +77,10 @@ export class CategoryDetailsPageComponent implements OnInit {
   }
 
   private async loadCategory(): Promise<void> {
+    this.loading.set(true);
+    this.pageError.set(null);
+    this.actionError.set(null);
+
     if (!Number.isInteger(this.categoryId) || this.categoryId < 1) {
       this.pageError.set('The requested category could not be found.');
       this.loading.set(false);

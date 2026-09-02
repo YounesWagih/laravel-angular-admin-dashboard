@@ -1,0 +1,21 @@
+:host {
+  display: inline-flex;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+  color: var(--color-text);
+  background: #ffffff;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f8fafc;
+}

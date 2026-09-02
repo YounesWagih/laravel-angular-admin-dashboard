@@ -3,6 +3,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { reloadOnLanguageChange } from '../../../../core/i18n/reload-on-language-change';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { FormFieldErrorComponent } from '../../../../shared/components/form-field-error/form-field-error.component';
 import {
   applyServerValidationErrors,
@@ -17,6 +19,7 @@ import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
     FormFieldErrorComponent,
     ReactiveFormsModule,
     RouterLink,
+    TranslatePipe,
   ],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss',
@@ -34,6 +37,13 @@ export class LoginPageComponent {
     password: ['', Validators.required],
     remember: false,
   });
+
+  constructor() {
+    reloadOnLanguageChange(() => {
+      this.requestError.set(null);
+      clearServerValidationErrors(this.form);
+    });
+  }
 
   protected async submit(): Promise<void> {
     clearServerValidationErrors(this.form);

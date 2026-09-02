@@ -1,11 +1,11 @@
 <header class="page-head">
   <div>
-    <h1>Roles & Permissions</h1>
-    <p>Create roles and control what each role can do.</p>
+    <h1>{{ 'Roles & Permissions' | translate }}</h1>
+    <p>{{ 'Create roles and control what each role can do.' | translate }}</p>
   </div>
 
   <button class="btn primary" type="button" (click)="openCreateForm()">
-    Add role
+    {{ 'Add role' | translate }}
   </button>
 </header>
 
@@ -13,26 +13,26 @@
   <section class="panel form-box">
     <div class="heading">
       <div>
-        <h2>{{ editingRoleId() ? 'Edit role' : 'Create role' }}</h2>
-        <p>Role permissions are managed after the role is saved.</p>
+        <h2>{{ (editingRoleId() ? 'Edit role' : 'Create role') | translate }}</h2>
+        <p>{{ 'Role permissions are managed after the role is saved.' | translate }}</p>
       </div>
-      <button class="text-btn" type="button" (click)="closeRoleForm()">Close</button>
+      <button class="text-btn" type="button" (click)="closeRoleForm()">{{ 'Close' | translate }}</button>
     </div>
 
     <form [formGroup]="roleForm" (ngSubmit)="saveRole()" novalidate>
       @if (formError(); as error) {
-        <div class="alert error" role="alert">{{ error }}</div>
+        <div class="alert error" role="alert">{{ error | translate }}</div>
       }
 
       <div class="grid">
         <div class="field">
-          <label for="role-name">Name</label>
+          <label for="role-name">{{ 'Name' | translate }}</label>
           <input id="role-name" type="text" formControlName="name" autocomplete="off" />
           <app-form-field-error [control]="roleForm.controls.name" />
         </div>
 
         <div class="field wide">
-          <label for="role-description">Description <span>(optional)</span></label>
+          <label for="role-description">{{ 'Description' | translate }} <span>({{ 'optional' | translate }})</span></label>
           <textarea id="role-description" formControlName="description" rows="3"></textarea>
           <app-form-field-error [control]="roleForm.controls.description" />
         </div>
@@ -40,10 +40,10 @@
 
       <div class="actions">
         <button class="btn secondary" type="button" (click)="closeRoleForm()">
-          Cancel
+          {{ 'Cancel' | translate }}
         </button>
         <button class="btn primary" type="submit" [disabled]="savingRole()">
-          {{ savingRole() ? 'Saving…' : 'Save role' }}
+          {{ (savingRole() ? 'Saving…' : 'Save role') | translate }}
         </button>
       </div>
     </form>
@@ -52,13 +52,13 @@
 
 @if (pageError(); as error) {
   <section class="panel state">
-    <p class="error-text" role="alert">{{ error }}</p>
-    <button class="btn secondary" type="button" (click)="loadRoles()">Retry</button>
+    <p class="error-text" role="alert">{{ error | translate }}</p>
+    <button class="btn secondary" type="button" (click)="loadRoles()">{{ 'Retry' | translate }}</button>
   </section>
 } @else if (loading()) {
-  <section class="panel state" aria-live="polite">Loading roles…</section>
+  <section class="panel state" aria-live="polite">{{ 'Loading roles…' | translate }}</section>
 } @else if (roles().length === 0) {
-  <section class="panel state">No roles have been created yet.</section>
+  <section class="panel state">{{ 'No roles have been created yet.' | translate }}</section>
 } @else {
   <div class="roles">
     @for (role of roles(); track role.id) {
@@ -76,22 +76,22 @@
               <span class="title-row">
                 <strong>{{ role.name }}</strong>
                 @if (role.is_default) {
-                  <span class="badge">Default</span>
+                  <span class="badge">{{ 'Default' | translate }}</span>
                 }
               </span>
               <span class="description">
-                {{ role.description || 'No description.' }}
+                {{ role.description || ('No description.' | translate) }}
               </span>
               <span class="meta">
-                {{ role.users_count }} {{ role.users_count === 1 ? 'user' : 'users' }} ·
+                {{ role.users_count }} {{ (role.users_count === 1 ? 'user' : 'users') | translate }} ·
                 {{ role.permissions.length }}
-                {{ role.permissions.length === 1 ? 'permission' : 'permissions' }}
+                {{ (role.permissions.length === 1 ? 'permission' : 'permissions') | translate }}
               </span>
             </span>
           </button>
 
           <details #roleMenu class="menu" name="role-actions">
-            <summary [attr.aria-label]="'Actions for ' + role.name">⋮</summary>
+            <summary [attr.aria-label]="'Actions for :name' | translate: { name: role.name }">⋮</summary>
 
             <div class="menu-box">
               <button
@@ -99,42 +99,42 @@
                 type="button"
                 (click)="roleMenu.open = false; openEditForm(role)"
               >
-                Edit
+                {{ 'Edit' | translate }}
               </button>
 
               <button
                 class="item"
                 type="button"
                 [disabled]="role.is_default"
-                [title]="role.is_default ? 'This is already the default role.' : ''"
+                [title]="role.is_default ? ('This is already the default role.' | translate) : ''"
                 (click)="roleMenu.open = false; requestMakeDefault(role)"
               >
-                Make default
+                {{ 'Make default' | translate }}
               </button>
 
               <button
                 class="item danger"
                 type="button"
                 [disabled]="role.is_default || role.users_count > 0"
-                [title]="deleteDisabledReason(role)"
+                [title]="deleteDisabledReason(role) | translate"
                 (click)="roleMenu.open = false; requestDelete(role)"
               >
-                Delete
+                {{ 'Delete' | translate }}
               </button>
             </div>
           </details>
         </div>
 
         @if (roleErrors()[role.id]; as error) {
-          <p class="error-text" role="alert">{{ error }}</p>
+          <p class="error-text" role="alert">{{ error | translate }}</p>
         }
 
         @if (expandedRoleId() === role.id) {
           <section class="permissions" [id]="'role-permissions-' + role.id">
             <div class="permission-head">
               <div>
-                <h3>Permissions</h3>
-                <p>Changes are saved immediately.</p>
+                <h3>{{ 'Permissions' | translate }}</h3>
+                <p>{{ 'Changes are saved immediately.' | translate }}</p>
               </div>
 
               <button
@@ -143,18 +143,18 @@
                 [disabled]="isRoleSyncing(role.id)"
                 (click)="toggleEntityPicker(role)"
               >
-                <span aria-hidden="true">+</span> Add entity
+                <span aria-hidden="true">+</span> {{ 'Add entity' | translate }}
               </button>
             </div>
 
             @if (entityPickerRoleId() === role.id) {
               <div class="picker">
                 @if (loadingAvailableEntities()) {
-                  <span>Loading available entities…</span>
+                  <span>{{ 'Loading available entities…' | translate }}</span>
                 } @else if (availableEntities().length === 0) {
-                  <span>No other entities are available.</span>
+                  <span>{{ 'No other entities are available.' | translate }}</span>
                 } @else {
-                  <span>Choose an entity:</span>
+                  <span>{{ 'Choose an entity:' | translate }}</span>
                   <div class="choices">
                     @for (entity of availableEntities(); track entity.name) {
                       <button
@@ -162,7 +162,7 @@
                         type="button"
                         (click)="addEntity(role.id, entity.name)"
                       >
-                        {{ entity.name | titlecase }}
+                        {{ entity.name | titlecase | translate }}
                       </button>
                     }
                   </div>
@@ -171,12 +171,12 @@
             }
 
             @if (displayedEntities(role).length === 0) {
-              <p class="empty">No permission entities are assigned to this role.</p>
+              <p class="empty">{{ 'No permission entities are assigned to this role.' | translate }}</p>
             } @else {
               <div class="entities">
                 @for (entity of displayedEntities(role); track entity.name) {
                   <fieldset class="entity" [disabled]="isRoleSyncing(role.id)">
-                    <legend>{{ entity.name | titlecase }}</legend>
+                    <legend>{{ entity.name | titlecase | translate }}</legend>
                     <div class="options">
                       @for (permission of entity.permissions; track permission.name) {
                         <label>
@@ -185,7 +185,7 @@
                             [checked]="role.permissions.includes(permission.name)"
                             (change)="togglePermission(role, permission.name, $event)"
                           />
-                          <span>{{ permission.action | titlecase }}</span>
+                          <span>{{ permission.action | titlecase | translate }}</span>
                         </label>
                       }
                     </div>
@@ -195,7 +195,7 @@
             }
 
             @if (isRoleSyncing(role.id)) {
-              <p class="saving" aria-live="polite">Saving permissions…</p>
+              <p class="saving" aria-live="polite">{{ 'Saving permissions…' | translate }}</p>
             }
           </section>
         }
@@ -209,7 +209,8 @@
     <app-confirmation-dialog
       title="Change default role?"
       [message]="
-        'Make ' + role.name + ' the default role? New registered users will receive this role.'
+        'Make :name the default role? New registered users will receive this role.'
+          | translate: { name: role.name }
       "
       confirmLabel="Make default"
       [busy]="settingDefaultRoleId() === role.id"
@@ -223,7 +224,7 @@
   @if (roleById(roleId); as role) {
     <app-confirmation-dialog
       title="Delete role?"
-      [message]="'Delete ' + role.name + '? This action cannot be undone.'"
+    [message]="'Delete :name? This action cannot be undone.' | translate: { name: role.name }"
       confirmLabel="Delete"
       [busy]="deletingRoleId() === role.id"
       [danger]="true"

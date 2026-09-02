@@ -1,7 +1,10 @@
 import { AfterViewInit, Component, ElementRef, input, output, viewChild } from '@angular/core';
 
+import { TranslatePipe } from '../../../core/i18n/translate.pipe';
+
 @Component({
   selector: 'app-confirmation-dialog',
+  imports: [TranslatePipe],
   templateUrl: './confirmation-dialog.component.html',
   styleUrl: './confirmation-dialog.component.scss'
 })

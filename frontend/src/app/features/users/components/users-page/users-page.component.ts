@@ -6,6 +6,8 @@ import { RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged, map, Subject } from 'rxjs';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { reloadOnLanguageChange } from '../../../../core/i18n/reload-on-language-change';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import {
@@ -25,6 +27,7 @@ import { UserService } from '../../services/user.service';
     PaginationComponent,
     RouterLink,
     TitleCasePipe,
+    TranslatePipe,
   ],
   templateUrl: './users-page.component.html',
   styleUrl: './users-page.component.scss',
@@ -49,6 +52,10 @@ export class UsersPageComponent implements OnInit {
   protected roleId = '';
   protected status = '';
   formatDate = formatDate;
+
+  constructor() {
+    reloadOnLanguageChange(() => void this.loadUsers());
+  }
 
   ngOnInit(): void {
     this.searchChanges

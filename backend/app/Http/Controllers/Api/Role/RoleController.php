@@ -59,10 +59,10 @@ final class RoleController extends Controller
         return match ($this->roleService->delete($role)) {
             RoleDeletionResult::Deleted => response()->noContent(),
             RoleDeletionResult::DefaultRole => response()->json([
-                'message' => 'The default role cannot be deleted.',
+                'message' => __('The default role cannot be deleted.'),
             ], Response::HTTP_CONFLICT),
             RoleDeletionResult::AssignedToUsers => response()->json([
-                'message' => 'A role assigned to users cannot be deleted.',
+                'message' => __('A role assigned to users cannot be deleted.'),
             ], Response::HTTP_CONFLICT),
         };
     }

@@ -1,53 +1,53 @@
 <header class="page-head">
   <div>
-    <h1>Admin Dashboard</h1>
-    <p>Welcome, {{ auth.user()?.name }}. Here is your application overview.</p>
+    <h1>{{ 'Admin Dashboard' | translate }}</h1>
+    <p>{{ 'Welcome, :name. Here is your application overview.' | translate: { name: auth.user()?.name ?? '' } }}</p>
   </div>
-  <span class="badge">Administrator</span>
+  <span class="badge">{{ 'Administrator' | translate }}</span>
 </header>
 
 @if (loading()) {
-  <section class="panel state" aria-live="polite">Loading dashboard…</section>
+  <section class="panel state" aria-live="polite">{{ 'Loading dashboard…' | translate }}</section>
 } @else if (error()) {
   <section class="panel state">
     <div>
-      <p class="error-text" role="alert">{{ error() }}</p>
-      <button class="btn secondary" type="button" (click)="loadSummary()">Retry</button>
+      <p class="error-text" role="alert">{{ error() | translate }}</p>
+      <button class="btn secondary" type="button" (click)="loadSummary()">{{ 'Retry' | translate }}</button>
     </div>
   </section>
 } @else {
-  <section class="stats" aria-label="Application summary">
+  <section class="stats" [attr.aria-label]="'Application summary' | translate">
     <a class="panel stat" routerLink="/users">
       <span class="value">{{ summary().users_count }}</span>
-      <span class="label">Users</span>
+      <span class="label">{{ 'Users' | translate }}</span>
     </a>
 
     <a class="panel stat" routerLink="/products">
       <span class="value">{{ summary().products_count }}</span>
-      <span class="label">Products</span>
+      <span class="label">{{ 'Products' | translate }}</span>
     </a>
 
     <a class="panel stat" routerLink="/categories">
       <span class="value">{{ summary().categories_count }}</span>
-      <span class="label">Categories</span>
+      <span class="label">{{ 'Categories' | translate }}</span>
     </a>
 
     <a class="panel stat" routerLink="/roles">
       <span class="value">{{ summary().roles_count }}</span>
-      <span class="label">Roles</span>
+      <span class="label">{{ 'Roles' | translate }}</span>
     </a>
   </section>
 }
 
 <section class="panel quick">
   <div class="heading">
-    <h2>Quick actions</h2>
-    <p>Open the most common management tasks.</p>
+    <h2>{{ 'Quick actions' | translate }}</h2>
+    <p>{{ 'Open the most common management tasks.' | translate }}</p>
   </div>
 
   <div class="links">
-    <a class="btn primary" routerLink="/products/new">Add product</a>
-    <a class="btn secondary" routerLink="/users/new">Add user</a>
-    <a class="btn secondary" routerLink="/roles">Manage roles</a>
+    <a class="btn primary" routerLink="/products/new">{{ 'Add product' | translate }}</a>
+    <a class="btn secondary" routerLink="/users/new">{{ 'Add user' | translate }}</a>
+    <a class="btn secondary" routerLink="/roles">{{ 'Manage roles' | translate }}</a>
   </div>
 </section>

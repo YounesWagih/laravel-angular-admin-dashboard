@@ -24,7 +24,7 @@ final class RegistrationService
             $defaultRole = $this->roles->findDefaultWebRole();
 
             if (! $defaultRole) {
-                throw new LogicException('A default role must be configured before users can register.');
+                throw new LogicException(__('A default role must be configured before users can register.'));
             }
 
             $user = $this->users->create([

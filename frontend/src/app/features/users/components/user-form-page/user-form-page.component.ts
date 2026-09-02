@@ -7,9 +7,14 @@ import type {
   UserType,
 } from '../../../../core/models/authenticated-user.model';
 import { AuthService } from '../../../../core/services/auth.service';
+import { reloadOnLanguageChange } from '../../../../core/i18n/reload-on-language-change';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { FormFieldErrorComponent } from '../../../../shared/components/form-field-error/form-field-error.component';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
-import { applyServerValidationErrors } from '../../../../shared/utils/form-error.util';
+import {
+  applyServerValidationErrors,
+  clearServerValidationErrors,
+} from '../../../../shared/utils/form-error.util';
 import type {
   CreateUserPayload,
   UpdateUserPayload,
@@ -20,7 +25,7 @@ import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-user-form-page',
-  imports: [FormFieldErrorComponent, ReactiveFormsModule, RouterLink],
+  imports: [FormFieldErrorComponent, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './user-form-page.component.html',
   styleUrl: './user-form-page.component.scss',
 })
@@ -57,6 +62,20 @@ export class UserFormPageComponent implements OnInit {
       Validators.required,
     ),
   });
+
+  constructor() {
+    reloadOnLanguageChange(() => {
+      const shouldReloadPage = this.pageError() !== null;
+
+      this.pageError.set(null);
+      this.formError.set(null);
+      clearServerValidationErrors(this.userForm);
+
+      if (shouldReloadPage) {
+        void this.loadPage();
+      }
+    });
+  }
 
   ngOnInit(): void {
     if (!this.editing) {

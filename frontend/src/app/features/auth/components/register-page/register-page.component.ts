@@ -10,8 +10,13 @@ import {
 import { Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { reloadOnLanguageChange } from '../../../../core/i18n/reload-on-language-change';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { FormFieldErrorComponent } from '../../../../shared/components/form-field-error/form-field-error.component';
-import { applyServerValidationErrors } from '../../../../shared/utils/form-error.util';
+import {
+  applyServerValidationErrors,
+  clearServerValidationErrors,
+} from '../../../../shared/utils/form-error.util';
 import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 
 const passwordsMatch: ValidatorFn = (
@@ -28,6 +33,7 @@ const passwordsMatch: ValidatorFn = (
     FormFieldErrorComponent,
     ReactiveFormsModule,
     RouterLink,
+    TranslatePipe,
   ],
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.scss',
@@ -48,6 +54,13 @@ export class RegisterPageComponent {
     },
     { validators: passwordsMatch },
   );
+
+  constructor() {
+    reloadOnLanguageChange(() => {
+      this.requestError.set(null);
+      clearServerValidationErrors(this.form);
+    });
+  }
 
   protected async submit(): Promise<void> {
     if (this.form.invalid) {

@@ -2,55 +2,55 @@
   <header class="page-head">
     <div>
       <div class="title">
-        <a class="back" routerLink="/categories" aria-label="Back to categories" title="Back to categories">
+        <a class="back" routerLink="/categories" [attr.aria-label]="'Back to categories' | translate" [title]="'Back to categories' | translate">
           <span aria-hidden="true">&larr;</span>
         </a>
         <h1>{{ category.name }}</h1>
       </div>
-      <p>Category information in English and Arabic.</p>
+      <p>{{ 'Category information in English and Arabic.' | translate }}</p>
     </div>
     <div class="actions">
       @if (canUpdate()) {
-        <a class="btn primary" [routerLink]="['/categories', category.id, 'edit']">Edit category</a>
+        <a class="btn primary" [routerLink]="['/categories', category.id, 'edit']">{{ 'Edit category' | translate }}</a>
       }
       @if (canDelete()) {
-        <button class="btn danger-btn" type="button" (click)="requestDelete()">Delete</button>
+        <button class="btn danger-btn" type="button" (click)="requestDelete()">{{ 'Delete' | translate }}</button>
       }
     </div>
   </header>
 
   @if (actionError(); as error) {
-    <div class="alert error error-box" role="alert">{{ error }}</div>
+    <div class="alert error error-box" role="alert">{{ error | translate }}</div>
   }
 
   <section class="panel details">
     <dl>
       <div>
-        <dt>English name</dt>
+        <dt>{{ 'English name' | translate }}</dt>
         <dd>{{ category.name_en }}</dd>
       </div>
       <div lang="ar" dir="rtl">
-        <dt>Arabic name</dt>
+        <dt>{{ 'Arabic name' | translate }}</dt>
         <dd>{{ category.name_ar }}</dd>
       </div>
       <div>
-        <dt>English description</dt>
-        <dd>{{ category.description_en || 'No description.' }}</dd>
+        <dt>{{ 'English description' | translate }}</dt>
+        <dd>{{ category.description_en || ('No description.' | translate) }}</dd>
       </div>
       <div lang="ar" dir="rtl">
-        <dt>Arabic description</dt>
-        <dd>{{ category.description_ar || 'No description.' }}</dd>
+        <dt>{{ 'Arabic description' | translate }}</dt>
+        <dd>{{ category.description_ar || ('No description.' | translate) }}</dd>
       </div>
       <div>
-        <dt>Products</dt>
+        <dt>{{ 'Products' | translate }}</dt>
         <dd>{{ category.products_count }}</dd>
       </div>
       <div>
-        <dt>Created</dt>
+        <dt>{{ 'Created' | translate }}</dt>
         <dd>{{ formatDate(category.created_at) }}</dd>
       </div>
       <div>
-        <dt>Last updated</dt>
+        <dt>{{ 'Last updated' | translate }}</dt>
         <dd>{{ formatDate(category.updated_at) }}</dd>
       </div>
     </dl>
@@ -59,7 +59,7 @@
   @if (confirmingDelete()) {
     <app-confirmation-dialog
       title="Delete category?"
-      [message]="'Delete ' + category.name + '? Categories containing products cannot be deleted.'"
+      [message]="'Delete :name? Categories containing products cannot be deleted.' | translate: { name: category.name }"
       confirmLabel="Delete"
       [busy]="deleting()"
       [danger]="true"
@@ -68,10 +68,10 @@
     />
   }
 } @else if (loading()) {
-  <section class="panel state" aria-live="polite">Loading category…</section>
+  <section class="panel state" aria-live="polite">{{ 'Loading category…' | translate }}</section>
 } @else {
   <section class="panel state">
-    <p class="error-text" role="alert">{{ pageError() }}</p>
-    <a class="btn secondary" routerLink="/categories">Back to categories</a>
+    <p class="error-text" role="alert">{{ pageError() | translate }}</p>
+    <a class="btn secondary" routerLink="/categories">{{ 'Back to categories' | translate }}</a>
   </section>
 }

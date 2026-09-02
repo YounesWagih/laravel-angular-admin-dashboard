@@ -9,14 +9,14 @@
     <header>
       <span class="warning" aria-hidden="true">!</span>
       <div>
-        <h2 id="confirmation-title">{{ title() }}</h2>
-        <p id="confirmation-message">{{ message() }}</p>
+        <h2 id="confirmation-title">{{ title() | translate }}</h2>
+        <p id="confirmation-message">{{ message() | translate }}</p>
       </div>
     </header>
 
     <footer>
       <button class="btn secondary" type="button" [disabled]="busy()" (click)="cancelled.emit()">
-        Cancel
+        {{ 'Cancel' | translate }}
       </button>
       <button
         class="btn"
@@ -26,7 +26,7 @@
         [disabled]="busy()"
         (click)="confirmed.emit()"
       >
-        {{ busy() ? 'Please wait…' : confirmLabel() }}
+        {{ (busy() ? 'Please wait…' : confirmLabel()) | translate }}
       </button>
     </footer>
   </section>

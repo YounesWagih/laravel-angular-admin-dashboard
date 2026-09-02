@@ -53,7 +53,7 @@ final class CategoryController extends Controller
         return match ($this->categoryService->delete($category)) {
             CategoryDeletionResult::Deleted => response()->noContent(),
             CategoryDeletionResult::HasProducts => response()->json([
-                'message' => 'A category containing products cannot be deleted.',
+                'message' => __('A category containing products cannot be deleted.'),
             ], Response::HTTP_CONFLICT),
         };
     }

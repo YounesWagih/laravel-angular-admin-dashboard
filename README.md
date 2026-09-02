@@ -1,55 +1,44 @@
 # Product Management System
 
-A Laravel API and Angular single-page application for managing products, categories, users, roles, and permissions in English and Arabic.
+A small admin dashboard built with Laravel 13 and Angular 19. It manages products, categories, users, roles, and permissions, with English and Arabic support.
 
-## Workspace
+## Run locally
 
-- `backend/` — Laravel 13 API served locally by Laravel Herd
-- `frontend/` — Angular 19 standalone application
+You will need PHP 8.4, Composer, MySQL, Node.js 22, npm, and Laravel Herd.
 
-## Requirements
-
-- Laravel Herd 1.29 or newer
-- PHP 8.4 through Herd
-- Composer 2
-- MySQL 8
-- Node.js 22.22.3 (managed through Herd's bundled NVM)
-- npm 11 or newer
-
-## Backend setup
+First, set up the API:
 
 ```powershell
 Set-Location backend
 composer install
 Copy-Item .env.example .env
 php artisan key:generate
+```
+
+Create a MySQL database named `admin_dashboard`, then update the database credentials in `backend/.env`. Run the migrations and seed the sample data:
+
+```powershell
+php artisan migrate --seed
+php artisan storage:link
 herd link admin-dashboard-api
 ```
 
-Configure the MySQL credentials in `backend/.env`. Herd serves the API at:
+The API will be available at `http://admin-dashboard-api.test`.
 
-```text
-http://admin-dashboard-api.test
-```
-
-## Frontend setup
+In another terminal, start the frontend:
 
 ```powershell
-nvm use 22.22.3
 Set-Location frontend
+nvm use 22.22.3
 npm install
 npm start
 ```
 
-The Angular application runs at `http://localhost:4200`. Its development proxy forwards `/api` and `/sanctum` requests to the Herd site.
+Open `http://localhost:4200` and sign in with:
 
-## Quality checks
-
-```powershell
-Set-Location backend
-vendor/bin/pint --test
-
-Set-Location ../frontend
-npm run lint
-npm run build
+```text
+Email: admin@example.com
+Password: password
 ```
+
+To rebuild the database from scratch, run `php artisan migrate:fresh --seed` from `backend`. This command deletes all existing database data.

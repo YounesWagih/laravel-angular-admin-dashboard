@@ -1,5 +1,10 @@
 @if (loadingService.isLoading()) {
-  <div class="loading-screen" role="status" aria-live="polite" aria-label="Loading">
+  <div
+    class="loading-screen"
+    role="status"
+    aria-live="polite"
+    [attr.aria-label]="'Loading' | translate"
+  >
     <div class="spinner" aria-hidden="true"></div>
   </div>
 }

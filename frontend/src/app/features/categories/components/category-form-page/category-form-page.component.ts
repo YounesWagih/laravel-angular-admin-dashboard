@@ -2,15 +2,20 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { reloadOnLanguageChange } from '../../../../core/i18n/reload-on-language-change';
 import { FormFieldErrorComponent } from '../../../../shared/components/form-field-error/form-field-error.component';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
-import { applyServerValidationErrors } from '../../../../shared/utils/form-error.util';
+import {
+  applyServerValidationErrors,
+  clearServerValidationErrors,
+} from '../../../../shared/utils/form-error.util';
 import type { CategoryDetails, CategoryPayload } from '../../models/category.model';
 import { CategoryService } from '../../services/category.service';
 
 @Component({
   selector: 'app-category-form-page',
-  imports: [FormFieldErrorComponent, ReactiveFormsModule, RouterLink],
+  imports: [FormFieldErrorComponent, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './category-form-page.component.html',
   styleUrl: './category-form-page.component.scss',
 })
@@ -33,6 +38,20 @@ export class CategoryFormPageComponent implements OnInit {
     description_en: ['', Validators.maxLength(1000)],
     description_ar: ['', Validators.maxLength(1000)],
   });
+
+  constructor() {
+    reloadOnLanguageChange(() => {
+      const shouldReloadPage = this.pageError() !== null;
+
+      this.pageError.set(null);
+      this.formError.set(null);
+      clearServerValidationErrors(this.categoryForm);
+
+      if (shouldReloadPage) {
+        void this.loadPage();
+      }
+    });
+  }
 
   ngOnInit(): void {
     void this.loadPage();

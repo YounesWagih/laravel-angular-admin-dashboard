@@ -6,7 +6,10 @@ import {
   RouterOutlet,
 } from '@angular/router';
 
+import { reloadOnLanguageChange } from '../../i18n/reload-on-language-change';
+import { TranslatePipe } from '../../i18n/translate.pipe';
 import { AuthService } from '../../services/auth.service';
+import { LanguageSwitcherComponent } from '../language-switcher/language-switcher.component';
 
 interface NavigationItem {
   label: string;
@@ -16,7 +19,13 @@ interface NavigationItem {
 
 @Component({
   selector: 'app-shell',
-  imports: [RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [
+    LanguageSwitcherComponent,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    TranslatePipe,
+  ],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
 })
@@ -49,6 +58,10 @@ export class AppShellComponent {
       visible: () => this.auth.isAdmin(),
     },
   ];
+
+  constructor() {
+    reloadOnLanguageChange(() => this.logoutError.set(null));
+  }
 
   protected closeMenu(): void {
     this.menuOpen.set(false);

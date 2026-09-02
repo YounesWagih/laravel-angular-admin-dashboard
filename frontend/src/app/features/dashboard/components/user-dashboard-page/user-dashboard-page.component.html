@@ -1,7 +1,7 @@
 <header class="page-head">
   <div>
-    <h1>Dashboard</h1>
-    <p>Welcome, {{ auth.user()?.name }}. Choose an available action to get started.</p>
+    <h1>{{ 'Dashboard' | translate }}</h1>
+    <p>{{ 'Welcome, :name. Choose an available action to get started.' | translate: { name: auth.user()?.name ?? '' } }}</p>
   </div>
   @if (auth.user()?.role?.name; as roleName) {
     <span class="badge">{{ roleName }}</span>
@@ -15,17 +15,17 @@
 ) {
   <section class="panel quick">
     <div class="heading">
-      <h2>Your access</h2>
-      <p>These actions are available for your current role.</p>
+      <h2>{{ 'Your access' | translate }}</h2>
+      <p>{{ 'These actions are available for your current role.' | translate }}</p>
     </div>
 
-    <div class="grid" aria-label="Available actions">
+    <div class="grid" [attr.aria-label]="'Available actions' | translate">
       @if (auth.hasPermission('products.read')) {
         <a class="link" routerLink="/products">
           <span class="icon" aria-hidden="true">P</span>
           <span>
-            <h2>Products</h2>
-            <p>Browse available products.</p>
+            <h2>{{ 'Products' | translate }}</h2>
+            <p>{{ 'Browse available products.' | translate }}</p>
           </span>
         </a>
       }
@@ -34,8 +34,8 @@
         <a class="link" routerLink="/products/new">
           <span class="icon" aria-hidden="true">+</span>
           <span>
-            <h2>Add product</h2>
-            <p>Create a new product.</p>
+            <h2>{{ 'Add product' | translate }}</h2>
+            <p>{{ 'Create a new product.' | translate }}</p>
           </span>
         </a>
       }
@@ -44,8 +44,8 @@
         <a class="link" routerLink="/categories">
           <span class="icon" aria-hidden="true">C</span>
           <span>
-            <h2>Categories</h2>
-            <p>Browse product categories.</p>
+            <h2>{{ 'Categories' | translate }}</h2>
+            <p>{{ 'Browse product categories.' | translate }}</p>
           </span>
         </a>
       }
@@ -53,6 +53,6 @@
   </section>
 } @else {
   <section class="panel empty">
-    <p>No sections are available for your current role.</p>
+    <p>{{ 'No sections are available for your current role.' | translate }}</p>
   </section>
 }

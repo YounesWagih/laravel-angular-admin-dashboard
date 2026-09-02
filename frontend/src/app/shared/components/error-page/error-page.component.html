@@ -1,8 +1,8 @@
 <section class="error-page">
   <strong>{{ code }}</strong>
-  <h1>{{ title }}</h1>
-  <p>{{ message }}</p>
+  <h1>{{ title | translate }}</h1>
+  <p>{{ message | translate }}</p>
   <a class="btn primary" routerLink="/dashboard">
-    Back to dashboard
+    {{ 'Back to dashboard' | translate }}
   </a>
 </section>

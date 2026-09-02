@@ -1,31 +1,31 @@
 <header class="page-head">
   <div>
-    <h1>Products</h1>
-    <p>Manage product information, pricing, inventory, and availability.</p>
+    <h1>{{ 'Products' | translate }}</h1>
+    <p>{{ 'Manage product information, pricing, inventory, and availability.' | translate }}</p>
   </div>
 
   @if (canCreate()) {
-    <a class="btn primary" routerLink="/products/new">Add product</a>
+    <a class="btn primary" routerLink="/products/new">{{ 'Add product' | translate }}</a>
   }
 </header>
 
 <section class="panel filter-box">
   <form class="filters" [formGroup]="filtersForm" (ngSubmit)="applyFilters()">
     <div class="field search">
-      <label for="product-search">Search</label>
+      <label for="product-search">{{ 'Search' | translate }}</label>
       <input
         id="product-search"
         type="search"
-        placeholder="Arabic or English product name"
+        [placeholder]="'Arabic or English product name' | translate"
         dir="auto"
         formControlName="search"
       />
     </div>
 
     <div class="field">
-      <label for="product-category">Category</label>
+      <label for="product-category">{{ 'Category' | translate }}</label>
       <select id="product-category" formControlName="category_id" (change)="applyFilters()">
-        <option [ngValue]="0">All categories</option>
+        <option [ngValue]="0">{{ 'All categories' | translate }}</option>
         @for (category of categories(); track category.id) {
           <option [ngValue]="category.id">{{ category.name }}</option>
         }
@@ -33,37 +33,37 @@
     </div>
 
     <div class="field">
-      <label for="product-status">Status</label>
+      <label for="product-status">{{ 'Status' | translate }}</label>
       <select id="product-status" formControlName="status" (change)="applyFilters()">
-        <option value="">All statuses</option>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
+        <option value="">{{ 'All statuses' | translate }}</option>
+        <option value="active">{{ 'Active' | translate }}</option>
+        <option value="inactive">{{ 'Inactive' | translate }}</option>
       </select>
     </div>
 
     <div class="actions">
-      <button class="btn primary" type="submit">Search</button>
-      <button class="btn secondary" type="button" (click)="clearFilters()">Clear</button>
+      <button class="btn primary" type="submit">{{ 'Search' | translate }}</button>
+      <button class="btn secondary" type="button" (click)="clearFilters()">{{ 'Clear' | translate }}</button>
     </div>
   </form>
 </section>
 
 @if (actionError(); as error) {
-  <div class="alert error error-box" role="alert">{{ error }}</div>
+  <div class="alert error error-box" role="alert">{{ error | translate }}</div>
 }
 
 @if (pageError(); as error) {
   <section class="panel state">
-    <p class="error-text" role="alert">{{ error }}</p>
-    <button class="btn secondary" type="button" (click)="loadProducts()">Retry</button>
+    <p class="error-text" role="alert">{{ error | translate }}</p>
+    <button class="btn secondary" type="button" (click)="loadProducts()">{{ 'Retry' | translate }}</button>
   </section>
 } @else if (loading()) {
-  <section class="panel state" aria-live="polite">Loading products…</section>
+  <section class="panel state" aria-live="polite">{{ 'Loading products…' | translate }}</section>
 } @else if (products().length === 0) {
   <section class="panel state">
-    <p>{{ hasFilters() ? 'No products match the current filters.' : 'No products have been added yet.' }}</p>
+    <p>{{ (hasFilters() ? 'No products match the current filters.' : 'No products have been added yet.') | translate }}</p>
     @if (hasFilters()) {
-      <button class="btn secondary" type="button" (click)="clearFilters()">Clear filters</button>
+      <button class="btn secondary" type="button" (click)="clearFilters()">{{ 'Clear filters' | translate }}</button>
     }
   </section>
 } @else {
@@ -72,13 +72,13 @@
       <table>
         <thead>
           <tr>
-            <th scope="col">Image</th>
-            <th scope="col">Product</th>
-            <th scope="col">Category</th>
-            <th scope="col">Price</th>
-            <th scope="col">Stock</th>
-            <th scope="col">Status</th>
-            <th scope="col"><span class="sr-only">Actions</span></th>
+            <th scope="col">{{ 'Image' | translate }}</th>
+            <th scope="col">{{ 'Product' | translate }}</th>
+            <th scope="col">{{ 'Category' | translate }}</th>
+            <th scope="col">{{ 'Price' | translate }}</th>
+            <th scope="col">{{ 'Stock' | translate }}</th>
+            <th scope="col">{{ 'Status' | translate }}</th>
+            <th scope="col"><span class="sr-only">{{ 'Actions' | translate }}</span></th>
           </tr>
         </thead>
         <tbody>
@@ -91,22 +91,22 @@
                   <span class="placeholder" aria-hidden="true">{{ product.name.charAt(0) }}</span>
                 }
               </td>
-              <td data-label="Product"><strong>{{ product.name }}</strong></td>
-              <td data-label="Category">{{ product.category.name }}</td>
-              <td data-label="Price">{{ formatPrice(product.price) }}</td>
-              <td data-label="Stock">{{ product.stock }}</td>
-              <td data-label="Status">
+              <td [attr.data-label]="'Product' | translate"><strong>{{ product.name }}</strong></td>
+              <td [attr.data-label]="'Category' | translate">{{ product.category.name }}</td>
+              <td [attr.data-label]="'Price' | translate">{{ formatPrice(product.price) }}</td>
+              <td [attr.data-label]="'Stock' | translate">{{ product.stock }}</td>
+              <td [attr.data-label]="'Status' | translate">
                 <span class="status" [class.inactive]="product.status === 'inactive'">
-                  {{ product.status | titlecase }}
+                  {{ product.status | titlecase | translate }}
                 </span>
               </td>
               <td class="cell-actions">
                 <details #productMenu class="menu" name="product-actions">
-                  <summary [attr.aria-label]="'Actions for ' + product.name">⋮</summary>
+                  <summary [attr.aria-label]="'Actions for :name' | translate: { name: product.name }">⋮</summary>
                   <div class="menu-box">
-                    <a class="item" [routerLink]="['/products', product.id]">View</a>
+                    <a class="item" [routerLink]="['/products', product.id]">{{ 'View' | translate }}</a>
                     @if (canUpdate()) {
-                      <a class="item" [routerLink]="['/products', product.id, 'edit']">Edit</a>
+                      <a class="item" [routerLink]="['/products', product.id, 'edit']">{{ 'Edit' | translate }}</a>
                     }
                     @if (canDelete()) {
                       <button
@@ -114,7 +114,7 @@
                         type="button"
                         (click)="productMenu.open = false; requestDelete(product)"
                       >
-                        Delete
+                        {{ 'Delete' | translate }}
                       </button>
                     }
                   </div>
@@ -137,7 +137,7 @@
 @if (deleteProductById(); as product) {
   <app-confirmation-dialog
     title="Delete product?"
-    [message]="'Delete ' + product.name + '? All of its stored images will also be removed.'"
+    [message]="'Delete :name? All of its stored images will also be removed.' | translate: { name: product.name }"
     confirmLabel="Delete"
     [busy]="deletingProductId() === product.id"
     [danger]="true"

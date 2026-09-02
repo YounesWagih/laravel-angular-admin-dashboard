@@ -2,9 +2,15 @@ import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { LanguageService } from '../../../../core/i18n/language.service';
+import { reloadOnLanguageChange } from '../../../../core/i18n/reload-on-language-change';
 import { FormFieldErrorComponent } from '../../../../shared/components/form-field-error/form-field-error.component';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
-import { applyServerValidationErrors } from '../../../../shared/utils/form-error.util';
+import {
+  applyServerValidationErrors,
+  clearServerValidationErrors,
+} from '../../../../shared/utils/form-error.util';
 import type {
   ProductCategory,
   ProductDetails,
@@ -28,11 +34,12 @@ interface ImageItem {
 
 @Component({
   selector: 'app-product-form-page',
-  imports: [FormFieldErrorComponent, ReactiveFormsModule, RouterLink],
+  imports: [FormFieldErrorComponent, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './product-form-page.component.html',
   styleUrl: './product-form-page.component.scss',
 })
 export class ProductFormPageComponent implements OnInit, OnDestroy {
+  private readonly language = inject(LanguageService);
   formBuilder = inject(FormBuilder);
   route = inject(ActivatedRoute);
   router = inject(Router);
@@ -87,6 +94,23 @@ export class ProductFormPageComponent implements OnInit, OnDestroy {
     ),
   });
 
+  constructor() {
+    reloadOnLanguageChange(() => {
+      const shouldReloadPage = this.pageError() !== null;
+
+      this.pageError.set(null);
+      this.formError.set(null);
+      this.imageError.set(null);
+      clearServerValidationErrors(this.productForm);
+
+      if (shouldReloadPage) {
+        void this.loadPage();
+      } else {
+        void this.loadCategoryOptions();
+      }
+    });
+  }
+
   ngOnInit(): void {
     void this.loadPage();
   }
@@ -108,18 +132,30 @@ export class ProductFormPageComponent implements OnInit, OnDestroy {
     }
 
     if (this.images().length + files.length > MAX_PRODUCT_IMAGES) {
-      this.imageError.set(`A product can have at most ${MAX_PRODUCT_IMAGES} images.`);
+      this.imageError.set(
+        this.language.translate('A product can have at most :count images.', {
+          count: MAX_PRODUCT_IMAGES,
+        }),
+      );
       return;
     }
 
     for (const file of files) {
       if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-        this.imageError.set(`${file.name} must be a JPG, PNG, or WebP image.`);
+        this.imageError.set(
+          this.language.translate(':name must be a JPG, PNG, or WebP image.', {
+            name: file.name,
+          }),
+        );
         return;
       }
 
       if (file.size > MAX_IMAGE_SIZE) {
-        this.imageError.set(`${file.name} must be 2 MB or smaller.`);
+        this.imageError.set(
+          this.language.translate(':name must be 2 MB or smaller.', {
+            name: file.name,
+          }),
+        );
         return;
       }
     }
@@ -247,6 +283,15 @@ export class ProductFormPageComponent implements OnInit, OnDestroy {
       );
     } finally {
       this.loading.set(false);
+    }
+  }
+
+  private async loadCategoryOptions(): Promise<void> {
+    try {
+      const options = await this.productService.options();
+      this.categories.set(options.categories);
+    } catch {
+      // Keep the current form values intact if category labels cannot refresh.
     }
   }
 

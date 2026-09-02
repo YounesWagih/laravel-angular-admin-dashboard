@@ -124,6 +124,10 @@
   transition: transform 150ms ease;
 }
 
+:host-context([dir='rtl']) .arrow {
+  transform: rotate(180deg);
+}
+
 .expanded .arrow {
   transform: rotate(90deg);
 }

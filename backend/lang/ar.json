@@ -1,0 +1,19 @@
+{
+    "(and :count more error)": "(وخطأ إضافي واحد)",
+    "(and :count more errors)": "(وعدد :count من الأخطاء الإضافية)",
+    "A category containing products cannot be deleted.": "لا يمكن حذف فئة تحتوي على منتجات.",
+    "A default role must be configured before users can register.": "يجب تعيين دور افتراضي قبل أن يتمكن المستخدمون من التسجيل.",
+    "A product may have at most :count images.": "يمكن أن يحتوي المنتج على :count صور كحد أقصى.",
+    "A removed image does not belong to this product.": "إحدى الصور المزالة لا تنتمي إلى هذا المنتج.",
+    "A role assigned to users cannot be deleted.": "لا يمكن حذف دور مسند إلى مستخدمين.",
+    "Stateful authentication is required.": "مصادقة الجلسة مطلوبة.",
+    "The given data was invalid.": "البيانات المقدمة غير صحيحة.",
+    "The default role cannot be deleted.": "لا يمكن حذف الدور الافتراضي.",
+    "The final active administrator cannot be changed to a normal user.": "لا يمكن تحويل آخر مشرف نشط إلى مستخدم عادي.",
+    "The final active administrator cannot be deactivated.": "لا يمكن إلغاء تنشيط آخر مشرف نشط.",
+    "The primary image does not belong to this product.": "الصورة الأساسية لا تنتمي إلى هذا المنتج.",
+    "The provided credentials are incorrect.": "بيانات الاعتماد المقدمة غير صحيحة.",
+    "This action is unauthorized.": "غير مصرح لك بتنفيذ هذا الإجراء.",
+    "Unauthenticated.": "غير مصادق.",
+    "You cannot deactivate your own account.": "لا يمكنك إلغاء تنشيط حسابك."
+}

@@ -2,13 +2,15 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { reloadOnLanguageChange } from '../../../../core/i18n/reload-on-language-change';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
 import type { AdminDashboardSummary } from '../../models/dashboard.model';
 import { DashboardService } from '../../services/dashboard.service';
 
 @Component({
   selector: 'app-admin-dashboard-page',
-  imports: [RouterLink],
+  imports: [RouterLink, TranslatePipe],
   templateUrl: './admin-dashboard-page.component.html',
   styleUrl: '../../styles/dashboard-page.scss',
 })
@@ -24,6 +26,10 @@ export class AdminDashboardPageComponent implements OnInit {
   });
   loading = signal(true);
   error = signal<string | null>(null);
+
+  constructor() {
+    reloadOnLanguageChange(() => void this.loadSummary());
+  }
 
   ngOnInit(): void {
     void this.loadSummary();

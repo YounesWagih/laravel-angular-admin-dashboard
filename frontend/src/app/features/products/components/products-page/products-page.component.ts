@@ -6,6 +6,8 @@ import { RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 import { AuthService } from '../../../../core/services/auth.service';
+import { reloadOnLanguageChange } from '../../../../core/i18n/reload-on-language-change';
+import { TranslatePipe } from '../../../../core/i18n/translate.pipe';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import {
@@ -13,6 +15,7 @@ import {
   type PaginationMeta,
 } from '../../../../shared/models/pagination.model';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
+import { formatCurrency } from '../../../../shared/utils/date.util';
 import type {
   Product,
   ProductCategory,
@@ -28,6 +31,7 @@ import { ProductService } from '../../services/product.service';
     ReactiveFormsModule,
     RouterLink,
     TitleCasePipe,
+    TranslatePipe,
   ],
   templateUrl: './products-page.component.html',
   styleUrl: './products-page.component.scss',
@@ -52,6 +56,13 @@ export class ProductsPageComponent implements OnInit {
     category_id: [0],
     status: this.formBuilder.nonNullable.control<ProductStatus | ''>(''),
   });
+
+  constructor() {
+    reloadOnLanguageChange(() => {
+      void this.loadProducts();
+      void this.loadCategoryOptions();
+    });
+  }
 
   ngOnInit(): void {
     this.filtersForm.controls.search.valueChanges
@@ -149,10 +160,7 @@ export class ProductsPageComponent implements OnInit {
   }
 
   protected formatPrice(value: string): string {
-    return new Intl.NumberFormat('en-EG', {
-      style: 'currency',
-      currency: 'EGP',
-    }).format(Number(value));
+    return formatCurrency(value);
   }
 
   private async loadPage(): Promise<void> {
@@ -176,6 +184,15 @@ export class ProductsPageComponent implements OnInit {
       );
     } finally {
       this.loading.set(false);
+    }
+  }
+
+  private async loadCategoryOptions(): Promise<void> {
+    try {
+      const options = await this.productService.options();
+      this.categories.set(options.categories);
+    } catch {
+      // The product list remains usable if filter options fail to refresh.
     }
   }
 

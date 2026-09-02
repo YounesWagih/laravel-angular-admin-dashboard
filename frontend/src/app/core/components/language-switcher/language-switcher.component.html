@@ -1,0 +1,8 @@
+<button
+  type="button"
+  [attr.aria-label]="language.translate(language.locale() === 'en' ? 'Switch to Arabic' : 'Switch to English')"
+  (click)="language.switchLocale()"
+>
+  <span aria-hidden="true">🌐</span>
+  {{ language.locale() === 'en' ? 'العربية' : 'English' }}
+</button>

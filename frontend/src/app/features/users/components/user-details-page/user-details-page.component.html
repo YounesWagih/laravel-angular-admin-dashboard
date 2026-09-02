@@ -2,59 +2,59 @@
   <header class="page-head">
     <div>
       <div class="title">
-        <a class="back" routerLink="/users" aria-label="Back to users" title="Back to users">
+        <a class="back" routerLink="/users" [attr.aria-label]="'Back to users' | translate" [title]="'Back to users' | translate">
           <span aria-hidden="true">&larr;</span>
         </a>
         <h1>{{ user.name }}</h1>
       </div>
-      <p>User account and access details.</p>
+      <p>{{ 'User account and access details.' | translate }}</p>
     </div>
     <div class="actions">
-      <a class="btn primary" [routerLink]="['/users', user.id, 'edit']">Edit user</a>
+      <a class="btn primary" [routerLink]="['/users', user.id, 'edit']">{{ 'Edit user' | translate }}</a>
     </div>
   </header>
 
   <section class="panel details">
     <dl>
       <div>
-        <dt>Name</dt>
+        <dt>{{ 'Name' | translate }}</dt>
         <dd>{{ user.name }}</dd>
       </div>
       <div>
-        <dt>Email</dt>
+        <dt>{{ 'Email' | translate }}</dt>
         <dd>{{ user.email }}</dd>
       </div>
       <div>
-        <dt>User type</dt>
-        <dd>{{ user.type | titlecase }}</dd>
+        <dt>{{ 'User type' | translate }}</dt>
+        <dd>{{ user.type | titlecase | translate }}</dd>
       </div>
       <div>
-        <dt>Role</dt>
-        <dd>{{ user.role?.name ?? 'No role' }}</dd>
+        <dt>{{ 'Role' | translate }}</dt>
+        <dd>{{ user.role?.name ?? ('No role' | translate) }}</dd>
       </div>
       <div>
-        <dt>Status</dt>
+        <dt>{{ 'Status' | translate }}</dt>
         <dd>
           <span class="status" [class.inactive]="user.status === 'inactive'">
-            {{ user.status | titlecase }}
+            {{ user.status | titlecase | translate }}
           </span>
         </dd>
       </div>
       <div>
-        <dt>Created</dt>
+        <dt>{{ 'Created' | translate }}</dt>
         <dd>{{ formatDate(user.created_at) }}</dd>
       </div>
       <div>
-        <dt>Last updated</dt>
+        <dt>{{ 'Last updated' | translate }}</dt>
         <dd>{{ formatDate(user.updated_at) }}</dd>
       </div>
     </dl>
   </section>
 } @else if (loading()) {
-  <section class="panel state" aria-live="polite">Loading user…</section>
+  <section class="panel state" aria-live="polite">{{ 'Loading user…' | translate }}</section>
 } @else {
   <section class="panel state">
-    <p class="error-text" role="alert">{{ pageError() }}</p>
-    <a class="btn secondary" routerLink="/users">Back to users</a>
+    <p class="error-text" role="alert">{{ pageError() | translate }}</p>
+    <a class="btn secondary" routerLink="/users">{{ 'Back to users' | translate }}</a>
   </section>
 }

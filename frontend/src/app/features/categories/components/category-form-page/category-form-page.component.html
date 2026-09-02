@@ -2,63 +2,63 @@
   <div>
     <div class="title">
       @if (editing) {
-        <a class="back" routerLink="/categories" aria-label="Back to categories" title="Back to categories">
+        <a class="back" routerLink="/categories" [attr.aria-label]="'Back to categories' | translate" [title]="'Back to categories' | translate">
           <span aria-hidden="true">&larr;</span>
         </a>
       }
-      <h1>{{ editing ? 'Edit category' : 'Add category' }}</h1>
+      <h1>{{ (editing ? 'Edit category' : 'Add category') | translate }}</h1>
     </div>
-    <p>{{ editing ? 'Update category information in both languages.' : 'Create a category with both language values.' }}</p>
+    <p>{{ (editing ? 'Update category information in both languages.' : 'Create a category with both language values.') | translate }}</p>
   </div>
   @if (!editing) {
-    <a class="btn secondary" routerLink="/categories">Back to categories</a>
+    <a class="btn secondary" routerLink="/categories">{{ 'Back to categories' | translate }}</a>
   }
 </header>
 
 @if (pageError(); as error) {
   <section class="panel state">
-    <p class="error-text" role="alert">{{ error }}</p>
-    <a class="btn secondary" routerLink="/categories">Back to categories</a>
+    <p class="error-text" role="alert">{{ error | translate }}</p>
+    <a class="btn secondary" routerLink="/categories">{{ 'Back to categories' | translate }}</a>
   </section>
 } @else if (loading()) {
-  <section class="panel state" aria-live="polite">Loading category form…</section>
+  <section class="panel state" aria-live="polite">{{ 'Loading category form…' | translate }}</section>
 } @else {
   <section class="panel form-box">
     <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()" novalidate>
       @if (formError(); as error) {
-        <div class="alert error error-box" role="alert">{{ error }}</div>
+        <div class="alert error error-box" role="alert">{{ error | translate }}</div>
       }
 
       <div class="grid">
         <div class="field">
-          <label for="category-name-en">English name</label>
+          <label for="category-name-en">{{ 'English name' | translate }}</label>
           <input id="category-name-en" type="text" formControlName="name_en" />
           <app-form-field-error [control]="categoryForm.controls.name_en" />
         </div>
 
         <div class="field">
-          <label for="category-name-ar">Arabic name</label>
+          <label for="category-name-ar">{{ 'Arabic name' | translate }}</label>
           <input id="category-name-ar" type="text" dir="rtl" lang="ar" formControlName="name_ar" />
           <app-form-field-error [control]="categoryForm.controls.name_ar" />
         </div>
 
         <div class="field">
-          <label for="category-description-en">English description <span>(optional)</span></label>
+          <label for="category-description-en">{{ 'English description' | translate }} <span>({{ 'optional' | translate }})</span></label>
           <textarea id="category-description-en" rows="5" formControlName="description_en"></textarea>
           <app-form-field-error [control]="categoryForm.controls.description_en" />
         </div>
 
         <div class="field">
-          <label for="category-description-ar">Arabic description <span>(optional)</span></label>
+          <label for="category-description-ar">{{ 'Arabic description' | translate }} <span>({{ 'optional' | translate }})</span></label>
           <textarea id="category-description-ar" rows="5" dir="rtl" lang="ar" formControlName="description_ar"></textarea>
           <app-form-field-error [control]="categoryForm.controls.description_ar" />
         </div>
       </div>
 
       <div class="actions">
-        <a class="btn secondary" routerLink="/categories">Cancel</a>
+        <a class="btn secondary" routerLink="/categories">{{ 'Cancel' | translate }}</a>
         <button class="btn primary" type="submit" [disabled]="saving()">
-          {{ saving() ? 'Saving…' : editing ? 'Save changes' : 'Create category' }}
+          {{ (saving() ? 'Saving…' : editing ? 'Save changes' : 'Create category') | translate }}
         </button>
       </div>
     </form>
