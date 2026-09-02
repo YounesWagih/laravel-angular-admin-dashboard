@@ -7,8 +7,8 @@ import { AuthService } from '../../../../core/services/auth.service';
   selector: 'app-user-dashboard-page',
   imports: [RouterLink],
   templateUrl: './user-dashboard-page.component.html',
-  styleUrl: '../../styles/dashboard-page.scss'
+  styleUrl: '../../styles/dashboard-page.scss',
 })
 export class UserDashboardPageComponent {
-  protected readonly auth = inject(AuthService);
+  auth = inject(AuthService);
 }

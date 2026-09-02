@@ -13,22 +13,22 @@ import { ProductService } from '../../services/product.service';
   selector: 'app-product-details-page',
   imports: [ConfirmationDialogComponent, RouterLink, TitleCasePipe],
   templateUrl: './product-details-page.component.html',
-  styleUrl: './product-details-page.component.scss'
+  styleUrl: './product-details-page.component.scss',
 })
 export class ProductDetailsPageComponent implements OnInit {
-  private readonly auth = inject(AuthService);
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-  private readonly productService = inject(ProductService);
+  auth = inject(AuthService);
+  route = inject(ActivatedRoute);
+  router = inject(Router);
+  productService = inject(ProductService);
 
-  protected readonly product = signal<Product | null>(null);
-  protected readonly loading = signal(true);
-  protected readonly pageError = signal<string | null>(null);
-  protected readonly actionError = signal<string | null>(null);
-  protected readonly confirmingDelete = signal(false);
-  protected readonly deleting = signal(false);
-  protected readonly formatDate = formatDateTime;
-  private readonly productId = Number(this.route.snapshot.paramMap.get('id'));
+  product = signal<Product | null>(null);
+  loading = signal(true);
+  pageError = signal<string | null>(null);
+  actionError = signal<string | null>(null);
+  confirmingDelete = signal(false);
+  deleting = signal(false);
+  formatDate = formatDateTime;
+  productId = Number(this.route.snapshot.paramMap.get('id'));
 
   ngOnInit(): void {
     void this.loadProduct();
@@ -45,7 +45,7 @@ export class ProductDetailsPageComponent implements OnInit {
   protected formatPrice(value: string): string {
     return new Intl.NumberFormat('en-EG', {
       style: 'currency',
-      currency: 'EGP'
+      currency: 'EGP',
     }).format(Number(value));
   }
 
@@ -69,8 +69,8 @@ export class ProductDetailsPageComponent implements OnInit {
       this.actionError.set(
         getApiErrorMessage(
           error,
-          'The product could not be deleted. Please try again.'
-        )
+          'The product could not be deleted. Please try again.',
+        ),
       );
     } finally {
       this.deleting.set(false);
@@ -87,7 +87,9 @@ export class ProductDetailsPageComponent implements OnInit {
     try {
       this.product.set(await this.productService.show(this.productId));
     } catch (error) {
-      this.pageError.set(getApiErrorMessage(error, 'The product could not be loaded.'));
+      this.pageError.set(
+        getApiErrorMessage(error, 'The product could not be loaded.'),
+      );
     } finally {
       this.loading.set(false);
     }

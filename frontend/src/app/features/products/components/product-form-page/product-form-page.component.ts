@@ -23,23 +23,23 @@ const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
   styleUrl: './product-form-page.component.scss',
 })
 export class ProductFormPageComponent implements OnInit, OnDestroy {
-  private readonly formBuilder = inject(FormBuilder);
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-  private readonly productService = inject(ProductService);
+  formBuilder = inject(FormBuilder);
+  route = inject(ActivatedRoute);
+  router = inject(Router);
+  productService = inject(ProductService);
 
-  protected readonly productId = this.readProductId();
-  protected readonly editing = this.route.snapshot.paramMap.has('id');
-  protected readonly categories = signal<ProductCategory[]>([]);
-  protected readonly loading = signal(true);
-  protected readonly saving = signal(false);
-  protected readonly pageError = signal<string | null>(null);
-  protected readonly formError = signal<string | null>(null);
-  protected readonly imageError = signal<string | null>(null);
-  protected readonly imagePreview = signal<string | null>(null);
+  productId = this.readProductId();
+  editing = this.route.snapshot.paramMap.has('id');
+  categories = signal<ProductCategory[]>([]);
+  loading = signal(true);
+  saving = signal(false);
+  pageError = signal<string | null>(null);
+  formError = signal<string | null>(null);
+  imageError = signal<string | null>(null);
+  imagePreview = signal<string | null>(null);
   private objectUrl: string | null = null;
 
-  protected readonly productForm = this.formBuilder.group({
+  productForm = this.formBuilder.group({
     name_en: this.formBuilder.nonNullable.control('', [
       Validators.required,
       Validators.maxLength(255),

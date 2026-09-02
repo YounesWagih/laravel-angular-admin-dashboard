@@ -1,41 +1,39 @@
 @if (product(); as product) {
-  <header class="page-header">
+  <header class="page-head">
     <div>
-      <div class="product-title">
-        <a class="back-link" routerLink="/products" aria-label="Back to products" title="Back to products">
-          <svg aria-hidden="true" viewBox="0 0 24 24">
-            <path d="M19 12H5m7-7-7 7 7 7" />
-          </svg>
+      <div class="title">
+        <a class="back" routerLink="/products" aria-label="Back to products" title="Back to products">
+          <span aria-hidden="true">&larr;</span>
         </a>
         <h1>{{ product.name }}</h1>
       </div>
       <p>Product information and inventory details.</p>
     </div>
-    <div class="header-actions">
+    <div class="actions">
       @if (canUpdate()) {
-        <a class="button button-primary" [routerLink]="['/products', product.id, 'edit']">Edit product</a>
+        <a class="btn primary" [routerLink]="['/products', product.id, 'edit']">Edit product</a>
       }
       @if (canDelete()) {
-        <button class="button danger-button" type="button" (click)="requestDelete()">Delete</button>
+        <button class="btn danger-btn" type="button" (click)="requestDelete()">Delete</button>
       }
     </div>
   </header>
 
   @if (actionError(); as error) {
-    <div class="alert alert-danger action-alert" role="alert">{{ error }}</div>
+    <div class="alert error error-box" role="alert">{{ error }}</div>
   }
 
-  <section class="page-panel product-overview">
-    <div class="image-panel">
+  <section class="panel overview">
+    <div class="image">
       @if (product.image_url) {
         <img [src]="product.image_url" [alt]="product.name" />
       } @else {
-        <div class="image-placeholder">No image</div>
+        <div class="placeholder">No image</div>
       }
     </div>
 
     <dl>
-      <div class="wide-detail">
+      <div class="wide">
         <dt>Description</dt>
         <dd>{{ product.description || 'No description.' }}</dd>
       </div>
@@ -54,7 +52,7 @@
       <div>
         <dt>Status</dt>
         <dd>
-          <span class="status-badge" [class.inactive]="product.status === 'inactive'">
+          <span class="status" [class.inactive]="product.status === 'inactive'">
             {{ product.status | titlecase }}
           </span>
         </dd>
@@ -82,10 +80,10 @@
     />
   }
 } @else if (loading()) {
-  <section class="page-panel state-panel" aria-live="polite">Loading product…</section>
+  <section class="panel state" aria-live="polite">Loading product…</section>
 } @else {
-  <section class="page-panel state-panel">
-    <p class="state-error" role="alert">{{ pageError() }}</p>
-    <a class="button secondary-button" routerLink="/products">Back to products</a>
+  <section class="panel state">
+    <p class="error-text" role="alert">{{ pageError() }}</p>
+    <a class="btn secondary" routerLink="/products">Back to products</a>
   </section>
 }

@@ -1,4 +1,4 @@
-.confirmation-dialog {
+.dialog {
   width: min(calc(100% - 2rem), 28rem);
   padding: 0;
   border: 0;
@@ -8,21 +8,21 @@
   box-shadow: var(--shadow-card);
 }
 
-.confirmation-dialog::backdrop {
+.dialog::backdrop {
   background: rgb(15 23 42 / 55%);
 }
 
-.confirmation-dialog section {
+.dialog section {
   padding: 1.25rem;
 }
 
-.confirmation-dialog header {
+.dialog header {
   display: flex;
   align-items: flex-start;
   gap: 0.85rem;
 }
 
-.warning-icon {
+.warning {
   display: grid;
   width: 2rem;
   height: 2rem;
@@ -34,40 +34,40 @@
   font-weight: 800;
 }
 
-.confirmation-dialog h2 {
+.dialog h2 {
   margin: 0;
   font-size: 1.15rem;
 }
 
-.confirmation-dialog p {
+.dialog p {
   margin: 0.45rem 0 0;
   color: var(--color-muted);
 }
 
-.confirmation-dialog footer {
+.dialog footer {
   display: flex;
   justify-content: flex-end;
   gap: 0.65rem;
   margin-top: 1.5rem;
 }
 
-.secondary-button {
+.secondary {
   border-color: var(--color-border);
   color: var(--color-text);
   background: #ffffff;
 }
 
-.danger-button {
+.danger-btn {
   color: #ffffff;
   background: var(--color-danger);
 }
 
 @media (max-width: 30rem) {
-  .confirmation-dialog footer {
+  .dialog footer {
     flex-direction: column-reverse;
   }
 
-  .confirmation-dialog footer .button {
+  .dialog footer .btn {
     width: 100%;
   }
 }

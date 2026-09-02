@@ -2,13 +2,13 @@
   display: block;
 }
 
-.page-title {
+.title {
   display: flex;
   align-items: center;
   gap: 0.65rem;
 }
 
-.back-link {
+.back {
   display: grid;
   width: 2.25rem;
   height: 2.25rem;
@@ -16,40 +16,36 @@
   place-items: center;
   border-radius: var(--radius-small);
   color: var(--color-muted);
+  text-decoration: none;
 }
 
-.back-link:hover {
+.back:hover {
   color: var(--color-text);
   background: #e2e8f0;
 }
 
-.back-link svg {
-  width: 1.35rem;
-  height: 1.35rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.back span {
+  font-size: 1.5rem;
+  line-height: 1;
 }
 
-.form-panel {
+.form-box {
   max-width: 64rem;
 }
 
-.form-alert {
+.error-box {
   margin-bottom: 1rem;
 }
 
-.form-grid {
+.grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
 }
 
-.form-field label span,
-.form-field small,
-.image-preview span {
+.field label span,
+.field small,
+.preview span {
   color: var(--color-muted);
 }
 
@@ -61,17 +57,17 @@
   color: var(--color-danger) !important;
 }
 
-.image-preview {
+.preview {
   display: grid;
   align-content: start;
   gap: 0.35rem;
 }
 
-.image-preview span {
+.preview span {
   font-weight: 600;
 }
 
-.image-preview img {
+.preview img {
   width: 8rem;
   height: 8rem;
   border: 1px solid var(--color-border);
@@ -79,7 +75,7 @@
   object-fit: cover;
 }
 
-.form-actions {
+.actions {
   display: flex;
   justify-content: flex-end;
   gap: 0.65rem;
@@ -87,16 +83,16 @@
 }
 
 @media (max-width: 43rem) {
-  .page-header {
+  .page-head {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .form-grid {
+  .grid {
     grid-template-columns: 1fr;
   }
 
-  .form-actions {
+  .actions {
     align-items: stretch;
     flex-direction: column-reverse;
   }

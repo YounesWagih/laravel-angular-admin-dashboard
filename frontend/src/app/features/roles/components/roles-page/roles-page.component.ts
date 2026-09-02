@@ -6,7 +6,11 @@ import { FormFieldErrorComponent } from '../../../../shared/components/form-fiel
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
 import { applyServerValidationErrors } from '../../../../shared/utils/form-error.util';
-import type { PermissionEntity, Role, RolePayload } from '../../models/role.model';
+import type {
+  PermissionEntity,
+  Role,
+  RolePayload,
+} from '../../models/role.model';
 import { RoleService } from '../../services/role.service';
 
 @Component({
@@ -15,37 +19,37 @@ import { RoleService } from '../../services/role.service';
     ConfirmationDialogComponent,
     FormFieldErrorComponent,
     ReactiveFormsModule,
-    TitleCasePipe
+    TitleCasePipe,
   ],
   templateUrl: './roles-page.component.html',
-  styleUrl: './roles-page.component.scss'
+  styleUrl: './roles-page.component.scss',
 })
 export class RolesPageComponent implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
   private readonly roleService = inject(RoleService);
 
-  protected readonly roles = signal<Role[]>([]);
-  protected readonly permissionEntities = signal<PermissionEntity[]>([]);
-  protected readonly loading = signal(true);
-  protected readonly pageError = signal<string | null>(null);
-  protected readonly expandedRoleId = signal<number | null>(null);
-  protected readonly formOpen = signal(false);
-  protected readonly editingRoleId = signal<number | null>(null);
-  protected readonly savingRole = signal(false);
-  protected readonly formError = signal<string | null>(null);
-  protected readonly deletingRoleId = signal<number | null>(null);
-  protected readonly confirmingDeleteRoleId = signal<number | null>(null);
-  protected readonly settingDefaultRoleId = signal<number | null>(null);
-  protected readonly confirmingDefaultRoleId = signal<number | null>(null);
-  protected readonly syncingRoleIds = signal<ReadonlySet<number>>(new Set());
-  protected readonly roleErrors = signal<Record<number, string>>({});
-  protected readonly entityPickerRoleId = signal<number | null>(null);
-  protected readonly availableEntities = signal<PermissionEntity[]>([]);
-  protected readonly loadingAvailableEntities = signal(false);
-  protected readonly addedEntityNames = signal<Record<number, string[]>>({});
-  protected readonly roleForm = this.formBuilder.nonNullable.group({
+  roles = signal<Role[]>([]);
+  permissionEntities = signal<PermissionEntity[]>([]);
+  loading = signal(true);
+  pageError = signal<string | null>(null);
+  expandedRoleId = signal<number | null>(null);
+  formOpen = signal(false);
+  editingRoleId = signal<number | null>(null);
+  savingRole = signal(false);
+  formError = signal<string | null>(null);
+  deletingRoleId = signal<number | null>(null);
+  confirmingDeleteRoleId = signal<number | null>(null);
+  settingDefaultRoleId = signal<number | null>(null);
+  confirmingDefaultRoleId = signal<number | null>(null);
+  syncingRoleIds = signal<ReadonlySet<number>>(new Set());
+  roleErrors = signal<Record<number, string>>({});
+  entityPickerRoleId = signal<number | null>(null);
+  availableEntities = signal<PermissionEntity[]>([]);
+  loadingAvailableEntities = signal(false);
+  addedEntityNames = signal<Record<number, string[]>>({});
+  roleForm = this.formBuilder.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(255)]],
-    description: ['', Validators.maxLength(1000)]
+    description: ['', Validators.maxLength(1000)],
   });
 
   ngOnInit(): void {
@@ -61,14 +65,21 @@ export class RolesPageComponent implements OnInit {
       this.roles.set(response.data);
       this.permissionEntities.set(response.meta.permission_entities);
     } catch (error) {
-      this.pageError.set(getApiErrorMessage(error, 'Roles could not be loaded. Please try again.'));
+      this.pageError.set(
+        getApiErrorMessage(
+          error,
+          'Roles could not be loaded. Please try again.',
+        ),
+      );
     } finally {
       this.loading.set(false);
     }
   }
 
   protected toggleExpanded(roleId: number): void {
-    this.expandedRoleId.update((expandedId) => (expandedId === roleId ? null : roleId));
+    this.expandedRoleId.update((expandedId) =>
+      expandedId === roleId ? null : roleId,
+    );
     this.closeEntityPicker();
   }
 
@@ -84,7 +95,7 @@ export class RolesPageComponent implements OnInit {
     this.formError.set(null);
     this.roleForm.reset({
       name: role.name,
-      description: role.description ?? ''
+      description: role.description ?? '',
     });
     this.formOpen.set(true);
   }
@@ -107,7 +118,7 @@ export class RolesPageComponent implements OnInit {
     const values = this.roleForm.getRawValue();
     const payload: RolePayload = {
       name: values.name.trim(),
-      description: values.description.trim() || null
+      description: values.description.trim() || null,
     };
 
     try {
@@ -125,7 +136,10 @@ export class RolesPageComponent implements OnInit {
     } catch (error) {
       this.formError.set(
         applyServerValidationErrors(this.roleForm, error) ??
-          getApiErrorMessage(error, 'The role could not be saved. Please try again.')
+          getApiErrorMessage(
+            error,
+            'The role could not be saved. Please try again.',
+          ),
       );
     } finally {
       this.savingRole.set(false);
@@ -168,20 +182,25 @@ export class RolesPageComponent implements OnInit {
       this.roles.update((roles) =>
         roles
           .map((item) =>
-            item.id === defaultRole.id ? defaultRole : { ...item, is_default: false }
+            item.id === defaultRole.id
+              ? defaultRole
+              : { ...item, is_default: false },
           )
           .sort(
             (left, right) =>
               Number(right.is_default) - Number(left.is_default) ||
-              left.name.localeCompare(right.name)
-          )
+              left.name.localeCompare(right.name),
+          ),
       );
       this.confirmingDefaultRoleId.set(null);
     } catch (error) {
       this.confirmingDefaultRoleId.set(null);
       this.setRoleError(
         role.id,
-        getApiErrorMessage(error, 'The default role could not be changed. Please try again.')
+        getApiErrorMessage(
+          error,
+          'The default role could not be changed. Please try again.',
+        ),
       );
     } finally {
       this.settingDefaultRoleId.set(null);
@@ -204,14 +223,21 @@ export class RolesPageComponent implements OnInit {
       this.confirmingDeleteRoleId.set(null);
       this.setRoleError(
         role.id,
-        getApiErrorMessage(error, 'The role could not be deleted. Please try again.')
+        getApiErrorMessage(
+          error,
+          'The role could not be deleted. Please try again.',
+        ),
       );
     } finally {
       this.deletingRoleId.set(null);
     }
   }
 
-  protected async togglePermission(role: Role, permission: string, event: Event): Promise<void> {
+  protected async togglePermission(
+    role: Role,
+    permission: string,
+    event: Event,
+  ): Promise<void> {
     const checked = (event.target as HTMLInputElement).checked;
     const previousPermissions = [...role.permissions];
     const permissions = checked
@@ -223,14 +249,20 @@ export class RolesPageComponent implements OnInit {
     this.setRoleError(role.id, null);
 
     try {
-      const updatedRole = await this.roleService.syncPermissions(role.id, permissions);
+      const updatedRole = await this.roleService.syncPermissions(
+        role.id,
+        permissions,
+      );
       this.replaceRole(updatedRole);
       this.removeAddedEntity(role.id, this.permissionEntity(permission));
     } catch (error) {
       this.updateRolePermissions(role.id, previousPermissions);
       this.setRoleError(
         role.id,
-        getApiErrorMessage(error, 'Permissions could not be updated. The change was reverted.')
+        getApiErrorMessage(
+          error,
+          'Permissions could not be updated. The change was reverted.',
+        ),
       );
     } finally {
       this.setRoleSyncing(role.id, false);
@@ -247,7 +279,9 @@ export class RolesPageComponent implements OnInit {
     return this.permissionEntities().filter(
       (entity) =>
         addedEntities.includes(entity.name) ||
-        entity.permissions.some((permission) => role.permissions.includes(permission.name))
+        entity.permissions.some((permission) =>
+          role.permissions.includes(permission.name),
+        ),
     );
   }
 
@@ -268,7 +302,7 @@ export class RolesPageComponent implements OnInit {
 
       if (this.entityPickerRoleId() === role.id) {
         this.availableEntities.set(
-          entities.filter((entity) => !alreadyAdded.includes(entity.name))
+          entities.filter((entity) => !alreadyAdded.includes(entity.name)),
         );
       }
     } catch (error) {
@@ -276,7 +310,10 @@ export class RolesPageComponent implements OnInit {
         this.closeEntityPicker();
         this.setRoleError(
           role.id,
-          getApiErrorMessage(error, 'Available permission entities could not be loaded.')
+          getApiErrorMessage(
+            error,
+            'Available permission entities could not be loaded.',
+          ),
         );
       }
     } finally {
@@ -289,10 +326,10 @@ export class RolesPageComponent implements OnInit {
   protected addEntity(roleId: number, entityName: string): void {
     this.addedEntityNames.update((entitiesByRole) => ({
       ...entitiesByRole,
-      [roleId]: [...new Set([...(entitiesByRole[roleId] ?? []), entityName])]
+      [roleId]: [...new Set([...(entitiesByRole[roleId] ?? []), entityName])],
     }));
     this.availableEntities.update((entities) =>
-      entities.filter((entity) => entity.name !== entityName)
+      entities.filter((entity) => entity.name !== entityName),
     );
   }
 
@@ -307,7 +344,9 @@ export class RolesPageComponent implements OnInit {
       return 'The default role cannot be deleted.';
     }
 
-    return role.users_count > 0 ? 'Roles assigned to users cannot be deleted.' : '';
+    return role.users_count > 0
+      ? 'Roles assigned to users cannot be deleted.'
+      : '';
   }
 
   protected roleById(roleId: number): Role | undefined {
@@ -323,14 +362,17 @@ export class RolesPageComponent implements OnInit {
 
       return updatedRoles.sort(
         (left, right) =>
-          Number(right.is_default) - Number(left.is_default) || left.name.localeCompare(right.name)
+          Number(right.is_default) - Number(left.is_default) ||
+          left.name.localeCompare(right.name),
       );
     });
   }
 
   private updateRolePermissions(roleId: number, permissions: string[]): void {
     this.roles.update((roles) =>
-      roles.map((role) => (role.id === roleId ? { ...role, permissions } : role))
+      roles.map((role) =>
+        role.id === roleId ? { ...role, permissions } : role,
+      ),
     );
   }
 
@@ -365,7 +407,9 @@ export class RolesPageComponent implements OnInit {
   private removeAddedEntity(roleId: number, entityName: string): void {
     this.addedEntityNames.update((entitiesByRole) => ({
       ...entitiesByRole,
-      [roleId]: (entitiesByRole[roleId] ?? []).filter((name) => name !== entityName)
+      [roleId]: (entitiesByRole[roleId] ?? []).filter(
+        (name) => name !== entityName,
+      ),
     }));
   }
 

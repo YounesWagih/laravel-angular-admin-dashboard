@@ -11,16 +11,16 @@ import { UserService } from '../../services/user.service';
   selector: 'app-user-details-page',
   imports: [RouterLink, TitleCasePipe],
   templateUrl: './user-details-page.component.html',
-  styleUrl: './user-details-page.component.scss'
+  styleUrl: './user-details-page.component.scss',
 })
 export class UserDetailsPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly userService = inject(UserService);
 
-  protected readonly user = signal<User | null>(null);
-  protected readonly loading = signal(true);
-  protected readonly pageError = signal<string | null>(null);
-  protected readonly formatDate = formatDateTime;
+  user = signal<User | null>(null);
+  loading = signal(true);
+  pageError = signal<string | null>(null);
+  formatDate = formatDateTime;
   private readonly userId = Number(this.route.snapshot.paramMap.get('id'));
 
   ngOnInit(): void {
@@ -37,7 +37,9 @@ export class UserDetailsPageComponent implements OnInit {
     try {
       this.user.set(await this.userService.show(this.userId));
     } catch (error) {
-      this.pageError.set(getApiErrorMessage(error, 'The user could not be loaded.'));
+      this.pageError.set(
+        getApiErrorMessage(error, 'The user could not be loaded.'),
+      );
     } finally {
       this.loading.set(false);
     }

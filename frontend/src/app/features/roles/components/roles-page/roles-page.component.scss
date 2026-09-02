@@ -4,66 +4,66 @@
   --state-panel-min-height: 10rem;
 }
 
-.role-form-panel {
+.form-box {
   margin-bottom: 1.25rem;
 }
 
-.section-heading,
-.permission-heading,
-.role-summary,
-.role-title-row,
-.form-actions,
-.entity-options {
+.heading,
+.permission-head,
+.summary,
+.title-row,
+.actions,
+.choices {
   display: flex;
   align-items: center;
 }
 
-.section-heading,
-.permission-heading,
-.role-summary {
+.heading,
+.permission-head,
+.summary {
   justify-content: space-between;
   gap: 1rem;
 }
 
-.section-heading {
+.heading {
   margin-bottom: 1.25rem;
 }
 
-.section-heading h2,
-.permission-heading h3 {
+.heading h2,
+.permission-head h3 {
   margin: 0;
 }
 
-.section-heading p,
-.permission-heading p {
+.heading p,
+.permission-head p {
   margin: 0.25rem 0 0;
   color: var(--color-muted);
 }
 
-.form-grid {
+.grid {
   display: grid;
   grid-template-columns: minmax(12rem, 0.8fr) minmax(16rem, 1.2fr);
   gap: 1rem;
 }
 
-.form-field label span {
+.field label span {
   color: var(--color-muted);
   font-weight: 400;
 }
 
-.form-actions {
+.actions {
   justify-content: flex-end;
   gap: 0.65rem;
   margin-top: 1rem;
 }
 
-.small-button {
+.small {
   min-height: 2.25rem;
   padding: 0.4rem 0.7rem;
   font-size: 0.85rem;
 }
 
-.text-button {
+.text-btn {
   padding: 0.25rem;
   border: 0;
   color: var(--color-primary-dark);
@@ -72,25 +72,22 @@
   cursor: pointer;
 }
 
-.danger-text {
-  color: var(--color-danger);
-}
 
-.text-button:disabled {
+.text-btn:disabled {
   color: var(--color-muted);
 }
 
-.role-error {
+.error-text {
   color: var(--color-danger);
 }
 
-.role-list {
+.roles {
   display: grid;
   min-width: 0;
   gap: 0.75rem;
 }
 
-.role-card {
+.role {
   overflow: visible;
   min-width: 0;
   border: 1px solid var(--color-border);
@@ -98,15 +95,15 @@
   background: #ffffff;
 }
 
-.role-card.expanded {
+.role.expanded {
   border-color: #b8c7dd;
 }
 
-.role-summary {
+.summary {
   padding: 1rem 1.1rem;
 }
 
-.expand-button {
+.expand {
   display: flex;
   flex: 1;
   align-items: center;
@@ -119,7 +116,7 @@
   cursor: pointer;
 }
 
-.expand-icon {
+.arrow {
   margin-inline-end: 0.8rem;
   color: var(--color-muted);
   font-size: 1.6rem;
@@ -127,21 +124,21 @@
   transition: transform 150ms ease;
 }
 
-.expanded .expand-icon {
+.expanded .arrow {
   transform: rotate(90deg);
 }
 
-.role-copy,
-.role-description,
-.role-meta {
+.info,
+.description,
+.meta {
   display: block;
 }
 
-.role-copy {
+.info {
   min-width: 0;
 }
 
-.role-title-row {
+.title-row {
   gap: 0.6rem;
 }
 
@@ -154,8 +151,8 @@
   font-weight: 700;
 }
 
-.role-description,
-.role-meta {
+.description,
+.meta {
   margin-top: 0.2rem;
   overflow: hidden;
   color: var(--color-muted);
@@ -164,20 +161,20 @@
   white-space: nowrap;
 }
 
-.role-error {
+.error-text {
   margin: 0;
   padding: 0.75rem 1.1rem;
   border-top: 1px solid #fecaca;
   background: #fef2f2;
 }
 
-.permission-panel {
+.permissions {
   padding: 1.1rem;
   border-top: 1px solid var(--color-border);
   background: #f8fafc;
 }
 
-.entity-picker {
+.picker {
   margin-top: 1rem;
   padding: 0.8rem;
   border: 1px solid var(--color-border);
@@ -186,13 +183,13 @@
   background: #ffffff;
 }
 
-.entity-options {
+.choices {
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.6rem;
 }
 
-.entity-option {
+.choice {
   padding: 0.4rem 0.65rem;
   border: 1px solid #bfdbfe;
   border-radius: var(--radius-small);
@@ -201,13 +198,13 @@
   cursor: pointer;
 }
 
-.entity-list {
+.entities {
   display: grid;
   gap: 0.75rem;
   margin-top: 1rem;
 }
 
-.permission-entity {
+.entity {
   margin: 0;
   padding: 0.8rem;
   border: 1px solid var(--color-border);
@@ -215,59 +212,59 @@
   background: #ffffff;
 }
 
-.permission-entity legend {
+.entity legend {
   padding-inline: 0.35rem;
   font-weight: 700;
 }
 
-.permission-options {
+.options {
   display: grid;
   grid-template-columns: repeat(4, minmax(6rem, 1fr));
   gap: 0.6rem;
 }
 
-.permission-options label {
+.options label {
   display: flex;
   align-items: center;
   gap: 0.45rem;
   cursor: pointer;
 }
 
-.permission-options input {
+.options input {
   width: 1rem;
   height: 1rem;
   accent-color: var(--color-primary);
 }
 
-.empty-permissions,
-.saving-permissions {
+.empty,
+.saving {
   margin: 1rem 0 0;
   color: var(--color-muted);
 }
 
-.saving-permissions {
+.saving {
   font-size: 0.85rem;
 }
 
 @media (max-width: 43rem) {
-  .page-header {
+  .page-head {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .page-header .button {
+  .page-head .btn {
     width: 100%;
   }
 
-  .form-grid {
+  .grid {
     grid-template-columns: 1fr;
   }
 
-  .permission-heading {
+  .permission-head {
     align-items: flex-start;
   }
 
-  .permission-options {
+  .options {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

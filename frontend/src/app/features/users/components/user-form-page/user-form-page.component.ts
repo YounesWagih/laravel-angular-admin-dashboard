@@ -2,7 +2,10 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import type { UserStatus, UserType } from '../../../../core/models/authenticated-user.model';
+import type {
+  UserStatus,
+  UserType,
+} from '../../../../core/models/authenticated-user.model';
 import { AuthService } from '../../../../core/services/auth.service';
 import { FormFieldErrorComponent } from '../../../../shared/components/form-field-error/form-field-error.component';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
@@ -11,7 +14,7 @@ import type {
   CreateUserPayload,
   UpdateUserPayload,
   User,
-  UserRole
+  UserRole,
 } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 
@@ -19,7 +22,7 @@ import { UserService } from '../../services/user.service';
   selector: 'app-user-form-page',
   imports: [FormFieldErrorComponent, ReactiveFormsModule, RouterLink],
   templateUrl: './user-form-page.component.html',
-  styleUrl: './user-form-page.component.scss'
+  styleUrl: './user-form-page.component.scss',
 })
 export class UserFormPageComponent implements OnInit {
   private readonly formBuilder = inject(FormBuilder);
@@ -28,29 +31,38 @@ export class UserFormPageComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly userService = inject(UserService);
 
-  protected readonly userId = this.readUserId();
-  protected readonly editing = this.route.snapshot.paramMap.has('id');
-  protected readonly roles = signal<UserRole[]>([]);
-  protected readonly loading = signal(true);
-  protected readonly saving = signal(false);
-  protected readonly pageError = signal<string | null>(null);
-  protected readonly formError = signal<string | null>(null);
+  userId = this.readUserId();
+  editing = this.route.snapshot.paramMap.has('id');
+  roles = signal<UserRole[]>([]);
+  loading = signal(true);
+  saving = signal(false);
+  pageError = signal<string | null>(null);
+  formError = signal<string | null>(null);
   private loadedUser: User | null = null;
 
-  protected readonly userForm = this.formBuilder.nonNullable.group({
+  userForm = this.formBuilder.nonNullable.group({
     name: ['', [Validators.required, Validators.maxLength(255)]],
-    email: ['', [Validators.required, Validators.email, Validators.maxLength(255)]],
+    email: [
+      '',
+      [Validators.required, Validators.email, Validators.maxLength(255)],
+    ],
     password: [''],
-    type: this.formBuilder.nonNullable.control<UserType>('user', Validators.required),
+    type: this.formBuilder.nonNullable.control<UserType>(
+      'user',
+      Validators.required,
+    ),
     role_id: [0, [Validators.required, Validators.min(1)]],
-    status: this.formBuilder.nonNullable.control<UserStatus>('active', Validators.required)
+    status: this.formBuilder.nonNullable.control<UserStatus>(
+      'active',
+      Validators.required,
+    ),
   });
 
   ngOnInit(): void {
     if (!this.editing) {
       this.userForm.controls.password.setValidators([
         Validators.required,
-        Validators.minLength(8)
+        Validators.minLength(8),
       ]);
       this.userForm.controls.password.updateValueAndValidity();
     }
@@ -71,7 +83,7 @@ export class UserFormPageComponent implements OnInit {
       name: values.name.trim(),
       email: values.email.trim().toLowerCase(),
       type: values.type,
-      role_id: values.role_id
+      role_id: values.role_id,
     };
 
     try {
@@ -81,7 +93,7 @@ export class UserFormPageComponent implements OnInit {
         const payload: CreateUserPayload = {
           ...commonPayload,
           password: values.password,
-          status: values.status
+          status: values.status,
         };
         savedUser = await this.userService.create(payload);
       } else {
@@ -89,14 +101,17 @@ export class UserFormPageComponent implements OnInit {
 
         if (this.loadedUser?.status !== values.status) {
           try {
-            savedUser = await this.userService.updateStatus(this.userId, values.status);
+            savedUser = await this.userService.updateStatus(
+              this.userId,
+              values.status,
+            );
           } catch (error) {
             this.loadedUser = savedUser;
             this.formError.set(
               getApiErrorMessage(
                 error,
-                'The account details were saved, but its status could not be changed.'
-              )
+                'The account details were saved, but its status could not be changed.',
+              ),
             );
             return;
           }
@@ -107,7 +122,10 @@ export class UserFormPageComponent implements OnInit {
     } catch (error) {
       this.formError.set(
         applyServerValidationErrors(this.userForm, error) ??
-          getApiErrorMessage(error, 'The user could not be saved. Please try again.')
+          getApiErrorMessage(
+            error,
+            'The user could not be saved. Please try again.',
+          ),
       );
     } finally {
       this.saving.set(false);
@@ -135,7 +153,7 @@ export class UserFormPageComponent implements OnInit {
 
       const [user, roles] = await Promise.all([
         this.userService.show(this.userId),
-        this.userService.roleOptions()
+        this.userService.roleOptions(),
       ]);
       this.loadedUser = user;
       this.roles.set(roles);
@@ -145,10 +163,12 @@ export class UserFormPageComponent implements OnInit {
         password: '',
         type: user.type,
         role_id: user.role?.id ?? 0,
-        status: user.status
+        status: user.status,
       });
     } catch (error) {
-      this.pageError.set(getApiErrorMessage(error, 'The user could not be loaded.'));
+      this.pageError.set(
+        getApiErrorMessage(error, 'The user could not be loaded.'),
+      );
     } finally {
       this.loading.set(false);
     }
@@ -158,6 +178,8 @@ export class UserFormPageComponent implements OnInit {
     const value = this.route.snapshot.paramMap.get('id');
     const userId = value ? Number(value) : null;
 
-    return userId !== null && Number.isInteger(userId) && userId > 0 ? userId : null;
+    return userId !== null && Number.isInteger(userId) && userId > 0
+      ? userId
+      : null;
   }
 }

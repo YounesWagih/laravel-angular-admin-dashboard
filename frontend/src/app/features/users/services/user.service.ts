@@ -11,7 +11,7 @@ import type {
   User,
   UserFilters,
   UserRole,
-  UpdateUserPayload
+  UpdateUserPayload,
 } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
@@ -21,13 +21,15 @@ export class UserService {
 
   index(filters: UserFilters = {}): Promise<PaginatedUsersResponse> {
     return firstValueFrom(
-      this.http.get<PaginatedUsersResponse>(this.endpoint, { params: toHttpParams(filters) })
+      this.http.get<PaginatedUsersResponse>(this.endpoint, {
+        params: toHttpParams(filters),
+      }),
     );
   }
 
   async show(userId: number): Promise<User> {
     const response = await firstValueFrom(
-      this.http.get<ApiResponse<User>>(`${this.endpoint}/${userId}`)
+      this.http.get<ApiResponse<User>>(`${this.endpoint}/${userId}`),
     );
 
     return response.data;
@@ -35,7 +37,7 @@ export class UserService {
 
   async create(payload: CreateUserPayload): Promise<User> {
     const response = await firstValueFrom(
-      this.http.post<ApiResponse<User>>(this.endpoint, payload)
+      this.http.post<ApiResponse<User>>(this.endpoint, payload),
     );
 
     return response.data;
@@ -43,7 +45,7 @@ export class UserService {
 
   async update(userId: number, payload: UpdateUserPayload): Promise<User> {
     const response = await firstValueFrom(
-      this.http.patch<ApiResponse<User>>(`${this.endpoint}/${userId}`, payload)
+      this.http.patch<ApiResponse<User>>(`${this.endpoint}/${userId}`, payload),
     );
 
     return response.data;
@@ -51,7 +53,9 @@ export class UserService {
 
   async updateStatus(userId: number, status: User['status']): Promise<User> {
     const response = await firstValueFrom(
-      this.http.patch<ApiResponse<User>>(`${this.endpoint}/${userId}/status`, { status })
+      this.http.patch<ApiResponse<User>>(`${this.endpoint}/${userId}/status`, {
+        status,
+      }),
     );
 
     return response.data;
@@ -59,7 +63,7 @@ export class UserService {
 
   async roleOptions(): Promise<UserRole[]> {
     const response = await firstValueFrom(
-      this.http.get<ApiResponse<UserRole[]>>(`${environment.apiUrl}/roles`)
+      this.http.get<ApiResponse<UserRole[]>>(`${environment.apiUrl}/roles`),
     );
 
     return response.data;

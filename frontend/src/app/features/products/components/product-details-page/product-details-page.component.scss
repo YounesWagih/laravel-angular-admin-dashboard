@@ -2,18 +2,18 @@
   display: block;
 }
 
-.header-actions {
+.actions {
   display: flex;
   gap: 0.65rem;
 }
 
-.product-title {
+.title {
   display: flex;
   align-items: center;
   gap: 0.65rem;
 }
 
-.back-link {
+.back {
   display: grid;
   width: 2.25rem;
   height: 2.25rem;
@@ -21,44 +21,40 @@
   place-items: center;
   border-radius: var(--radius-small);
   color: var(--color-muted);
+  text-decoration: none;
 }
 
-.back-link:hover {
+.back:hover {
   color: var(--color-text);
   background: #e2e8f0;
 }
 
-.back-link svg {
-  width: 1.35rem;
-  height: 1.35rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.back span {
+  font-size: 1.5rem;
+  line-height: 1;
 }
 
-.action-alert {
+.error-box {
   margin-bottom: 1rem;
 }
 
-.danger-button {
+.danger-btn {
   border-color: #fecaca;
   color: var(--color-danger);
   background: #ffffff;
 }
 
-.danger-button:hover:not(:disabled) {
+.danger-btn:hover:not(:disabled) {
   background: #fef2f2;
 }
 
-.product-overview {
+.overview {
   display: grid;
   grid-template-columns: minmax(14rem, 22rem) minmax(0, 1fr);
   gap: 1.5rem;
 }
 
-.image-panel {
+.image {
   overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-medium);
@@ -66,18 +62,18 @@
   aspect-ratio: 1;
 }
 
-.image-panel img,
-.image-placeholder {
+.image img,
+.placeholder {
   width: 100%;
   height: 100%;
 }
 
-.image-panel img {
+.image img {
   display: block;
   object-fit: cover;
 }
 
-.image-placeholder {
+.placeholder {
   display: grid;
   place-items: center;
   color: var(--color-muted);
@@ -97,7 +93,7 @@ dl div {
   border-radius: var(--radius-small);
 }
 
-.wide-detail {
+.wide {
   grid-column: 1 / -1;
 }
 
@@ -113,7 +109,7 @@ dd {
   white-space: pre-wrap;
 }
 
-.status-badge {
+.status {
   display: inline-flex;
   padding: 0.25rem 0.55rem;
   border-radius: 999px;
@@ -123,24 +119,24 @@ dd {
   font-weight: 700;
 }
 
-.status-badge.inactive {
+.status.inactive {
   color: #475569;
   background: #e2e8f0;
 }
 
 @media (max-width: 48rem) {
-  .product-overview {
+  .overview {
     grid-template-columns: 1fr;
   }
 
-  .image-panel {
+  .image {
     max-width: 24rem;
   }
 }
 
 @media (max-width: 43rem) {
-  .page-header,
-  .header-actions {
+  .page-head,
+  .actions {
     align-items: stretch;
     flex-direction: column;
   }
@@ -149,7 +145,7 @@ dd {
     grid-template-columns: 1fr;
   }
 
-  .wide-detail {
+  .wide {
     grid-column: auto;
   }
 }

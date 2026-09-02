@@ -1,53 +1,53 @@
-<header class="page-header">
+<header class="page-head">
   <div>
     <h1>Admin Dashboard</h1>
     <p>Welcome, {{ auth.user()?.name }}. Here is your application overview.</p>
   </div>
-  <span class="role-badge">Administrator</span>
+  <span class="badge">Administrator</span>
 </header>
 
 @if (loading()) {
-  <section class="page-panel state-panel" aria-live="polite">Loading dashboard…</section>
+  <section class="panel state" aria-live="polite">Loading dashboard…</section>
 } @else if (error()) {
-  <section class="page-panel state-panel">
+  <section class="panel state">
     <div>
-      <p class="state-error" role="alert">{{ error() }}</p>
-      <button class="button secondary-button" type="button" (click)="loadSummary()">Retry</button>
+      <p class="error-text" role="alert">{{ error() }}</p>
+      <button class="btn secondary" type="button" (click)="loadSummary()">Retry</button>
     </div>
   </section>
 } @else {
-  <section class="summary-grid" aria-label="Application summary">
-    <a class="page-panel summary-card" routerLink="/users">
-      <span class="summary-value">{{ summary().users_count }}</span>
-      <span class="summary-label">Users</span>
+  <section class="stats" aria-label="Application summary">
+    <a class="panel stat" routerLink="/users">
+      <span class="value">{{ summary().users_count }}</span>
+      <span class="label">Users</span>
     </a>
 
-    <a class="page-panel summary-card" routerLink="/products">
-      <span class="summary-value">{{ summary().products_count }}</span>
-      <span class="summary-label">Products</span>
+    <a class="panel stat" routerLink="/products">
+      <span class="value">{{ summary().products_count }}</span>
+      <span class="label">Products</span>
     </a>
 
-    <a class="page-panel summary-card" routerLink="/categories">
-      <span class="summary-value">{{ summary().categories_count }}</span>
-      <span class="summary-label">Categories</span>
+    <a class="panel stat" routerLink="/categories">
+      <span class="value">{{ summary().categories_count }}</span>
+      <span class="label">Categories</span>
     </a>
 
-    <a class="page-panel summary-card" routerLink="/roles">
-      <span class="summary-value">{{ summary().roles_count }}</span>
-      <span class="summary-label">Roles</span>
+    <a class="panel stat" routerLink="/roles">
+      <span class="value">{{ summary().roles_count }}</span>
+      <span class="label">Roles</span>
     </a>
   </section>
 }
 
-<section class="page-panel quick-actions">
-  <div class="section-heading">
+<section class="panel quick">
+  <div class="heading">
     <h2>Quick actions</h2>
     <p>Open the most common management tasks.</p>
   </div>
 
-  <div class="action-links">
-    <a class="button button-primary" routerLink="/products/new">Add product</a>
-    <a class="button secondary-button" routerLink="/users/new">Add user</a>
-    <a class="button secondary-button" routerLink="/roles">Manage roles</a>
+  <div class="links">
+    <a class="btn primary" routerLink="/products/new">Add product</a>
+    <a class="btn secondary" routerLink="/users/new">Add user</a>
+    <a class="btn secondary" routerLink="/roles">Manage roles</a>
   </div>
 </section>

@@ -3,7 +3,7 @@
   min-height: 100vh;
 }
 
-.shell {
+.layout {
   display: grid;
   grid-template-columns: 15rem minmax(0, 1fr);
   min-height: 100vh;
@@ -24,7 +24,7 @@
   min-height: 3rem;
 }
 
-.brand-mark {
+.logo {
   display: grid;
   place-items: center;
   width: 2.5rem;
@@ -39,33 +39,33 @@
 
 .brand strong,
 .brand small,
-.current-user strong,
-.current-user small {
+.user strong,
+.user small {
   display: block;
 }
 
 .brand strong,
-.current-user strong,
-.current-user small {
+.user strong,
+.user small {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .brand small,
-.current-user small {
+.user small {
   margin-top: 0.2rem;
   color: #cbd5e1;
   font-size: 0.75rem;
 }
 
-.navigation {
+.nav {
   display: grid;
   gap: 0.35rem;
   margin-top: 2rem;
 }
 
-.navigation a {
+.nav a {
   padding: 0.7rem 0.85rem;
   border-radius: var(--radius-small);
   color: #cbd5e1;
@@ -73,23 +73,23 @@
   transition: background-color 120ms ease, color 120ms ease;
 }
 
-.navigation a:hover,
-.navigation a.active {
+.nav a:hover,
+.nav a.active {
   color: #ffffff;
   background: rgb(255 255 255 / 10%);
 }
 
-.sidebar-footer {
+.sidebar-bottom {
   margin-top: auto;
   padding-top: 1rem;
   border-top: 1px solid rgb(255 255 255 / 14%);
 }
 
-.current-user {
+.user {
   min-width: 0;
 }
 
-.logout-button {
+.logout {
   width: 100%;
   margin-top: 0.9rem;
   padding: 0.65rem 0.8rem;
@@ -100,7 +100,7 @@
   cursor: pointer;
 }
 
-.logout-button:hover:not(:disabled) {
+.logout:hover:not(:disabled) {
   background: rgb(255 255 255 / 10%);
 }
 
@@ -110,7 +110,7 @@
   font-size: 0.8rem;
 }
 
-.workspace {
+.main {
   min-width: 0;
 }
 
@@ -124,12 +124,21 @@
   background: #ffffff;
 }
 
-.topbar-title {
+.user-avatar {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  color: #ffffff;
+  background: var(--color-primary);
   font-size: 0.9rem;
+  font-weight: 700;
 }
 
-.menu-button,
-.menu-overlay {
+.menu-btn,
+.shade {
   display: none;
 }
 
@@ -138,7 +147,7 @@
 }
 
 @media (max-width: 47.99rem) {
-  .shell {
+  .layout {
     display: block;
   }
 
@@ -153,11 +162,11 @@
     transition: transform 180ms ease;
   }
 
-  .menu-open .sidebar {
+  .open .sidebar {
     transform: translateX(0);
   }
 
-  .menu-overlay {
+  .shade {
     position: fixed;
     inset: 0;
     z-index: 10;
@@ -165,7 +174,7 @@
     background: rgb(15 23 42 / 48%);
   }
 
-  .menu-open .menu-overlay {
+  .open .shade {
     display: block;
   }
 
@@ -174,7 +183,7 @@
     padding-inline: 1rem;
   }
 
-  .menu-button {
+  .menu-btn {
     display: grid;
     gap: 0.22rem;
     width: 2.5rem;
@@ -186,7 +195,7 @@
     cursor: pointer;
   }
 
-  .menu-button span {
+  .menu-btn span {
     width: 1rem;
     height: 2px;
     background: var(--color-text);

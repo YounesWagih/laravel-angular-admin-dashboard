@@ -1,13 +1,13 @@
 <dialog
   #dialog
-  class="confirmation-dialog"
+  class="dialog"
   aria-labelledby="confirmation-title"
   aria-describedby="confirmation-message"
   (cancel)="cancel($event)"
 >
   <section>
     <header>
-      <span class="warning-icon" aria-hidden="true">!</span>
+      <span class="warning" aria-hidden="true">!</span>
       <div>
         <h2 id="confirmation-title">{{ title() }}</h2>
         <p id="confirmation-message">{{ message() }}</p>
@@ -15,13 +15,13 @@
     </header>
 
     <footer>
-      <button class="button secondary-button" type="button" [disabled]="busy()" (click)="cancelled.emit()">
+      <button class="btn secondary" type="button" [disabled]="busy()" (click)="cancelled.emit()">
         Cancel
       </button>
       <button
-        class="button"
-        [class.button-primary]="!danger()"
-        [class.danger-button]="danger()"
+        class="btn"
+        [class.primary]="!danger()"
+        [class.danger-btn]="danger()"
         type="button"
         [disabled]="busy()"
         (click)="confirmed.emit()"

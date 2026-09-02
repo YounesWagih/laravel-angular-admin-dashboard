@@ -9,9 +9,14 @@ import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 
 @Component({
   selector: 'app-login-page',
-  imports: [AuthLayoutComponent, FormFieldErrorComponent, ReactiveFormsModule, RouterLink],
+  imports: [
+    AuthLayoutComponent,
+    FormFieldErrorComponent,
+    ReactiveFormsModule,
+    RouterLink,
+  ],
   templateUrl: './login-page.component.html',
-  styleUrl: './login-page.component.scss'
+  styleUrl: './login-page.component.scss',
 })
 export class LoginPageComponent {
   private readonly auth = inject(AuthService);
@@ -19,12 +24,12 @@ export class LoginPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
-  protected readonly submitting = signal(false);
-  protected readonly requestError = signal<string | null>(null);
-  protected readonly form = this.formBuilder.nonNullable.group({
+  submitting = signal(false);
+  requestError = signal<string | null>(null);
+  form = this.formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
-    remember: false
+    remember: false,
   });
 
   protected async submit(): Promise<void> {
@@ -38,22 +43,14 @@ export class LoginPageComponent {
 
     try {
       await this.auth.login(this.form.getRawValue());
-      await this.router.navigateByUrl(this.safeReturnUrl());
+      await this.router.navigate(['/dashboard']);
     } catch (error) {
       this.requestError.set(
         applyServerValidationErrors(this.form, error) ??
-          'The request could not be completed. Please try again.'
+          'The request could not be completed. Please try again.',
       );
     } finally {
       this.submitting.set(false);
     }
-  }
-
-  private safeReturnUrl(): string {
-    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
-
-    return returnUrl?.startsWith('/') === true && !returnUrl.startsWith('//')
-      ? returnUrl
-      : '/dashboard';
   }
 }

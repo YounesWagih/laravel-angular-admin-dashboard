@@ -1,48 +1,48 @@
-<header class="page-header">
+<header class="page-head">
   <div>
     <h1>Roles & Permissions</h1>
     <p>Create roles and control what each role can do.</p>
   </div>
 
-  <button class="button button-primary" type="button" (click)="openCreateForm()">
+  <button class="btn primary" type="button" (click)="openCreateForm()">
     Add role
   </button>
 </header>
 
 @if (formOpen()) {
-  <section class="page-panel role-form-panel">
-    <div class="section-heading">
+  <section class="panel form-box">
+    <div class="heading">
       <div>
         <h2>{{ editingRoleId() ? 'Edit role' : 'Create role' }}</h2>
         <p>Role permissions are managed after the role is saved.</p>
       </div>
-      <button class="text-button" type="button" (click)="closeRoleForm()">Close</button>
+      <button class="text-btn" type="button" (click)="closeRoleForm()">Close</button>
     </div>
 
     <form [formGroup]="roleForm" (ngSubmit)="saveRole()" novalidate>
       @if (formError(); as error) {
-        <div class="alert alert-danger" role="alert">{{ error }}</div>
+        <div class="alert error" role="alert">{{ error }}</div>
       }
 
-      <div class="form-grid">
-        <div class="form-field">
+      <div class="grid">
+        <div class="field">
           <label for="role-name">Name</label>
           <input id="role-name" type="text" formControlName="name" autocomplete="off" />
           <app-form-field-error [control]="roleForm.controls.name" />
         </div>
 
-        <div class="form-field form-field-wide">
+        <div class="field wide">
           <label for="role-description">Description <span>(optional)</span></label>
           <textarea id="role-description" formControlName="description" rows="3"></textarea>
           <app-form-field-error [control]="roleForm.controls.description" />
         </div>
       </div>
 
-      <div class="form-actions">
-        <button class="button secondary-button" type="button" (click)="closeRoleForm()">
+      <div class="actions">
+        <button class="btn secondary" type="button" (click)="closeRoleForm()">
           Cancel
         </button>
-        <button class="button button-primary" type="submit" [disabled]="savingRole()">
+        <button class="btn primary" type="submit" [disabled]="savingRole()">
           {{ savingRole() ? 'Saving…' : 'Save role' }}
         </button>
       </div>
@@ -51,38 +51,38 @@
 }
 
 @if (pageError(); as error) {
-  <section class="page-panel state-panel">
-    <p class="state-error" role="alert">{{ error }}</p>
-    <button class="button secondary-button" type="button" (click)="loadRoles()">Retry</button>
+  <section class="panel state">
+    <p class="error-text" role="alert">{{ error }}</p>
+    <button class="btn secondary" type="button" (click)="loadRoles()">Retry</button>
   </section>
 } @else if (loading()) {
-  <section class="page-panel state-panel" aria-live="polite">Loading roles…</section>
+  <section class="panel state" aria-live="polite">Loading roles…</section>
 } @else if (roles().length === 0) {
-  <section class="page-panel state-panel">No roles have been created yet.</section>
+  <section class="panel state">No roles have been created yet.</section>
 } @else {
-  <div class="role-list">
+  <div class="roles">
     @for (role of roles(); track role.id) {
-      <article class="role-card" [class.expanded]="expandedRoleId() === role.id">
-        <div class="role-summary">
+      <article class="role" [class.expanded]="expandedRoleId() === role.id">
+        <div class="summary">
           <button
-            class="expand-button"
+            class="expand"
             type="button"
             [attr.aria-expanded]="expandedRoleId() === role.id"
             [attr.aria-controls]="'role-permissions-' + role.id"
             (click)="toggleExpanded(role.id)"
           >
-            <span class="expand-icon" aria-hidden="true">›</span>
-            <span class="role-copy">
-              <span class="role-title-row">
+            <span class="arrow" aria-hidden="true">›</span>
+            <span class="info">
+              <span class="title-row">
                 <strong>{{ role.name }}</strong>
                 @if (role.is_default) {
                   <span class="badge">Default</span>
                 }
               </span>
-              <span class="role-description">
+              <span class="description">
                 {{ role.description || 'No description.' }}
               </span>
-              <span class="role-meta">
+              <span class="meta">
                 {{ role.users_count }} {{ role.users_count === 1 ? 'user' : 'users' }} ·
                 {{ role.permissions.length }}
                 {{ role.permissions.length === 1 ? 'permission' : 'permissions' }}
@@ -90,12 +90,12 @@
             </span>
           </button>
 
-          <details #roleMenu class="action-menu" name="role-actions">
+          <details #roleMenu class="menu" name="role-actions">
             <summary [attr.aria-label]="'Actions for ' + role.name">⋮</summary>
 
-            <div class="action-menu-popover">
+            <div class="menu-box">
               <button
-                class="action-menu-item"
+                class="item"
                 type="button"
                 (click)="roleMenu.open = false; openEditForm(role)"
               >
@@ -103,7 +103,7 @@
               </button>
 
               <button
-                class="action-menu-item"
+                class="item"
                 type="button"
                 [disabled]="role.is_default"
                 [title]="role.is_default ? 'This is already the default role.' : ''"
@@ -113,7 +113,7 @@
               </button>
 
               <button
-                class="action-menu-item action-menu-item-danger"
+                class="item danger"
                 type="button"
                 [disabled]="role.is_default || role.users_count > 0"
                 [title]="deleteDisabledReason(role)"
@@ -126,19 +126,19 @@
         </div>
 
         @if (roleErrors()[role.id]; as error) {
-          <p class="role-error" role="alert">{{ error }}</p>
+          <p class="error-text" role="alert">{{ error }}</p>
         }
 
         @if (expandedRoleId() === role.id) {
-          <section class="permission-panel" [id]="'role-permissions-' + role.id">
-            <div class="permission-heading">
+          <section class="permissions" [id]="'role-permissions-' + role.id">
+            <div class="permission-head">
               <div>
                 <h3>Permissions</h3>
                 <p>Changes are saved immediately.</p>
               </div>
 
               <button
-                class="button secondary-button small-button"
+                class="btn secondary small"
                 type="button"
                 [disabled]="isRoleSyncing(role.id)"
                 (click)="toggleEntityPicker(role)"
@@ -148,17 +148,17 @@
             </div>
 
             @if (entityPickerRoleId() === role.id) {
-              <div class="entity-picker">
+              <div class="picker">
                 @if (loadingAvailableEntities()) {
                   <span>Loading available entities…</span>
                 } @else if (availableEntities().length === 0) {
                   <span>No other entities are available.</span>
                 } @else {
                   <span>Choose an entity:</span>
-                  <div class="entity-options">
+                  <div class="choices">
                     @for (entity of availableEntities(); track entity.name) {
                       <button
-                        class="entity-option"
+                        class="choice"
                         type="button"
                         (click)="addEntity(role.id, entity.name)"
                       >
@@ -171,13 +171,13 @@
             }
 
             @if (displayedEntities(role).length === 0) {
-              <p class="empty-permissions">No permission entities are assigned to this role.</p>
+              <p class="empty">No permission entities are assigned to this role.</p>
             } @else {
-              <div class="entity-list">
+              <div class="entities">
                 @for (entity of displayedEntities(role); track entity.name) {
-                  <fieldset class="permission-entity" [disabled]="isRoleSyncing(role.id)">
+                  <fieldset class="entity" [disabled]="isRoleSyncing(role.id)">
                     <legend>{{ entity.name | titlecase }}</legend>
-                    <div class="permission-options">
+                    <div class="options">
                       @for (permission of entity.permissions; track permission.name) {
                         <label>
                           <input
@@ -195,7 +195,7 @@
             }
 
             @if (isRoleSyncing(role.id)) {
-              <p class="saving-permissions" aria-live="polite">Saving permissions…</p>
+              <p class="saving" aria-live="polite">Saving permissions…</p>
             }
           </section>
         }

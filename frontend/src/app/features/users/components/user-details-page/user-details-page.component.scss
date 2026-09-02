@@ -2,18 +2,18 @@
   display: block;
 }
 
-.header-actions {
+.actions {
   display: flex;
   gap: 0.65rem;
 }
 
-.page-title {
+.title {
   display: flex;
   align-items: center;
   gap: 0.65rem;
 }
 
-.back-link {
+.back {
   display: grid;
   width: 2.25rem;
   height: 2.25rem;
@@ -21,24 +21,20 @@
   place-items: center;
   border-radius: var(--radius-small);
   color: var(--color-muted);
+  text-decoration: none;
 }
 
-.back-link:hover {
+.back:hover {
   color: var(--color-text);
   background: #e2e8f0;
 }
 
-.back-link svg {
-  width: 1.35rem;
-  height: 1.35rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.back span {
+  font-size: 1.5rem;
+  line-height: 1;
 }
 
-.details-panel {
+.details {
   max-width: 58rem;
 }
 
@@ -71,7 +67,7 @@ dd {
   overflow-wrap: anywhere;
 }
 
-.status-badge {
+.status {
   display: inline-block;
   padding: 0.15rem 0.45rem;
   border-radius: 999px;
@@ -81,14 +77,14 @@ dd {
   font-weight: 700;
 }
 
-.status-badge.inactive {
+.status.inactive {
   color: #991b1b;
   background: #fee2e2;
 }
 
 @media (max-width: 43rem) {
-  .page-header,
-  .header-actions {
+  .page-head,
+  .actions {
     align-items: stretch;
     flex-direction: column;
   }

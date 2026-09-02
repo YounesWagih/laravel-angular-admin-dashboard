@@ -8,13 +8,13 @@ import { ConfirmationDialogComponent } from '../../../../shared/components/confi
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import {
   EMPTY_PAGINATION_META,
-  type PaginationMeta
+  type PaginationMeta,
 } from '../../../../shared/models/pagination.model';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
 import type {
   Product,
   ProductCategory,
-  ProductStatus
+  ProductStatus,
 } from '../../models/product.model';
 import { ProductService } from '../../services/product.service';
 
@@ -25,29 +25,29 @@ import { ProductService } from '../../services/product.service';
     PaginationComponent,
     ReactiveFormsModule,
     RouterLink,
-    TitleCasePipe
+    TitleCasePipe,
   ],
   templateUrl: './products-page.component.html',
-  styleUrl: './products-page.component.scss'
+  styleUrl: './products-page.component.scss',
 })
 export class ProductsPageComponent implements OnInit {
   private readonly auth = inject(AuthService);
   private readonly formBuilder = inject(FormBuilder);
   private readonly productService = inject(ProductService);
 
-  protected readonly products = signal<Product[]>([]);
-  protected readonly categories = signal<ProductCategory[]>([]);
-  protected readonly loading = signal(true);
-  protected readonly pageError = signal<string | null>(null);
-  protected readonly actionError = signal<string | null>(null);
-  protected readonly pagination = signal<PaginationMeta>(EMPTY_PAGINATION_META);
-  protected readonly confirmingDeleteId = signal<number | null>(null);
-  protected readonly deletingProductId = signal<number | null>(null);
+  products = signal<Product[]>([]);
+  categories = signal<ProductCategory[]>([]);
+  loading = signal(true);
+  pageError = signal<string | null>(null);
+  actionError = signal<string | null>(null);
+  pagination = signal<PaginationMeta>(EMPTY_PAGINATION_META);
+  confirmingDeleteId = signal<number | null>(null);
+  deletingProductId = signal<number | null>(null);
 
-  protected readonly filtersForm = this.formBuilder.nonNullable.group({
+  filtersForm = this.formBuilder.nonNullable.group({
     search: ['', Validators.maxLength(255)],
     category_id: [0],
-    status: this.formBuilder.nonNullable.control<ProductStatus | ''>('')
+    status: this.formBuilder.nonNullable.control<ProductStatus | ''>(''),
   });
 
   ngOnInit(): void {
@@ -83,7 +83,11 @@ export class ProductsPageComponent implements OnInit {
   protected hasFilters(): boolean {
     const filters = this.filtersForm.getRawValue();
 
-    return filters.search.trim() !== '' || filters.category_id > 0 || filters.status !== '';
+    return (
+      filters.search.trim() !== '' ||
+      filters.category_id > 0 ||
+      filters.status !== ''
+    );
   }
 
   protected requestDelete(product: Product): void {
@@ -102,14 +106,18 @@ export class ProductsPageComponent implements OnInit {
     try {
       await this.productService.delete(product.id);
       this.confirmingDeleteId.set(null);
-      const nextPage = this.products().length === 1
-        ? Math.max(1, this.pagination().current_page - 1)
-        : this.pagination().current_page;
+      const nextPage =
+        this.products().length === 1
+          ? Math.max(1, this.pagination().current_page - 1)
+          : this.pagination().current_page;
       await this.loadProducts(nextPage);
     } catch (error) {
       this.confirmingDeleteId.set(null);
       this.actionError.set(
-        getApiErrorMessage(error, 'The product could not be deleted. Please try again.')
+        getApiErrorMessage(
+          error,
+          'The product could not be deleted. Please try again.',
+        ),
       );
     } finally {
       this.deletingProductId.set(null);
@@ -124,7 +132,7 @@ export class ProductsPageComponent implements OnInit {
   protected formatPrice(value: string): string {
     return new Intl.NumberFormat('en-EG', {
       style: 'currency',
-      currency: 'EGP'
+      currency: 'EGP',
     }).format(Number(value));
   }
 
@@ -135,19 +143,26 @@ export class ProductsPageComponent implements OnInit {
     try {
       const [products, options] = await Promise.all([
         this.productService.index(),
-        this.productService.options()
+        this.productService.options(),
       ]);
       this.categories.set(options.categories);
       this.products.set(products.data);
       this.pagination.set(products.meta);
     } catch (error) {
-      this.pageError.set(getApiErrorMessage(error, 'Products could not be loaded. Please try again.'));
+      this.pageError.set(
+        getApiErrorMessage(
+          error,
+          'Products could not be loaded. Please try again.',
+        ),
+      );
     } finally {
       this.loading.set(false);
     }
   }
 
-  protected async loadProducts(page = this.pagination().current_page): Promise<void> {
+  protected async loadProducts(
+    page = this.pagination().current_page,
+  ): Promise<void> {
     this.loading.set(true);
     this.pageError.set(null);
     this.actionError.set(null);
@@ -158,15 +173,19 @@ export class ProductsPageComponent implements OnInit {
         search: filters.search.trim() || undefined,
         category_id: filters.category_id || undefined,
         status: filters.status || undefined,
-        page
+        page,
       });
       this.products.set(response.data);
       this.pagination.set(response.meta);
     } catch (error) {
-      this.pageError.set(getApiErrorMessage(error, 'Products could not be loaded. Please try again.'));
+      this.pageError.set(
+        getApiErrorMessage(
+          error,
+          'Products could not be loaded. Please try again.',
+        ),
+      );
     } finally {
       this.loading.set(false);
     }
   }
-
 }

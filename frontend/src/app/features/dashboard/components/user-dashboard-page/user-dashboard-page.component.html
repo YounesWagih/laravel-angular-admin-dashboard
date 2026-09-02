@@ -1,10 +1,10 @@
-<header class="page-header">
+<header class="page-head">
   <div>
     <h1>Dashboard</h1>
     <p>Welcome, {{ auth.user()?.name }}. Choose an available action to get started.</p>
   </div>
   @if (auth.user()?.role?.name; as roleName) {
-    <span class="role-badge">{{ roleName }}</span>
+    <span class="badge">{{ roleName }}</span>
   }
 </header>
 
@@ -13,16 +13,16 @@
   auth.hasPermission('products.create') ||
   auth.hasPermission('categories.read')
 ) {
-  <section class="page-panel quick-actions">
-    <div class="section-heading">
+  <section class="panel quick">
+    <div class="heading">
       <h2>Your access</h2>
       <p>These actions are available for your current role.</p>
     </div>
 
-    <div class="dashboard-grid" aria-label="Available actions">
+    <div class="grid" aria-label="Available actions">
       @if (auth.hasPermission('products.read')) {
-        <a class="dashboard-link" routerLink="/products">
-          <span class="link-mark" aria-hidden="true">P</span>
+        <a class="link" routerLink="/products">
+          <span class="icon" aria-hidden="true">P</span>
           <span>
             <h2>Products</h2>
             <p>Browse available products.</p>
@@ -31,8 +31,8 @@
       }
 
       @if (auth.hasPermission('products.create')) {
-        <a class="dashboard-link" routerLink="/products/new">
-          <span class="link-mark" aria-hidden="true">+</span>
+        <a class="link" routerLink="/products/new">
+          <span class="icon" aria-hidden="true">+</span>
           <span>
             <h2>Add product</h2>
             <p>Create a new product.</p>
@@ -41,8 +41,8 @@
       }
 
       @if (auth.hasPermission('categories.read')) {
-        <a class="dashboard-link" routerLink="/categories">
-          <span class="link-mark" aria-hidden="true">C</span>
+        <a class="link" routerLink="/categories">
+          <span class="icon" aria-hidden="true">C</span>
           <span>
             <h2>Categories</h2>
             <p>Browse product categories.</p>
@@ -52,7 +52,7 @@
     </div>
   </section>
 } @else {
-  <section class="page-panel empty-dashboard">
+  <section class="panel empty">
     <p>No sections are available for your current role.</p>
   </section>
 }
