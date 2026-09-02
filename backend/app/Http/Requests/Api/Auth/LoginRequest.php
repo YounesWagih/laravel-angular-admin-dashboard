@@ -29,7 +29,7 @@ final class LoginRequest extends FormRequest
 
         if (! $authenticated) {
             throw ValidationException::withMessages([
-                'email' => __('The provided credentials are incorrect.'),
+                'email' => 'The provided credentials are incorrect.',
             ]);
         }
     }

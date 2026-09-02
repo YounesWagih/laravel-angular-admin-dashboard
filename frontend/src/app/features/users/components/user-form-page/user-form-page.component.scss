@@ -2,6 +2,37 @@
   display: block;
 }
 
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.back-link {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: var(--radius-small);
+  color: var(--color-muted);
+}
+
+.back-link:hover {
+  color: var(--color-text);
+  background: #e2e8f0;
+}
+
+.back-link svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .form-panel {
   max-width: 58rem;
 }

@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 
 import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
+import { adminDashboardMatch } from './core/guards/admin-dashboard-match.guard';
 import { guestGuard } from './core/guards/guest.guard';
 import { permissionGuard } from './core/guards/permission.guard';
 
@@ -33,9 +34,19 @@ export const routes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
         path: 'dashboard',
+        canMatch: [adminDashboardMatch],
         loadComponent: () =>
-          import('./features/dashboard/components/dashboard-page/dashboard-page.component').then(
-            (component) => component.DashboardPageComponent
+          import(
+            './features/dashboard/components/admin-dashboard-page/admin-dashboard-page.component'
+          ).then((component) => component.AdminDashboardPageComponent)
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import(
+            './features/dashboard/components/user-dashboard-page/user-dashboard-page.component'
+          ).then(
+            (component) => component.UserDashboardPageComponent
           )
       },
       {

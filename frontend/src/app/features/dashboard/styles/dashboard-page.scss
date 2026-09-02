@@ -1,0 +1,109 @@
+.summary-grid,
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+}
+
+.summary-grid {
+  margin-bottom: 1rem;
+}
+
+.role-badge {
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  color: var(--color-primary-dark);
+  background: #dbeafe;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.summary-card,
+.dashboard-link {
+  color: inherit;
+  text-decoration: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.summary-card:hover,
+.dashboard-link:hover {
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-card);
+}
+
+.summary-card {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.summary-value {
+  color: var(--color-primary-dark);
+  font-size: 1.75rem;
+  font-weight: 750;
+}
+
+.summary-label {
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.quick-actions {
+  display: grid;
+  gap: 1rem;
+}
+
+.section-heading h2,
+.dashboard-link h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.section-heading p,
+.dashboard-link p,
+.empty-dashboard p {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.section-heading p {
+  margin-top: 0.25rem;
+}
+
+.action-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.dashboard-link {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-small);
+}
+
+.link-mark {
+  display: grid;
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border-radius: var(--radius-small);
+  color: var(--color-primary-dark);
+  background: #eff6ff;
+  font-weight: 750;
+}
+
+.empty-dashboard {
+  text-align: center;
+}
+
+@media (max-width: 43rem) {
+  .action-links {
+    display: grid;
+  }
+}

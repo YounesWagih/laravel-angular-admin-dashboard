@@ -1,11 +1,22 @@
 <header class="page-header">
   <div>
-    <h1>{{ editing ? 'Edit user' : 'Add user' }}</h1>
+    <div class="page-title">
+      @if (editing) {
+        <a class="back-link" routerLink="/users" aria-label="Back to users" title="Back to users">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M19 12H5m7-7-7 7 7 7" />
+          </svg>
+        </a>
+      }
+      <h1>{{ editing ? 'Edit user' : 'Add user' }}</h1>
+    </div>
     <p>
       {{ editing ? 'Update account information and access.' : 'Create an account with one role.' }}
     </p>
   </div>
-  <a class="button secondary-button" routerLink="/users">Back to users</a>
+  @if (!editing) {
+    <a class="button secondary-button" routerLink="/users">Back to users</a>
+  }
 </header>
 
 @if (pageError(); as error) {

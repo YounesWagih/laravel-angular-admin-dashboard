@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Category\CategoryController;
+use App\Http\Controllers\Api\Dashboard\DashboardController;
 use App\Http\Controllers\Api\Product\ProductController;
 use App\Http\Controllers\Api\Role\RoleController;
 use App\Http\Controllers\Api\User\UserController;
@@ -18,6 +19,8 @@ Route::prefix('auth')->controller(AuthController::class)->group(function (): voi
 });
 
 Route::middleware(['auth:sanctum', 'active', 'admin'])->group(function (): void {
+    Route::get('/dashboard', DashboardController::class);
+
     Route::get('/roles', [RoleController::class, 'index']);
     Route::post('/roles', [RoleController::class, 'store']);
     Route::get('/roles/{role}/available-entities', [RoleController::class, 'availableEntities']);
