@@ -4,7 +4,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../../core/services/auth.service';
 import { FormFieldErrorComponent } from '../../../../shared/components/form-field-error/form-field-error.component';
-import { applyServerValidationErrors } from '../../../../shared/utils/form-error.util';
+import {
+  applyServerValidationErrors,
+  clearServerValidationErrors,
+} from '../../../../shared/utils/form-error.util';
 import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 
 @Component({
@@ -33,6 +36,8 @@ export class LoginPageComponent {
   });
 
   protected async submit(): Promise<void> {
+    clearServerValidationErrors(this.form);
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;

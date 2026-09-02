@@ -19,3 +19,17 @@ export function applyServerValidationErrors(form: FormGroup, error: unknown): st
 
   return response.message ?? null;
 }
+
+export function clearServerValidationErrors(form: FormGroup): void {
+  for (const control of Object.values(form.controls)) {
+    const errors = control.errors;
+
+    if (!errors?.['server']) {
+      continue;
+    }
+
+    const remainingErrors = { ...errors };
+    delete remainingErrors['server'];
+    control.setErrors(Object.keys(remainingErrors).length > 0 ? remainingErrors : null);
+  }
+}
