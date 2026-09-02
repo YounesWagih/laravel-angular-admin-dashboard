@@ -76,9 +76,15 @@ export class ProductService {
     formData.append('stock', String(payload.stock));
     formData.append('status', payload.status);
 
-    if (payload.image) {
-      formData.append('image', payload.image);
+    for (const image of payload.new_images) {
+      formData.append('new_images[]', image);
     }
+
+    if (payload.primary_image) {
+      formData.append('primary_image', payload.primary_image);
+    }
+
+    formData.append('removed_image_ids', JSON.stringify(payload.removed_image_ids));
 
     return formData;
   }

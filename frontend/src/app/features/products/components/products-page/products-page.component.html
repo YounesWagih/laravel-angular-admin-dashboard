@@ -137,7 +137,7 @@
 @if (deleteProductById(); as product) {
   <app-confirmation-dialog
     title="Delete product?"
-    [message]="'Delete ' + product.name + '? Its stored image will also be removed.'"
+    [message]="'Delete ' + product.name + '? All of its stored images will also be removed.'"
     confirmLabel="Delete"
     [busy]="deletingProductId() === product.id"
     [danger]="true"

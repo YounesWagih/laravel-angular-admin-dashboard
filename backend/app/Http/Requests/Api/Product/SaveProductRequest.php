@@ -4,6 +4,7 @@ namespace App\Http\Requests\Api\Product;
 
 use App\Enums\Status;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -20,7 +21,22 @@ final class SaveProductRequest extends FormRequest
             'price' => ['required', 'numeric', 'min:0', 'max:9999999999.99', 'decimal:0,2'],
             'stock' => ['required', 'integer', 'min:0', 'max:4294967295'],
             'status' => ['required', Rule::enum(Status::class)],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'new_images' => ['sometimes', 'array', 'max:'.Product::MAX_IMAGES],
+            'new_images.*' => [
+                'required',
+                'image',
+                'mimes:'.implode(',', Product::IMAGE_EXTENSIONS),
+                'max:'.Product::MAX_IMAGE_SIZE_KILOBYTES,
+            ],
+            'primary_image' => [
+                'sometimes',
+                'nullable',
+                'string',
+                'max:255',
+                'regex:/^(existing:[1-9][0-9]*|new:(?:0|[1-9][0-9]*))$/',
+            ],
+            'removed_image_ids' => ['sometimes', 'array', 'max:'.Product::MAX_IMAGES],
+            'removed_image_ids.*' => ['required', 'integer', 'min:1', 'distinct'],
         ];
     }
 
@@ -37,6 +53,16 @@ final class SaveProductRequest extends FormRequest
             $values[$field] = str_starts_with($field, 'description_') && $value === ''
                 ? null
                 : $value;
+        }
+
+        $removedImageIds = $this->input('removed_image_ids');
+
+        if (is_string($removedImageIds)) {
+            $decodedValue = json_decode($removedImageIds, true);
+
+            if (is_array($decodedValue)) {
+                $values['removed_image_ids'] = $decodedValue;
+            }
         }
 
         $this->merge($values);

@@ -7,6 +7,7 @@ use App\Repositories\Contracts\ProductRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 final class EloquentProductRepository implements ProductRepository
 {
@@ -51,11 +52,43 @@ final class EloquentProductRepository implements ProductRepository
         return $product->load(['category', 'media']);
     }
 
-    public function storeImage(Product $product, UploadedFile $image): void
+    public function imageIds(Product $product): array
     {
-        $product
+        return $product
+            ->media()
+            ->where('collection_name', Product::IMAGE_COLLECTION)
+            ->ordered()
+            ->pluck('id')
+            ->map(static fn (int|string $imageId): int => (int) $imageId)
+            ->all();
+    }
+
+    public function storeImage(Product $product, UploadedFile $image): int
+    {
+        $media = $product
             ->addMedia($image)
             ->toMediaCollection(Product::IMAGE_COLLECTION);
+
+        return $media->id;
+    }
+
+    public function removeImages(Product $product, array $imageIds): void
+    {
+        if ($imageIds === []) {
+            return;
+        }
+
+        $product
+            ->media()
+            ->where('collection_name', Product::IMAGE_COLLECTION)
+            ->whereIn('id', $imageIds)
+            ->get()
+            ->each->delete();
+    }
+
+    public function reorderImages(array $imageIds): void
+    {
+        Media::setNewOrder($imageIds);
     }
 
     public function delete(Product $product): void

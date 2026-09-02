@@ -6,7 +6,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { getApiErrorMessage } from '../../../../shared/utils/api-error.util';
 import { formatDateTime } from '../../../../shared/utils/date.util';
-import type { Product } from '../../models/product.model';
+import type { ProductDetails, ProductImage } from '../../models/product.model';
 import { ProductService } from '../../services/product.service';
 
 @Component({
@@ -21,7 +21,8 @@ export class ProductDetailsPageComponent implements OnInit {
   router = inject(Router);
   productService = inject(ProductService);
 
-  product = signal<Product | null>(null);
+  product = signal<ProductDetails | null>(null);
+  selectedImage = signal<ProductImage | null>(null);
   loading = signal(true);
   pageError = signal<string | null>(null);
   actionError = signal<string | null>(null);
@@ -58,7 +59,11 @@ export class ProductDetailsPageComponent implements OnInit {
     this.confirmingDelete.set(false);
   }
 
-  protected async deleteProduct(product: Product): Promise<void> {
+  protected selectImage(image: ProductImage): void {
+    this.selectedImage.set(image);
+  }
+
+  protected async deleteProduct(product: ProductDetails): Promise<void> {
     this.deleting.set(true);
 
     try {
@@ -85,7 +90,11 @@ export class ProductDetailsPageComponent implements OnInit {
     }
 
     try {
-      this.product.set(await this.productService.show(this.productId));
+      const product = await this.productService.show(this.productId);
+      this.product.set(product);
+      this.selectedImage.set(
+        product.images.find((image) => image.is_primary) ?? product.images[0] ?? null,
+      );
     } catch (error) {
       this.pageError.set(
         getApiErrorMessage(error, 'The product could not be loaded.'),

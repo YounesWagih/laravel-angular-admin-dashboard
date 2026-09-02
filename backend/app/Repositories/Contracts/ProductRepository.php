@@ -16,7 +16,13 @@ interface ProductRepository
 
     public function withDetails(Product $product): Product;
 
-    public function storeImage(Product $product, UploadedFile $image): void;
+    public function imageIds(Product $product): array;
+
+    public function storeImage(Product $product, UploadedFile $image): int;
+
+    public function removeImages(Product $product, array $imageIds): void;
+
+    public function reorderImages(array $imageIds): void;
 
     public function delete(Product $product): void;
 }

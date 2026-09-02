@@ -40,10 +40,7 @@ final class ProductController extends Controller
 
     public function store(SaveProductRequest $request): JsonResponse
     {
-        $product = $this->productService->create(
-            $request->validated(),
-            $request->file('image'),
-        );
+        $product = $this->productService->create($request->validated());
 
         return ProductResource::make($product)
             ->response()
@@ -52,11 +49,7 @@ final class ProductController extends Controller
 
     public function update(SaveProductRequest $request, Product $product): ProductResource
     {
-        $product = $this->productService->update(
-            $product,
-            $request->validated(),
-            $request->file('image'),
-        );
+        $product = $this->productService->update($product, $request->validated());
 
         return ProductResource::make($product);
     }

@@ -14,11 +14,19 @@ use Spatie\Translatable\HasTranslations;
 
 #[Fillable(['category_id', 'name', 'description', 'price', 'stock', 'status'])]
 class Product extends Model implements HasMedia
-{   
+{
     /** @use HasFactory<ProductFactory> */
     use HasFactory, HasTranslations, InteractsWithMedia;
 
     public const string IMAGE_COLLECTION = 'image';
+
+    public const int MAX_IMAGES = 5;
+
+    public const int MAX_IMAGE_SIZE_KILOBYTES = 2048;
+
+    public const array IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
+
+    public const array IMAGE_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
     public array $translatable = ['name', 'description'];
 
@@ -32,8 +40,7 @@ class Product extends Model implements HasMedia
         $this
             ->addMediaCollection(self::IMAGE_COLLECTION)
             ->useDisk('public')
-            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp'])
-            ->singleFile();
+            ->acceptsMimeTypes(self::IMAGE_MIME_TYPES);
     }
 
     protected function casts(): array

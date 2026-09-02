@@ -20,11 +20,21 @@ export interface Product {
   updated_at: string;
 }
 
+export interface ProductImage {
+  id: number;
+  url: string;
+  file_name: string;
+  size: number;
+  order: number;
+  is_primary: boolean;
+}
+
 export interface ProductDetails extends Product {
   name_en: string;
   name_ar: string;
   description_en: string | null;
   description_ar: string | null;
+  images: ProductImage[];
 }
 
 export interface ProductPayload {
@@ -36,7 +46,9 @@ export interface ProductPayload {
   price: number;
   stock: number;
   status: ProductStatus;
-  image: File | null;
+  new_images: File[];
+  primary_image: string | null;
+  removed_image_ids: number[];
 }
 
 export interface ProductFilters {
