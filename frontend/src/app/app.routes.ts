@@ -74,6 +74,30 @@ export const routes: Routes = [
           ).then((component) => component.CategoriesPageComponent)
       },
       {
+        path: 'categories/new',
+        canActivate: [permissionGuard('categories.create')],
+        loadComponent: () =>
+          import(
+            './features/categories/components/category-form-page/category-form-page.component'
+          ).then((component) => component.CategoryFormPageComponent)
+      },
+      {
+        path: 'categories/:id/edit',
+        canActivate: [permissionGuard('categories.update')],
+        loadComponent: () =>
+          import(
+            './features/categories/components/category-form-page/category-form-page.component'
+          ).then((component) => component.CategoryFormPageComponent)
+      },
+      {
+        path: 'categories/:id',
+        canActivate: [permissionGuard('categories.read')],
+        loadComponent: () =>
+          import(
+            './features/categories/components/category-details-page/category-details-page.component'
+          ).then((component) => component.CategoryDetailsPageComponent)
+      },
+      {
         path: 'products',
         canActivate: [permissionGuard('products.read')],
         loadComponent: () =>

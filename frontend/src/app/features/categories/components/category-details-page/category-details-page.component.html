@@ -1,0 +1,77 @@
+@if (category(); as category) {
+  <header class="page-head">
+    <div>
+      <div class="title">
+        <a class="back" routerLink="/categories" aria-label="Back to categories" title="Back to categories">
+          <span aria-hidden="true">&larr;</span>
+        </a>
+        <h1>{{ category.name }}</h1>
+      </div>
+      <p>Category information in English and Arabic.</p>
+    </div>
+    <div class="actions">
+      @if (canUpdate()) {
+        <a class="btn primary" [routerLink]="['/categories', category.id, 'edit']">Edit category</a>
+      }
+      @if (canDelete()) {
+        <button class="btn danger-btn" type="button" (click)="requestDelete()">Delete</button>
+      }
+    </div>
+  </header>
+
+  @if (actionError(); as error) {
+    <div class="alert error error-box" role="alert">{{ error }}</div>
+  }
+
+  <section class="panel details">
+    <dl>
+      <div>
+        <dt>English name</dt>
+        <dd>{{ category.name_en }}</dd>
+      </div>
+      <div lang="ar" dir="rtl">
+        <dt>Arabic name</dt>
+        <dd>{{ category.name_ar }}</dd>
+      </div>
+      <div>
+        <dt>English description</dt>
+        <dd>{{ category.description_en || 'No description.' }}</dd>
+      </div>
+      <div lang="ar" dir="rtl">
+        <dt>Arabic description</dt>
+        <dd>{{ category.description_ar || 'No description.' }}</dd>
+      </div>
+      <div>
+        <dt>Products</dt>
+        <dd>{{ category.products_count }}</dd>
+      </div>
+      <div>
+        <dt>Created</dt>
+        <dd>{{ formatDate(category.created_at) }}</dd>
+      </div>
+      <div>
+        <dt>Last updated</dt>
+        <dd>{{ formatDate(category.updated_at) }}</dd>
+      </div>
+    </dl>
+  </section>
+
+  @if (confirmingDelete()) {
+    <app-confirmation-dialog
+      title="Delete category?"
+      [message]="'Delete ' + category.name + '? Categories containing products cannot be deleted.'"
+      confirmLabel="Delete"
+      [busy]="deleting()"
+      [danger]="true"
+      (confirmed)="deleteCategory(category)"
+      (cancelled)="cancelDelete()"
+    />
+  }
+} @else if (loading()) {
+  <section class="panel state" aria-live="polite">Loading category…</section>
+} @else {
+  <section class="panel state">
+    <p class="error-text" role="alert">{{ pageError() }}</p>
+    <a class="btn secondary" routerLink="/categories">Back to categories</a>
+  </section>
+}

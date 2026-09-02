@@ -1,58 +1,57 @@
-<header class="page-header">
+<header class="page-head">
   <div>
     <h1>Categories</h1>
     <p>Organize products with English and Arabic category information.</p>
   </div>
 
   @if (canCreate()) {
-    <button class="button button-primary" type="button" (click)="openCreateModal()">
-      Add category
-    </button>
+    <a class="btn primary" routerLink="/categories/new">Add category</a>
   }
 </header>
 
-<section class="page-panel search-panel">
+<section class="panel search-box">
   <form class="search-form" [formGroup]="searchForm" (ngSubmit)="applySearch()" novalidate>
-    <div class="form-field">
+    <div class="field">
       <label for="category-search">Search</label>
       <input
         id="category-search"
         type="search"
-        placeholder="Category name"
+        placeholder="Arabic or English category name"
+        dir="auto"
         formControlName="search"
       />
       <app-form-field-error [control]="searchForm.controls.search" />
     </div>
-    <button class="button button-primary" type="submit">Search</button>
-    <button class="button secondary-button" type="button" (click)="clearSearch()">Clear</button>
+    <button class="btn primary" type="submit">Search</button>
+    <button class="btn secondary" type="button" (click)="clearSearch()">Clear</button>
   </form>
 </section>
 
 @if (actionError(); as error) {
-  <div class="alert alert-danger action-alert" role="alert">{{ error }}</div>
+  <div class="alert error error-box" role="alert">{{ error }}</div>
 }
 
 @if (pageError(); as error) {
-  <section class="page-panel state-panel">
-    <p class="state-error" role="alert">{{ error }}</p>
-    <button class="button secondary-button" type="button" (click)="loadCategories()">
+  <section class="panel state">
+    <p class="error-text" role="alert">{{ error }}</p>
+    <button class="btn secondary" type="button" (click)="loadCategories()">
       Retry
     </button>
   </section>
 } @else if (loading()) {
-  <section class="page-panel state-panel" aria-live="polite">Loading categories…</section>
+  <section class="panel state" aria-live="polite">Loading categories…</section>
 } @else if (categories().length === 0) {
-  <section class="page-panel state-panel">
+  <section class="panel state">
     <p>{{ hasSearch() ? 'No categories match your search.' : 'No categories have been created yet.' }}</p>
     @if (hasSearch()) {
-      <button class="button secondary-button" type="button" (click)="clearSearch()">
+      <button class="btn secondary" type="button" (click)="clearSearch()">
         Clear search
       </button>
     }
   </section>
 } @else {
-  <section class="page-panel table-panel">
-    <div class="table-scroll">
+  <section class="panel table-box">
+    <div class="table-wrap">
       <table>
         <thead>
           <tr>
@@ -60,39 +59,27 @@
             <th scope="col">Description</th>
             <th scope="col">Products</th>
             <th scope="col">Created</th>
-            <th scope="col"><span class="visually-hidden">Actions</span></th>
+            <th scope="col"><span class="sr-only">Actions</span></th>
           </tr>
         </thead>
         <tbody>
           @for (category of categories(); track category.id) {
             <tr>
               <td><strong>{{ category.name }}</strong></td>
-              <td class="description-cell">{{ category.description || 'No description.' }}</td>
+              <td class="description">{{ category.description || 'No description.' }}</td>
               <td>{{ category.products_count }}</td>
               <td>{{ formatDate(category.created_at) }}</td>
-              <td class="actions-cell">
-                <details #categoryMenu class="action-menu" name="category-actions">
+              <td class="cell-actions">
+                <details #categoryMenu class="menu" name="category-actions">
                   <summary [attr.aria-label]="'Actions for ' + category.name">⋮</summary>
-                  <div class="action-menu-popover">
-                    <button
-                      class="action-menu-item"
-                      type="button"
-                      (click)="categoryMenu.open = false; openViewModal(category)"
-                    >
-                      View
-                    </button>
+                  <div class="menu-box">
+                    <a class="item" [routerLink]="['/categories', category.id]">View</a>
                     @if (canUpdate()) {
-                      <button
-                        class="action-menu-item"
-                        type="button"
-                        (click)="categoryMenu.open = false; openEditModal(category)"
-                      >
-                        Edit
-                      </button>
+                      <a class="item" [routerLink]="['/categories', category.id, 'edit']">Edit</a>
                     }
                     @if (canDelete()) {
                       <button
-                        class="action-menu-item action-menu-item-danger"
+                        class="item danger"
                         type="button"
                         (click)="categoryMenu.open = false; requestDelete(category)"
                       >
@@ -114,80 +101,6 @@
       (pageChange)="loadCategories($event)"
     />
   </section>
-}
-
-@if (modalMode(); as mode) {
-  <dialog #categoryDialog class="category-dialog" (cancel)="cancelDialog($event)">
-    <div class="dialog-heading">
-      <div>
-        <h2>
-          {{ mode === 'view' ? 'Category details' : mode === 'edit' ? 'Edit category' : 'Add category' }}
-        </h2>
-        <p>
-          {{ mode === 'view' ? 'Review the category information.' : 'Store both language values in the database.' }}
-        </p>
-      </div>
-      <button class="dialog-close" type="button" aria-label="Close" (click)="closeModal()">×</button>
-    </div>
-
-    @if (modalError(); as error) {
-      <div class="alert alert-danger modal-alert" role="alert">{{ error }}</div>
-    }
-
-    @if (loadingCategory()) {
-      <div class="modal-state" aria-live="polite">Loading category…</div>
-    } @else if (mode === 'view') {
-      @if (selectedCategory(); as category) {
-        <dl class="category-details">
-          <div><dt>English name</dt><dd>{{ category.name_en }}</dd></div>
-          <div lang="ar" dir="rtl"><dt>Arabic name</dt><dd>{{ category.name_ar }}</dd></div>
-          <div><dt>English description</dt><dd>{{ category.description_en || 'No description.' }}</dd></div>
-          <div lang="ar" dir="rtl"><dt>Arabic description</dt><dd>{{ category.description_ar || 'No description.' }}</dd></div>
-          <div><dt>Products</dt><dd>{{ category.products_count }}</dd></div>
-          <div><dt>Last updated</dt><dd>{{ formatDate(category.updated_at) }}</dd></div>
-        </dl>
-        <div class="modal-actions">
-          <button class="button secondary-button" type="button" (click)="closeModal()">Close</button>
-          @if (canUpdate()) {
-            <button class="button button-primary" type="button" (click)="openEditModal(category)">
-              Edit category
-            </button>
-          }
-        </div>
-      }
-    } @else {
-      <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()" novalidate>
-        <div class="form-grid">
-          <div class="form-field">
-            <label for="category-name-en">English name</label>
-            <input id="category-name-en" type="text" formControlName="name_en" />
-            <app-form-field-error [control]="categoryForm.controls.name_en" />
-          </div>
-          <div class="form-field">
-            <label for="category-name-ar">Arabic name</label>
-            <input id="category-name-ar" type="text" dir="rtl" lang="ar" formControlName="name_ar" />
-            <app-form-field-error [control]="categoryForm.controls.name_ar" />
-          </div>
-          <div class="form-field">
-            <label for="category-description-en">English description <span>(optional)</span></label>
-            <textarea id="category-description-en" rows="4" formControlName="description_en"></textarea>
-            <app-form-field-error [control]="categoryForm.controls.description_en" />
-          </div>
-          <div class="form-field">
-            <label for="category-description-ar">Arabic description <span>(optional)</span></label>
-            <textarea id="category-description-ar" rows="4" dir="rtl" lang="ar" formControlName="description_ar"></textarea>
-            <app-form-field-error [control]="categoryForm.controls.description_ar" />
-          </div>
-        </div>
-        <div class="modal-actions">
-          <button class="button secondary-button" type="button" (click)="closeModal()">Cancel</button>
-          <button class="button button-primary" type="submit" [disabled]="savingCategory()">
-            {{ savingCategory() ? 'Saving…' : mode === 'edit' ? 'Save changes' : 'Create category' }}
-          </button>
-        </div>
-      </form>
-    }
-  </dialog>
 }
 
 @if (deleteCategoryById(); as category) {

@@ -3,148 +3,32 @@
   min-width: 0;
 }
 
-.search-form,
-.dialog-heading,
-.modal-actions {
-  display: flex;
-  align-items: center;
-}
-
 .search-form {
+  display: flex;
   align-items: end;
   gap: 0.65rem;
 }
 
-.search-form .form-field {
+.search-form .field {
   flex: 1;
   max-width: 30rem;
 }
 
-
-.description-cell {
+.description {
   max-width: 24rem;
   overflow: hidden;
   color: var(--color-muted);
   text-overflow: ellipsis;
 }
 
-.modal-actions {
-  gap: 0.5rem;
-}
-
-.category-dialog {
-  width: min(46rem, calc(100% - 2rem));
-  max-height: calc(100vh - 2rem);
-  padding: 1.25rem;
-  overflow-y: auto;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-medium);
-  color: var(--color-text);
-  background: #ffffff;
-  box-shadow: var(--shadow-card);
-}
-
-.category-dialog::backdrop {
-  background: rgb(15 23 42 / 50%);
-}
-
-.dialog-heading {
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.dialog-heading h2,
-.dialog-heading p {
-  margin: 0;
-}
-
-.dialog-heading p {
-  margin-top: 0.25rem;
-  color: var(--color-muted);
-}
-
-.dialog-close {
-  display: grid;
-  width: 2.25rem;
-  height: 2.25rem;
-  flex: 0 0 auto;
-  place-items: center;
-  border: 0;
-  border-radius: var(--radius-small);
-  color: var(--color-muted);
-  background: transparent;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
-.dialog-close:hover {
-  color: var(--color-text);
-  background: #f1f5f9;
-}
-
-.modal-alert {
-  margin-bottom: 1rem;
-}
-
-.modal-state {
-  display: grid;
-  min-height: 10rem;
-  place-items: center;
-  color: var(--color-muted);
-}
-
-.form-grid,
-.category-details {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-}
-
-.form-field label span {
-  color: var(--color-muted);
-  font-weight: 400;
-}
-
-.modal-actions {
-  justify-content: flex-end;
-  margin-top: 1.25rem;
-}
-
-.category-details {
-  margin: 0;
-}
-
-.category-details div {
-  padding: 0.8rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-small);
-}
-
-.category-details dt {
-  color: var(--color-muted);
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-
-.category-details dd {
-  margin: 0.25rem 0 0;
-  overflow-wrap: anywhere;
-}
-
 @media (max-width: 43rem) {
-  .search-form,
-  .modal-actions {
+  .search-form {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .search-form .form-field {
+  .search-form .field {
     width: 100%;
     max-width: none;
-  }
-  .form-grid,
-  .category-details {
-    grid-template-columns: 1fr;
   }
 }

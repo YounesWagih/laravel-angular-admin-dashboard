@@ -1,0 +1,72 @@
+:host {
+  display: block;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.back {
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: var(--radius-small);
+  color: var(--color-muted);
+  text-decoration: none;
+}
+
+.back:hover {
+  color: var(--color-text);
+  background: #e2e8f0;
+}
+
+.back span {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.form-box {
+  max-width: 58rem;
+}
+
+.error-box {
+  margin-bottom: 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field label span {
+  color: var(--color-muted);
+  font-weight: 400;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 43rem) {
+  .page-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+}
