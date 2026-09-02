@@ -1,6 +1,8 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 import { AuthService } from '../../../../core/services/auth.service';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -31,6 +33,7 @@ export class CategoriesPageComponent implements OnInit {
   auth = inject(AuthService);
   categoryService = inject(CategoryService);
   formBuilder = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
 
   categories = signal<Category[]>([]);
   loading = signal(true);
@@ -46,6 +49,19 @@ export class CategoriesPageComponent implements OnInit {
   formatDate = formatDate;
 
   ngOnInit(): void {
+    this.searchForm.controls.search.valueChanges
+      .pipe(
+        map((search) => search.trim()),
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        if (this.searchForm.controls.search.valid) {
+          void this.loadCategories(1);
+        }
+      });
+
     void this.loadCategories();
   }
 
@@ -71,7 +87,7 @@ export class CategoriesPageComponent implements OnInit {
   }
 
   protected clearSearch(): void {
-    this.searchForm.reset({ search: '' });
+    this.searchForm.reset({ search: '' }, { emitEvent: false });
     void this.loadCategories(1);
   }
 

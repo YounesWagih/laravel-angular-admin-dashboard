@@ -1,7 +1,9 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 import { AuthService } from '../../../../core/services/auth.service';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -32,6 +34,7 @@ import { ProductService } from '../../services/product.service';
 })
 export class ProductsPageComponent implements OnInit {
   private readonly auth = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly formBuilder = inject(FormBuilder);
   private readonly productService = inject(ProductService);
 
@@ -51,6 +54,19 @@ export class ProductsPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.filtersForm.controls.search.valueChanges
+      .pipe(
+        map((search) => search.trim()),
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        if (this.filtersForm.controls.search.valid) {
+          void this.loadProducts(1);
+        }
+      });
+
     void this.loadPage();
   }
 
@@ -76,7 +92,10 @@ export class ProductsPageComponent implements OnInit {
   }
 
   protected clearFilters(): void {
-    this.filtersForm.reset({ search: '', category_id: 0, status: '' });
+    this.filtersForm.reset(
+      { search: '', category_id: 0, status: '' },
+      { emitEvent: false },
+    );
     void this.loadProducts(1);
   }
 

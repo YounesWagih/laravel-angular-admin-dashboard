@@ -17,6 +17,7 @@
         type="search"
         placeholder="Name or email"
         [(ngModel)]="search"
+        (ngModelChange)="searchChanges.next($event)"
       />
     </div>
 

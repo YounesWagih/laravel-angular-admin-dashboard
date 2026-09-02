@@ -1,7 +1,9 @@
 import { TitleCasePipe } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { debounceTime, distinctUntilChanged, map, Subject } from 'rxjs';
 
 import { AuthService } from '../../../../core/services/auth.service';
 import { ConfirmationDialogComponent } from '../../../../shared/components/confirmation-dialog/confirmation-dialog.component';
@@ -29,6 +31,7 @@ import { UserService } from '../../services/user.service';
 })
 export class UsersPageComponent implements OnInit {
   auth = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly userService = inject(UserService);
 
   users = signal<User[]>([]);
@@ -41,12 +44,22 @@ export class UsersPageComponent implements OnInit {
   changingStatusUserId = signal<number | null>(null);
 
   protected search = '';
+  protected readonly searchChanges = new Subject<string>();
   protected type = '';
   protected roleId = '';
   protected status = '';
   formatDate = formatDate;
 
   ngOnInit(): void {
+    this.searchChanges
+      .pipe(
+        map((search) => search.trim()),
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => void this.loadUsers(1));
+
     void this.loadInitialData();
   }
 
