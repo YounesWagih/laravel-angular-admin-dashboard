@@ -14,8 +14,12 @@ final class ProductService
     {
         return Product::query()
             ->with(['category', 'media'])
-            ->when($filters['search'] ?? null, function (Builder $query, string $search) use ($locale): void {
-                $query->where("name->{$locale}", 'like', "%{$search}%");
+            ->when($filters['search'] ?? null, function (Builder $query, string $search): void {
+                $query->where(function (Builder $query) use ($search): void {
+                    $query
+                        ->whereRaw("LOWER(name->>'$.en') LIKE LOWER(?)", ["%{$search}%"])
+                        ->orWhere('name->ar', 'like', "%{$search}%");
+                });
             })
             ->when(
                 $filters['category_id'] ?? null,
