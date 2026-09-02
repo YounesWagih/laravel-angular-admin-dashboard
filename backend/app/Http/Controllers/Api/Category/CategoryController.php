@@ -29,7 +29,7 @@ final class CategoryController extends Controller
 
     public function show(Category $category): CategoryDetailsResource
     {
-        return CategoryDetailsResource::make($category->loadCount('products'));
+        return CategoryDetailsResource::make($this->categoryService->details($category));
     }
 
     public function store(SaveCategoryRequest $request): JsonResponse

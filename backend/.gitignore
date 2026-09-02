@@ -31,3 +31,4 @@ Thumbs.db
 /.codex/config.toml
 /.agents/skills/
 /boost.json
+.ai/

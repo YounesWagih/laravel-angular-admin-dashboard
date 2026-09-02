@@ -5,101 +5,83 @@ namespace App\Services;
 use App\Enums\RoleDeletionResult;
 use App\Models\Permission;
 use App\Models\Role;
+use App\Repositories\Contracts\RoleRepository;
+use App\Repositories\Contracts\TransactionManager;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 final class RoleService
 {
+    public function __construct(
+        private readonly RoleRepository $roles,
+        private readonly TransactionManager $transactions,
+    ) {}
+
     public function getAll(): Collection
     {
-        return Role::query()
-            ->where('guard_name', 'web')
-            ->with('permissions')
-            ->withCount('users')
-            ->orderByDesc('is_default')
-            ->orderBy('name')
-            ->get();
+        return $this->roles->allWithDetails();
     }
 
     public function getAllPermissions(): Collection
     {
-        return Permission::query()
-            ->where('guard_name', 'web')
-            ->orderBy('name')
-            ->get();
+        return $this->roles->allPermissions();
     }
 
     public function create(array $data): Role
     {
-        $role = Role::query()->create([
-            ...$data,
-            'guard_name' => 'web',
-        ]);
+        $role = $this->roles->createWebRole($data);
 
-        return $this->load($role);
+        return $this->details($role);
     }
 
     public function update(Role $role, array $data): Role
     {
-        $role->update($data);
+        $role = $this->roles->update($role, $data);
 
-        return $this->load($role);
+        return $this->details($role);
     }
 
     public function setDefault(Role $role): Role
     {
-        $role = DB::transaction(function () use ($role): Role {
-            $role = Role::query()
-                ->where('guard_name', 'web')
-                ->lockForUpdate()
-                ->findOrFail($role->id);
+        $role = $this->transactions->run(function () use ($role): Role {
+            $role = $this->roles->findWebRoleForUpdate($role->id);
 
-            Role::query()
-                ->where('guard_name', 'web')
-                ->whereKeyNot($role->getKey())
-                ->update(['is_default' => false]);
+            $this->roles->clearDefaultExcept($role);
 
-            $role->update(['is_default' => true]);
+            $this->roles->update($role, ['is_default' => true]);
 
             return $role;
         });
 
-        return $this->load($role);
+        return $this->details($role);
     }
 
     public function syncPermissions(Role $role, array $permissions): Role
     {
-        $role = DB::transaction(function () use ($role, $permissions): Role {
-            $role = Role::query()
-                ->where('guard_name', 'web')
-                ->lockForUpdate()
-                ->findOrFail($role->id);
+        $role = $this->transactions->run(function () use ($role, $permissions): Role {
+            $role = $this->roles->findWebRoleForUpdate($role->id);
 
-            $role->syncPermissions($permissions);
+            $this->roles->syncPermissions($role, $permissions);
 
             return $role;
         });
 
-        return $this->load($role);
+        return $this->details($role);
     }
 
     public function delete(Role $role): RoleDeletionResult
     {
-        return DB::transaction(function () use ($role): RoleDeletionResult {
-            $role = Role::query()
-                ->where('guard_name', 'web')
-                ->lockForUpdate()
-                ->findOrFail($role->id);
+        return $this->transactions->run(function () use ($role): RoleDeletionResult {
+            $role = $this->roles->findWebRoleForUpdate($role->id);
 
             if ($role->is_default) {
                 return RoleDeletionResult::DefaultRole;
             }
 
-            if ($role->users()->exists()) {
+            if ($this->roles->hasUsers($role)) {
                 return RoleDeletionResult::AssignedToUsers;
             }
 
-            $role->delete();
+            $this->roles->delete($role);
 
             return RoleDeletionResult::Deleted;
         });
@@ -107,16 +89,12 @@ final class RoleService
 
     public function availablePermissions(Role $role): Collection
     {
-        $assignedEntities = $role->permissions()
-            ->pluck('name')
+        $assignedEntities = $this->roles->assignedPermissionNames($role)
             ->map(fn (string $permission): string => $this->permissionEntity($permission))
             ->filter()
             ->unique();
 
-        return Permission::query()
-            ->where('guard_name', 'web')
-            ->orderBy('name')
-            ->get()
+        return $this->roles->allPermissions()
             ->reject(
                 fn (Permission $permission): bool => $assignedEntities->contains(
                     $this->permissionEntity($permission->name),
@@ -124,9 +102,9 @@ final class RoleService
             );
     }
 
-    private function load(Role $role): Role
+    private function details(Role $role): Role
     {
-        return $role->load('permissions')->loadCount('users');
+        return $this->roles->withDetails($role);
     }
 
     private function permissionEntity(string $permission): string

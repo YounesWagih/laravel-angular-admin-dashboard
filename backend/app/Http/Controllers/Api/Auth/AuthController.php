@@ -7,6 +7,7 @@ use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\RegisterRequest;
 use App\Http\Resources\AuthenticatedUserResource;
 use App\Services\RegistrationService;
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -14,7 +15,10 @@ use Illuminate\Support\Facades\Auth;
 
 final class AuthController extends Controller
 {
-    public function __construct(private readonly RegistrationService $registrationService) {}
+    public function __construct(
+        private readonly RegistrationService $registrationService,
+        private readonly UserService $userService,
+    ) {}
 
     public function register(RegisterRequest $request): JsonResponse
     {
@@ -33,16 +37,16 @@ final class AuthController extends Controller
         $request->authenticate();
         $request->session()->regenerate();
 
-        $user = $request->user();
+        $user = $this->userService->authenticationDetails($request->user());
 
-        return AuthenticatedUserResource::make($user->load('roles'));
+        return AuthenticatedUserResource::make($user);
     }
 
     public function me(Request $request): AuthenticatedUserResource
     {
-        $user = $request->user();
+        $user = $this->userService->authenticationDetails($request->user());
 
-        return AuthenticatedUserResource::make($user->load('roles'));
+        return AuthenticatedUserResource::make($user);
     }
 
     public function logout(Request $request): Response

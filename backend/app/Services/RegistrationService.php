@@ -4,26 +4,30 @@ namespace App\Services;
 
 use App\Enums\Status;
 use App\Enums\UserType;
-use App\Models\Role;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use App\Repositories\Contracts\RoleRepository;
+use App\Repositories\Contracts\TransactionManager;
+use App\Repositories\Contracts\UserRepository;
 use LogicException;
 
 final class RegistrationService
 {
+    public function __construct(
+        private readonly UserRepository $users,
+        private readonly RoleRepository $roles,
+        private readonly TransactionManager $transactions,
+    ) {}
+
     public function register(array $data): User
     {
-        $user = DB::transaction(function () use ($data): User {
-            $defaultRole = Role::query()
-                ->where('is_default', true)
-                ->where('guard_name', 'web')
-                ->first();
+        $user = $this->transactions->run(function () use ($data): User {
+            $defaultRole = $this->roles->findDefaultWebRole();
 
             if (! $defaultRole) {
                 throw new LogicException('A default role must be configured before users can register.');
             }
 
-            $user = User::query()->create([
+            $user = $this->users->create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => $data['password'],
@@ -31,11 +35,11 @@ final class RegistrationService
                 'status' => Status::Active,
             ]);
 
-            $user->syncRoles([$defaultRole]);
+            $this->users->syncRole($user, $defaultRole);
 
             return $user;
         });
 
-        return $user->load('roles');
+        return $this->users->withAuthenticationContext($user);
     }
 }

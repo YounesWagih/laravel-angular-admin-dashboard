@@ -30,7 +30,7 @@ final class UserController extends Controller
 
     public function show(User $user): UserResource
     {
-        return UserResource::make($user->load('roles'));
+        return UserResource::make($this->userService->details($user));
     }
 
     public function store(StoreUserRequest $request): JsonResponse
@@ -52,7 +52,7 @@ final class UserController extends Controller
             ], Response::HTTP_CONFLICT);
         }
 
-        return UserResource::make($updatedUser->load('roles'));
+        return UserResource::make($updatedUser);
     }
 
     public function updateStatus(UpdateUserStatusRequest $request, User $user): UserResource|JsonResponse
@@ -73,6 +73,6 @@ final class UserController extends Controller
             ], Response::HTTP_CONFLICT);
         }
 
-        return UserResource::make($updatedUser->load('roles'));
+        return UserResource::make($updatedUser);
     }
 }

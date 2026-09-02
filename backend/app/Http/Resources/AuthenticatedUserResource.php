@@ -19,7 +19,7 @@ final class AuthenticatedUserResource extends JsonResource
                 static fn (PermissionName $permission): string => $permission->value,
                 PermissionName::cases(),
             )
-            : $this->getAllPermissions()->pluck('name')->sort()->values()->all();
+            : $this->effectivePermissions->pluck('name')->sort()->values()->all();
 
         return [
             'id' => $this->id,

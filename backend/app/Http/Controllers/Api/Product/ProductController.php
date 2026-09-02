@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Api\Product;
 
-use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Product\IndexProductsRequest;
 use App\Http\Requests\Api\Product\SaveProductRequest;
 use App\Http\Resources\ProductDetailsResource;
 use App\Http\Resources\ProductResource;
-use App\Models\Category;
 use App\Models\Product;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
@@ -30,29 +28,14 @@ final class ProductController extends Controller
 
     public function options(): JsonResponse
     {
-        $locale = app()->getLocale();
-        $categories = Category::query()
-            ->orderBy("name->{$locale}")
-            ->get()
-            ->map(fn (Category $category): array => [
-                'id' => $category->id,
-                'name' => $category->getTranslation('name', $locale),
-            ]);
-
         return response()->json([
-            'data' => [
-                'categories' => $categories,
-                'statuses' => array_map(
-                    static fn (Status $status): string => $status->value,
-                    Status::cases(),
-                ),
-            ],
+            'data' => $this->productService->options(app()->getLocale()),
         ]);
     }
 
     public function show(Product $product): ProductDetailsResource
     {
-        return ProductDetailsResource::make($product->load(['category', 'media']));
+        return ProductDetailsResource::make($this->productService->details($product));
     }
 
     public function store(SaveProductRequest $request): JsonResponse

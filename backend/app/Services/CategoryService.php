@@ -4,52 +4,51 @@ namespace App\Services;
 
 use App\Enums\CategoryDeletionResult;
 use App\Models\Category;
-use Illuminate\Database\Eloquent\Builder;
+use App\Repositories\Contracts\CategoryRepository;
+use App\Repositories\Contracts\TransactionManager;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 
 final class CategoryService
 {
+    public function __construct(
+        private readonly CategoryRepository $categories,
+        private readonly TransactionManager $transactions,
+    ) {}
+
     public function paginate(array $filters, string $locale): LengthAwarePaginator
     {
-        return Category::query()
-            ->withCount('products')
-            ->when($filters['search'] ?? null, function (Builder $query, string $search): void {
-                $query->where(function (Builder $query) use ($search): void {
-                    $query
-                        ->whereRaw("LOWER(name->>'$.en') LIKE LOWER(?)", ["%{$search}%"])
-                        ->orWhere('name->ar', 'like', "%{$search}%");
-                });
-            })
-            ->orderBy("name->{$locale}")
-            ->orderBy('id')
-            ->paginate($filters['per_page'] ?? 10);
+        return $this->categories->paginate($filters, $locale);
+    }
+
+    public function details(Category $category): Category
+    {
+        return $this->categories->withProductCount($category);
     }
 
     public function create(array $data): Category
     {
-        $category = Category::query()->create($this->attributes($data));
+        $category = $this->categories->create($this->attributes($data));
 
-        return $category->loadCount('products');
+        return $this->categories->withProductCount($category);
     }
 
     public function update(Category $category, array $data): Category
     {
-        $category->update($this->attributes($data));
+        $category = $this->categories->update($category, $this->attributes($data));
 
-        return $category->loadCount('products');
+        return $this->categories->withProductCount($category);
     }
 
     public function delete(Category $category): CategoryDeletionResult
     {
-        return DB::transaction(function () use ($category): CategoryDeletionResult {
-            $category = Category::query()->lockForUpdate()->findOrFail($category->id);
+        return $this->transactions->run(function () use ($category): CategoryDeletionResult {
+            $category = $this->categories->findForUpdate($category->id);
 
-            if ($category->products()->exists()) {
+            if ($this->categories->hasProducts($category)) {
                 return CategoryDeletionResult::HasProducts;
             }
 
-            $category->delete();
+            $this->categories->delete($category);
 
             return CategoryDeletionResult::Deleted;
         });
