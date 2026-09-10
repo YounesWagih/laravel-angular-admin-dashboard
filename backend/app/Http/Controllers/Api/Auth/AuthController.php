@@ -5,17 +5,20 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Auth\LoginRequest;
 use App\Http\Requests\Api\Auth\RegisterRequest;
+use App\Http\Resources\AuthenticatedSessionResource;
 use App\Http\Resources\AuthenticatedUserResource;
+use App\Models\User;
+use App\Services\AuthenticationService;
 use App\Services\RegistrationService;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 
 final class AuthController extends Controller
 {
     public function __construct(
+        private readonly AuthenticationService $authenticationService,
         private readonly RegistrationService $registrationService,
         private readonly UserService $userService,
     ) {}
@@ -23,23 +26,18 @@ final class AuthController extends Controller
     public function register(RegisterRequest $request): JsonResponse
     {
         $user = $this->registrationService->register($request->validated());
+        $session = $this->authenticationService->issueToken($user);
 
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        return AuthenticatedUserResource::make($user)
+        return AuthenticatedSessionResource::make($session)
             ->response()
             ->setStatusCode(Response::HTTP_CREATED);
     }
 
-    public function login(LoginRequest $request): AuthenticatedUserResource
+    public function login(LoginRequest $request): AuthenticatedSessionResource
     {
-        $request->authenticate();
-        $request->session()->regenerate();
+        $session = $this->authenticationService->authenticate($request->validated());
 
-        $user = $this->userService->authenticationDetails($request->user());
-
-        return AuthenticatedUserResource::make($user);
+        return AuthenticatedSessionResource::make($session);
     }
 
     public function me(Request $request): AuthenticatedUserResource
@@ -51,10 +49,9 @@ final class AuthController extends Controller
 
     public function logout(Request $request): Response
     {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        /** @var User $user */
+        $user = $request->user();
+        $this->authenticationService->logout($user);
 
         return response()->noContent();
     }

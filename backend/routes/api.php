@@ -9,12 +9,12 @@ use App\Http\Controllers\Api\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->controller(AuthController::class)->group(function (): void {
-    Route::post('/register', 'register')->middleware('stateful.request');
-    Route::post('/login', 'login')->middleware('stateful.request');
+    Route::post('/register', 'register');
+    Route::post('/login', 'login');
 
     Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
         Route::get('/me', 'me');
-        Route::post('/logout', 'logout')->middleware('stateful.request');
+        Route::post('/logout', 'logout');
     });
 });
 

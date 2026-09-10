@@ -17,6 +17,13 @@ export interface AuthenticatedUser {
   permissions: string[];
 }
 
+export interface AuthenticatedSession {
+  user: AuthenticatedUser;
+  access_token: string;
+  token_type: 'Bearer';
+  expires_at: string;
+}
+
 export interface LoginCredentials {
   email: string;
   password: string;

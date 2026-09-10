@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\EnsureStatefulRequest;
 use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\SetLocale;
@@ -18,13 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->statefulApi();
         $middleware->api(prepend: [SetLocale::class]);
 
         $middleware->alias([
             'active' => EnsureUserIsActive::class,
             'admin' => EnsureUserIsAdmin::class,
-            'stateful.request' => EnsureStatefulRequest::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

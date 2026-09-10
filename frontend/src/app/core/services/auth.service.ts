@@ -1,28 +1,35 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import type {
   AuthenticatedUser,
+  AuthenticatedSession,
   LoginCredentials,
   RegisterCredentials
 } from '../models/authenticated-user.model';
 import type { ApiResponse } from '../models/api-response.model';
+import { AuthStateService } from './auth-state.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly currentUser = signal<AuthenticatedUser | null>(null);
-  private readonly authInitialized = signal(false);
+  private readonly authState = inject(AuthStateService);
 
-  readonly user = this.currentUser.asReadonly();
-  readonly initialized = this.authInitialized.asReadonly();
-  readonly isAuthenticated = computed(() => this.currentUser() !== null);
-  readonly isAdmin = computed(() => this.currentUser()?.is_admin === true);
+  readonly user = this.authState.user;
+  readonly initialized = this.authState.initialized;
+  readonly isAuthenticated = this.authState.isAuthenticated;
+  readonly isAdmin = this.authState.isAdmin;
 
   async initialize(): Promise<void> {
-    if (this.authInitialized()) {
+    if (this.authState.initialized()) {
+      return;
+    }
+
+    if (!this.authState.accessToken()) {
+      this.authState.markInitialized();
+
       return;
     }
 
@@ -30,61 +37,67 @@ export class AuthService {
       const response = await firstValueFrom(
         this.http.get<ApiResponse<AuthenticatedUser>>(`${environment.apiUrl}/auth/me`)
       );
-      this.currentUser.set(response.data);
+      this.authState.setUser(response.data);
     } catch {
-      this.currentUser.set(null);
+      this.authState.setUser(null);
     } finally {
-      this.authInitialized.set(true);
+      this.authState.markInitialized();
     }
   }
 
   async login(credentials: LoginCredentials): Promise<AuthenticatedUser> {
-    await this.prepareCsrfCookie();
-
     const response = await firstValueFrom(
-      this.http.post<ApiResponse<AuthenticatedUser>>(
+      this.http.post<ApiResponse<AuthenticatedSession>>(
         `${environment.apiUrl}/auth/login`,
         credentials
       )
     );
 
-    this.currentUser.set(response.data);
+    this.authState.storeSession(
+      response.data.user,
+      response.data.access_token,
+      credentials.remember,
+    );
 
-    return response.data;
+    return response.data.user;
   }
 
   async register(credentials: RegisterCredentials): Promise<AuthenticatedUser> {
-    await this.prepareCsrfCookie();
-
     const response = await firstValueFrom(
-      this.http.post<ApiResponse<AuthenticatedUser>>(
+      this.http.post<ApiResponse<AuthenticatedSession>>(
         `${environment.apiUrl}/auth/register`,
         credentials
       )
     );
 
-    this.currentUser.set(response.data);
+    this.authState.storeSession(
+      response.data.user,
+      response.data.access_token,
+      false,
+    );
 
-    return response.data;
+    return response.data.user;
   }
 
   async logout(): Promise<void> {
-    await this.prepareCsrfCookie();
-    await firstValueFrom(this.http.post<void>(`${environment.apiUrl}/auth/logout`, {}));
-    this.currentUser.set(null);
+    try {
+      await firstValueFrom(this.http.post<void>(`${environment.apiUrl}/auth/logout`, {}));
+    } catch (error) {
+      if (!(error instanceof HttpErrorResponse) || error.status !== 401) {
+        throw error;
+      }
+    }
+
+    this.authState.clearSession();
   }
 
   hasPermission(permission: string): boolean {
-    const user = this.currentUser();
+    const user = this.authState.user();
 
     return user?.is_admin === true || user?.permissions.includes(permission) === true;
   }
 
   clearSession(): void {
-    this.currentUser.set(null);
-  }
-
-  private async prepareCsrfCookie(): Promise<void> {
-    await firstValueFrom(this.http.get<void>(`${environment.sanctumUrl}/csrf-cookie`));
+    this.authState.clearSession();
   }
 }

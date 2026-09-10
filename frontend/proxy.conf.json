@@ -3,10 +3,5 @@
     "target": "http://admin-dashboard-api.test",
     "secure": false,
     "changeOrigin": true
-  },
-  "/sanctum": {
-    "target": "http://admin-dashboard-api.test",
-    "secure": false,
-    "changeOrigin": true
   }
 }
