@@ -24,5 +24,9 @@ interface ProductRepository
 
     public function reorderImages(array $imageIds): void;
 
+    public function findForUpdate(int $productId): Product;
+
+    public function hasInventoryOrOrders(Product $product): bool;
+
     public function delete(Product $product): void;
 }

@@ -3,9 +3,12 @@
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Category\CategoryController;
 use App\Http\Controllers\Api\Dashboard\DashboardController;
+use App\Http\Controllers\Api\Inventory\InventoryController;
+use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Controllers\Api\Product\ProductController;
 use App\Http\Controllers\Api\Role\RoleController;
 use App\Http\Controllers\Api\User\UserController;
+use App\Http\Controllers\Api\Warehouse\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->controller(AuthController::class)->group(function (): void {
@@ -37,6 +40,29 @@ Route::middleware(['auth:sanctum', 'active', 'admin'])->group(function (): void 
 });
 
 Route::middleware(['auth:sanctum', 'active'])->group(function (): void {
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders/{order}', [OrderController::class, 'show']);
+    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus']);
+
+    Route::get('/warehouses', [WarehouseController::class, 'index'])
+        ->middleware('can:warehouses.read');
+    Route::post('/warehouses', [WarehouseController::class, 'store'])
+        ->middleware('can:warehouses.create');
+    Route::get('/warehouses/{warehouse}', [WarehouseController::class, 'show'])
+        ->middleware('can:warehouses.read');
+    Route::patch('/warehouses/{warehouse}', [WarehouseController::class, 'update'])
+        ->middleware('can:warehouses.update');
+    Route::delete('/warehouses/{warehouse}', [WarehouseController::class, 'destroy'])
+        ->middleware('can:warehouses.delete');
+
+    Route::get('/inventory', [InventoryController::class, 'index'])
+        ->middleware('can:inventory.read');
+    Route::post('/inventory-adjustments', [InventoryController::class, 'adjust'])
+        ->middleware('can:inventory.adjust');
+    Route::post('/inventory-transfers', [InventoryController::class, 'transfer'])
+        ->middleware('can:inventory.transfer');
+
     Route::get('/categories', [CategoryController::class, 'index'])
         ->middleware('can:categories.read');
     Route::post('/categories', [CategoryController::class, 'store'])

@@ -18,6 +18,7 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/storage/framework/lsp-*.php
 /vendor
 Homestead.json
 Homestead.yaml
@@ -32,3 +33,4 @@ Thumbs.db
 /.agents/skills/
 /boost.json
 .ai/
+

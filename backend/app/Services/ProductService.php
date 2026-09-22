@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Enums\Status;
+use App\Exceptions\DomainConflictException;
 use App\Models\Category;
 use App\Models\Product;
 use App\Repositories\Contracts\CategoryRepository;
 use App\Repositories\Contracts\ProductRepository;
 use App\Repositories\Contracts\TransactionManager;
+use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Validation\ValidationException;
 use Throwable;
@@ -99,7 +101,31 @@ final class ProductService
 
     public function delete(Product $product): void
     {
-        $this->products->delete($product);
+        $this->transactions->run(function () use ($product): void {
+            $product = $this->products->findForUpdate($product->id);
+
+            if ($this->products->hasInventoryOrOrders($product)) {
+                $this->productInUse();
+            }
+
+            try {
+                $this->products->delete($product);
+            } catch (QueryException $exception) {
+                if (($exception->errorInfo[1] ?? null) !== 1451) {
+                    throw $exception;
+                }
+
+                $this->productInUse();
+            }
+        });
+    }
+
+    private function productInUse(): never
+    {
+        throw new DomainConflictException(
+            'product_in_use',
+            __('A product with inventory or order history cannot be deleted.'),
+        );
     }
 
     private function prepareImages(array $data, array $currentImageIds): ?array
@@ -227,7 +253,6 @@ final class ProductService
             ],
             'description' => $descriptions === [] ? null : $descriptions,
             'price' => $data['price'],
-            'stock' => $data['stock'],
             'status' => $data['status'],
         ];
     }

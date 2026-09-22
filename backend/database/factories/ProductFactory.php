@@ -24,7 +24,6 @@ class ProductFactory extends Factory
                 'ar' => fake('ar_SA')->paragraph(),
             ],
             'price' => fake()->randomFloat(2, 10, 100000),
-            'stock' => fake()->numberBetween(0, 500),
             'status' => fake()->randomElement(Status::cases()),
         ];
     }

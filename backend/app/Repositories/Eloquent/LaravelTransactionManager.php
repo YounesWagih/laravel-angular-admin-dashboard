@@ -10,6 +10,6 @@ final class LaravelTransactionManager implements TransactionManager
 {
     public function run(Closure $callback): mixed
     {
-        return DB::transaction($callback);
+        return DB::transaction($callback, attempts: 3);
     }
 }

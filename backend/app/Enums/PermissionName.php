@@ -12,4 +12,13 @@ enum PermissionName: string
     case CategoriesCreate = 'categories.create';
     case CategoriesUpdate = 'categories.update';
     case CategoriesDelete = 'categories.delete';
+    case WarehousesRead = 'warehouses.read';
+    case WarehousesCreate = 'warehouses.create';
+    case WarehousesUpdate = 'warehouses.update';
+    case WarehousesDelete = 'warehouses.delete';
+    case InventoryRead = 'inventory.read';
+    case InventoryAdjust = 'inventory.adjust';
+    case InventoryTransfer = 'inventory.transfer';
+    case OrdersRead = 'orders.read';
+    case OrdersUpdate = 'orders.update';
 }

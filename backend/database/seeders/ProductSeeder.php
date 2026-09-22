@@ -25,7 +25,6 @@ class ProductSeeder extends Seeder
                     'ar' => 'حاسوب محمول موثوق لأعمال المكتب اليومية.',
                 ],
                 'price' => 42500,
-                'stock' => 18,
                 'status' => Status::Active,
                 'images' => [
                     'laptop/1.jpeg',
@@ -42,7 +41,6 @@ class ProductSeeder extends Seeder
                     'ar' => 'فأرة لاسلكية صغيرة بتصميم مريح.',
                 ],
                 'price' => 850,
-                'stock' => 75,
                 'status' => Status::Active,
                 'images' => [
                     'wireless-mouse/1.jpg',
@@ -59,7 +57,6 @@ class ProductSeeder extends Seeder
                     'ar' => 'دفتر مسطر للملاحظات والتخطيط اليومي.',
                 ],
                 'price' => 120,
-                'stock' => 140,
                 'status' => Status::Active,
                 'images' => [
                     'notebook/1.jpeg',
@@ -76,7 +73,6 @@ class ProductSeeder extends Seeder
                     'ar' => 'كرسي قابل للتعديل للعمل المكتبي المريح.',
                 ],
                 'price' => 6800,
-                'stock' => 9,
                 'status' => Status::Inactive,
                 'images' => [
                     'office-chair/1.jpeg',
@@ -91,7 +87,6 @@ class ProductSeeder extends Seeder
                     'ar' => 'خلاط صغير مزود بإعدادات سرعة متعددة.',
                 ],
                 'price' => 2300,
-                'stock' => 24,
                 'status' => Status::Active,
                 'images' => [
                     'blender/1.jpeg',
@@ -106,7 +101,6 @@ class ProductSeeder extends Seeder
                     'ar' => 'ماكينة قهوة بسيطة للاستخدام المنزلي أو المكتبي.',
                 ],
                 'price' => 3100,
-                'stock' => 16,
                 'status' => Status::Active,
                 'images' => [
                     'coffee-maker/1.jpeg',
@@ -121,7 +115,6 @@ class ProductSeeder extends Seeder
                     'ar' => 'مقلاة متينة للطهي اليومي.',
                 ],
                 'price' => 950,
-                'stock' => 32,
                 'status' => Status::Active,
                 'images' => ['frying-pan/pan.jpg'],
             ],
@@ -133,7 +126,6 @@ class ProductSeeder extends Seeder
                     'ar' => 'حاسوب مكتبي مناسب للعمل والدراسة.',
                 ],
                 'price' => 36500,
-                'stock' => 12,
                 'status' => Status::Active,
                 'images' => ['desktop-computer/pc.jpeg'],
             ],
@@ -145,7 +137,6 @@ class ProductSeeder extends Seeder
                     'ar' => 'هاتف محمول حديث للتواصل والاستخدام اليومي.',
                 ],
                 'price' => 18500,
-                'stock' => 27,
                 'status' => Status::Active,
                 'images' => ['mobile-phone/mobile.jpg'],
             ],
@@ -157,7 +148,6 @@ class ProductSeeder extends Seeder
                     'ar' => 'حقيبة عملية مبطنة لحمل الحاسوب المحمول وملحقاته.',
                 ],
                 'price' => 1250,
-                'stock' => 45,
                 'status' => Status::Active,
                 'images' => ['bag/bag.jpeg'],
             ],

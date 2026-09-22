@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Translatable\HasTranslations;
 
-#[Fillable(['category_id', 'name', 'description', 'price', 'stock', 'status'])]
+#[Fillable(['category_id', 'name', 'description', 'price', 'status'])]
 class Product extends Model implements HasMedia
 {
     /** @use HasFactory<ProductFactory> */
@@ -35,6 +36,16 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(Category::class);
     }
 
+    public function inventories(): HasMany
+    {
+        return $this->hasMany(WarehouseInventory::class);
+    }
+
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     public function registerMediaCollections(): void
     {
         $this
@@ -47,7 +58,6 @@ class Product extends Model implements HasMedia
     {
         return [
             'price' => 'decimal:2',
-            'stock' => 'integer',
             'status' => Status::class,
         ];
     }

@@ -19,7 +19,7 @@ final class SaveProductRequest extends FormRequest
             'description_ar' => ['nullable', 'string', 'max:5000'],
             'category_id' => ['required', 'integer', Rule::exists(Category::class, 'id')],
             'price' => ['required', 'numeric', 'min:0', 'max:9999999999.99', 'decimal:0,2'],
-            'stock' => ['required', 'integer', 'min:0', 'max:4294967295'],
+            'stock' => ['prohibited'],
             'status' => ['required', Rule::enum(Status::class)],
             'new_images' => ['sometimes', 'array', 'max:'.Product::MAX_IMAGES],
             'new_images.*' => [

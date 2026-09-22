@@ -21,7 +21,7 @@ class ProductResource extends JsonResource
                 : $this->getTranslation('description', app()->getLocale()),
             'image_url' => $imageUrl === '' ? null : $imageUrl,
             'price' => $this->price,
-            'stock' => $this->stock,
+            'stock' => max(0, (int) ($this->stock_on_hand ?? 0) - (int) ($this->stock_reserved ?? 0)),
             'status' => $this->status->value,
             'category' => $this->whenLoaded('category', fn (): array => [
                 'id' => $this->category->id,

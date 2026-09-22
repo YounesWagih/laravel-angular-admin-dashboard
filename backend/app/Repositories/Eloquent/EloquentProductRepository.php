@@ -15,6 +15,8 @@ final class EloquentProductRepository implements ProductRepository
     {
         return Product::query()
             ->with(['category', 'media'])
+            ->withSum('inventories as stock_on_hand', 'on_hand')
+            ->withSum('inventories as stock_reserved', 'reserved')
             ->when($filters['search'] ?? null, function (Builder $query, string $search): void {
                 $query->where(function (Builder $query) use ($search): void {
                     $query
@@ -49,7 +51,10 @@ final class EloquentProductRepository implements ProductRepository
 
     public function withDetails(Product $product): Product
     {
-        return $product->load(['category', 'media']);
+        return $product
+            ->load(['category', 'media'])
+            ->loadSum('inventories as stock_on_hand', 'on_hand')
+            ->loadSum('inventories as stock_reserved', 'reserved');
     }
 
     public function imageIds(Product $product): array
@@ -89,6 +94,16 @@ final class EloquentProductRepository implements ProductRepository
     public function reorderImages(array $imageIds): void
     {
         Media::setNewOrder($imageIds);
+    }
+
+    public function findForUpdate(int $productId): Product
+    {
+        return Product::query()->lockForUpdate()->findOrFail($productId);
+    }
+
+    public function hasInventoryOrOrders(Product $product): bool
+    {
+        return $product->inventories()->exists() || $product->orderItems()->exists();
     }
 
     public function delete(Product $product): void
